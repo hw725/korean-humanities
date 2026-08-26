@@ -60,6 +60,21 @@ OpenAlex가 커버하지 않는 한국 인문학 인용 데이터의 실질적 �
 - 알려진 한계: 정확 엣지는 KCI 수록 참고문헌(실측 약 25%)에 한정 — 문집·단행본·해외
   문헌은 텍스트 참조로만 남습니다.
 
+**사용법** — 키워드를 자기 연구 주제로 바꿔 넣습니다.
+
+```bash
+# Claude Code에서: 자연어 한 줄이면 스킬이 검색→확인→수집을 진행합니다
+"「내 키워드」로 인용망 수집해줘"
+
+# AI 도구 없이 CLI로: <스킬 폴더> = plugins/kci-citation-network/skills/kci-citation-network
+py -3 <스킬 폴더>/scripts/kci_citation_collect.py --query "내 키워드" --max 40 --preview        # 씨앗 미리보기 (키 불필요)
+py -3 <스킬 폴더>/scripts/kci_citation_collect.py --query "내 키워드" --max 40 --out-dir out/내주제  # 본 수집 (키 필요)
+```
+
+미리보기 결과에서 동명이인·무관 논문을 지운 목록을 `seeds.tsv`로 저장해
+`--query` 대신 `--arti-ids seeds.tsv`를 지정하면 더 깨끗한 씨앗으로 수집합니다.
+(macOS/Linux는 `py -3` 대신 `python3`.)
+
 ### `kci-korean-studies-trends` — KCI 동향 코퍼스·보고서 (연도·분야만으로 직접 수집)
 
 **연도·분야만 지정하면 됩니다** — “2025년 한문학 동향 코퍼스 만들어 보고서 내줘”라고 하면
@@ -72,6 +87,23 @@ OpenAlex가 커버하지 않는 한국 인문학 인용 데이터의 실질적 �
   명시 인자를 줄 때만 켜집니다.
 - 범위 고지: 초록·키워드 기반 분석이며(보고서가 `verification_scope: abstract-only`를
   스스로 명시), 다년 전분야 전수는 며칠 단위 — 표본 옵션으로 시작하는 것을 권합니다.
+
+**사용법** — 연도와 분야를 자기 것으로 바꿔 넣습니다.
+
+```bash
+# Claude Code에서: 자연어 한 줄
+"2025년 hanmun 분야 동향 코퍼스 만들어 보고서 내줘"
+
+# AI 도구 없이 CLI로: <스킬 폴더> = plugins/kci-korean-studies-trends/skills/kci-korean-studies-trends
+py -3 <스킬 폴더>/scripts/kci_ingest.py --journal-profile --journal-field hanmun --year 2025     --dry-run --corpus-out kci-trends/corpus.jsonl --no-robots-check                     # ① 수집
+py -3 <스킬 폴더>/scripts/kci_trend_analysis.py --corpus kci-trends/corpus.jsonl     --year 2025 --field hanmun --out-dir kci-trends --report kci-trends/report.md        # ② 보고서
+```
+
+동봉 프로파일이 제공하는 분야 값: `hanmun` · `hanmun_education` · `history_education` ·
+`korean_history` · `korean_language` · `korean_literature` · `korean_studies`.
+자기 분야가 목록에 없으면 프로파일 JSON(`assets/`)을 사본으로 복사해 학술지와 분야명을
+추가하고 `--journal-profile <사본 경로>`로 지정합니다 — 그 목록이 곧 수집 범위입니다.
+처음에는 `--per-journal-max 2` 같은 표본 옵션으로 소요 시간을 가늠하는 것을 권합니다.
 
 ## 알아 둘 것
 
