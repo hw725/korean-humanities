@@ -20,7 +20,7 @@
 | Claude Code | 위 `/plugin install` — 가장 간단 |
 | Claude Code (수동) | `plugins/<이름>/skills/`의 스킬 폴더를 `~/.claude/skills/`에 복사 |
 | Codex CLI 등 skills 규약 도구 | 같은 스킬 폴더를 해당 도구의 skills 디렉터리(예: `~/.codex/skills/`)에 복사 — SKILL.md 규약이 같아 그대로 동작 |
-| 다른 LLM·챗봇 | 방법론 3종(연구 워크플로·비서 라우터·영문 라이팅)은 프롬프트 문서다 — SKILL.md 본문을 지침으로 투입하면 된다 |
+| 다른 LLM·챗봇 | 방법론 3종(연구 워크플로·비서 라우터·영문 라이팅)은 프롬프트 문서입니다 — SKILL.md 본문을 지침으로 투입하면 됩니다 |
 | **AI 도구 없이** | kci 인용망·동향·gugyeol 추출 스크립트는 순수 Python CLI라 터미널에서 단독 완결 — 각 SKILL.md의 명령을 그대로 실행 (`python3`/`py -3`) |
 
 폴더 복사의 선택 단위는 **스킬 하나**입니다 — 플러그인(묶음, 4종)보다 잘게, 스킬 6종 중
