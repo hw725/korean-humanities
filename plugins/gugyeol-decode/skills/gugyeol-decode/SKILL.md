@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.0.3
+  version: 1.0.4
   phase: v1
   suite: korean-humanities
   tier: portable
