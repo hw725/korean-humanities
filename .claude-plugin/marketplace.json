@@ -19,6 +19,11 @@
                         "name":  "kci-citation-network",
                         "source":  "./plugins/kci-citation-network",
                         "description":  "Self-serve KCI citation network builder for Korean humanities - give a keyword, collect citation edges via the KCI reference OpenAPI (free data.go.kr key), optionally render Obsidian notes. Stdlib-only scripts, no LLM calls."
+                    },
+                    {
+                        "name":  "kci-korean-studies-trends",
+                        "source":  "./plugins/kci-korean-studies-trends",
+                        "description":  "Build your own year x field KCI corpus (no API key; polite web collection with a user-editable journal profile) and generate hallucination-resistant Korean-studies trend reports - topic clusters, representative-paper candidates, journal breakdowns. Stdlib-only, no LLM calls."
                     }
                 ]
 }

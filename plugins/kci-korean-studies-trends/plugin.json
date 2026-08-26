@@ -1,0 +1,16 @@
+{
+    "name":  "kci-korean-studies-trends",
+    "version":  "2.0.0",
+    "description":  "Build your own year x field KCI corpus (no API key; polite web collection with a user-editable journal profile) and generate hallucination-resistant Korean-studies trend reports - topic clusters, representative-paper candidates, journal breakdowns. Stdlib-only, no LLM calls.",
+    "author":  {
+                   "name":  "hw725"
+               },
+    "license":  "See NOTICE.md at marketplace root (per-skill)",
+    "keywords":  [
+                     "korean-studies",
+                     "kci",
+                     "trends",
+                     "corpus",
+                     "claude-skill"
+                 ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "KCI Korean Studies Trends"
+  short_description: "Build year x field KCI corpora and hallucination-resistant trend reports"
+  default_prompt: "Build a KCI corpus for a year and field, then generate the trend report."

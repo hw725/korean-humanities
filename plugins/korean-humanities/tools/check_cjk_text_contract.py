@@ -59,15 +59,17 @@ def _has_cjk(s: str) -> bool:
 
 
 def _has_cjk_in_class(pattern: str) -> bool:
-    """문자클래스 [...] 안에 CJK가 들어간 경우만 위반으로 본다.
+    """문자클래스 [...] 안의 **CJK 범위**(가-힣·㐀-鿿 꼴)만 위반으로 본다.
 
-    계약의 표적은 [가-힣]·[㐀-鿿] 같은 범위 하드코딩(옛한글·확장 한자를 놓침)이다.
-    구분자 리터럴(ㆍ|·)이나 CJK 고정 문자열 매칭은 stdlib re로 정확하므로 허용 —
-    2026-08-26 실측에서 초기 검사기가 이 둘을 구분 못 해 과잉 검출했다.
+    계약의 표적은 범위 하드코딩(옛한글·확장 한자를 놓침)이다. 클래스 안의 CJK
+    낱글자 열거([,;ㆍ·/] 같은 구분자 집합)는 정확한 매칭이므로 허용 — 2026-08-26
+    실측 2회에 걸쳐 정밀화: ①클래스 밖 리터럴 과잉 검출 → 클래스 내부만
+    ②클래스 내 낱글자 과잉 검출 → 범위(-의 양옆이 CJK)만.
     """
     depth = 0
     prev_backslash = False
-    for ch in pattern:
+    chars = list(pattern)
+    for i, ch in enumerate(chars):
         if prev_backslash:
             prev_backslash = False
             continue
@@ -78,8 +80,9 @@ def _has_cjk_in_class(pattern: str) -> bool:
             depth += 1
         elif ch == "]" and depth:
             depth -= 1
-        elif depth and _is_cjk(ch):
-            return True
+        elif depth and ch == "-" and 0 < i < len(chars) - 1:
+            if _is_cjk(chars[i - 1]) and _is_cjk(chars[i + 1]):
+                return True
     return False
 
 

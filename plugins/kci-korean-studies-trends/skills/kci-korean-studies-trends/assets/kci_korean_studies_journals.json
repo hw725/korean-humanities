@@ -1,0 +1,1028 @@
+{
+  "profile": "korean-studies",
+  "version": 4,
+  "description": "한국학 KCI등재_학술지_정리본 xlsx의 학술지 목록을 기반으로 하되, KCI 정확 학술지 ingest용 프로필. 한문학과 한문교육, 한국사와 역사교육 field를 분리한다.",
+  "source_workbook": "(개인 정리 워크북에서 추출한 2026 큐레이션)",
+  "source_sheet": "학술지 목록",
+  "source_workbook_note": "조사일 2026-05-16 (v2) · KCI 등재지 중심",
+  "selection_policy": "사용자 제공 엑셀의 학술지명을 중심으로 하되, KCI 공식 현재 표제형이 다른 경우 name은 KCI 검색용 공식 표제형으로 보정하고 workbook_title과 aliases에 엑셀 원 표기를 보존한다. KCI SERE_NM 검색 결과의 journal 값이 name 또는 aliases와 정확일치한 항목만 수집 대상으로 삼는다. v4에서는 사용자 요청에 따라 역사교육 학술지를 KCI SERE_NM exact-match로 확인한 항목만 추가한다.",
+  "verification_policy": "KCI SERE_NM exact-match article hit으로 재검증한다. 엑셀의 미확인·부분확인 표기는 workbook_verification_status에 보존한다.",
+  "last_verified": "2026-05-16",
+  "last_verified_result": {
+    "source": "KCI SERE_NM exact-match article hit",
+    "total": 47,
+    "ok": 47,
+    "failures": [],
+    "log": "<corpus-pipeline>\\.queue\\kci-journal-profile-verification.jsonl",
+    "notes": "v4 역사교육 4종은 2026-05-16 KCI 실검색으로 추가 확인. v3 43종은 기존 검증 결과를 유지."
+  },
+  "journals": [
+    {
+      "name": "한국한문학연구",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학 일반",
+      "publisher": "한국한문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국한문학연구",
+      "workbook_note": "1975년 한국한문학연구회로 출발, 분야 중추 학회",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003334954",
+        "journal": "한국한문학연구",
+        "title": "조선통신사 오사카 역지 사행 구상과 조선인식",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "동방한문학",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학 일반",
+      "publisher": "동방한문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "동방한문학",
+      "issn_print": "1226-668X",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003320419",
+        "journal": "동방한문학",
+        "title": "효산(曉山) 변영규(卞榮奎) 시 세계의 형식과 사상 -연작과 단편, 그리고 자연과 감정의 구조-",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "대동한문학",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학 일반",
+      "publisher": "대동한문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "대동한문학",
+      "issn_print": "1229-4411",
+      "workbook_note": "1986년 창립(구 교남한문학회)",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003335774",
+        "journal": "대동한문학(大東漢文學)",
+        "title": "問目을 통해 본 退溪 李滉의 宋代 語錄體 인식 및 해석 양상",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한문학보",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학 일반",
+      "publisher": "우리한문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한문학보(漢文學報)",
+      "aliases": [
+        "한문학보(漢文學報)",
+        "漢文學報"
+      ],
+      "workbook_note": "삼국~애국계몽기 한문학; 소장 연구자 중심",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003286930",
+        "journal": "漢文學報",
+        "title": "조선 후기 詩社 연구의 현황과 과제",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "한국한시연구",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한시",
+      "publisher": "한국한시학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국한시연구",
+      "workbook_note": "한시 전문",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART002907671",
+        "journal": "한국한시연구",
+        "title": "金鑢 한시에 나타난 자기 인식",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "한문학논집",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학 일반",
+      "publisher": "근역한문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한문학논집(漢文學論集)",
+      "aliases": [
+        "한문학논집(漢文學論集)",
+        "漢文學論集"
+      ],
+      "workbook_note": "KCI 직접 조회 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003314079",
+        "journal": "한문학논집(漢文學論集)",
+        "title": "松齋 李堣의 삶과 詩에 대한 一考察",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "온지논총",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문학·고전(학제간)",
+      "publisher": "온지학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "온지논총",
+      "publication_frequency": "계간(연4회)",
+      "workbook_note": "1994년 결성; 동양고전 기반 문사철 학제간 연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003334801",
+        "journal": "온지논총",
+        "title": "여태명 소장 필사본 신작 고소설 [효동곡독서동실기(孝童谷讀書洞實記)] 연구",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국실학연구",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "실학",
+      "publisher": "한국실학학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한국실학연구",
+      "workbook_note": "실학 전문(사학과 인접); KCI 직접 조회 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003294893",
+        "journal": "한국실학연구",
+        "title": "두 개의 自主之權, 자유로운 결단과 主權",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "동양고전연구",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "동양고전·경학",
+      "publisher": "동양고전학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "동양고전연구",
+      "workbook_note": "동양 고전·경학 중심(한문학과 인접)",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003325748",
+        "journal": "동양고전연구",
+        "title": "일제강점기 최초의 저작권 소송에 대한 연구 — 황의돈 대 박해묵⋅김동진의 소송을 대상으로 —",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "민족문화",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "고전번역",
+      "publisher": "한국고전번역원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "민족문화(民族文化)",
+      "aliases": [
+        "민족문화(民族文化)",
+        "民族文化"
+      ],
+      "issn_print": "1738-4648",
+      "publication_frequency": "연3회",
+      "workbook_note": "한문 고전 번역·연구; 1975년 창간. 학회 아닌 국가기관 발간",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003322745",
+        "journal": "민족문화",
+        "title": "『대한협회회보』와 『대한자강회월보』에 나타난 홍필주의 언론 활동-『飮氷室文集』의 번역과 대한제국기 잡지-",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "고전번역연구",
+      "field": "hanmun",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "고전번역",
+      "publisher": "한국고전번역학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "고전번역연구",
+      "workbook_note": "고전번역학 전문",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003294605",
+        "journal": "고전번역연구",
+        "title": "AI 기반 한시 번역 활용 전략 연구 －대화형 번역과정과 오역 탐지 능력을 중심으로－",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "漢文敎育論集",
+      "field": "hanmun_education",
+      "priority": 1,
+      "source_category": "한문학",
+      "source_subfield": "한문교육",
+      "publisher": "한국한문교육학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한문교육연구",
+      "workbook_note": "한문교육 분야; 학술지명·등재 KCI 직접 조회 권장",
+      "aliases": [
+        "한문교육연구",
+        "한문교육논집",
+        "漢文教育論集"
+      ],
+      "kci_sere_id": "000655",
+      "kci_name_correction": {
+        "from_workbook": "한문교육연구",
+        "to_kci": "漢文敎育論集",
+        "reason": "KCI 학술지/권호 목록에서 한국한문교육학회 학술지는 漢文敎育論集(한문교육논집)으로 확인됨",
+        "source_url": "https://www.kci.go.kr/kciportal/landing/journalHome.kci?sere_id=000655"
+      },
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003294922",
+        "journal": "漢文敎育論集",
+        "title": "漢文科 小單元 構成 模型과 敎授·學習 模型에 따른 ‘敎授·學習 過程案’의 實際",
+        "year": "2025"
+      },
+      "analysis_note": "한문학 일반 동향과 2022 개정 교육과정·교과서 연구가 섞이지 않도록 별도 전공으로 분리"
+    },
+    {
+      "name": "국어국문학",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "어문 종합",
+      "publisher": "국어국문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "국어국문학",
+      "publication_frequency": "계간(연4회)",
+      "workbook_note": "1952년 설립, 2004년 등재학술지 결정",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003321707",
+        "journal": "국어국문학",
+        "title": "고대국어 교육 내용에 대한 비판과 대안: 향가 ‘처용가’를 활용하여",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "어문학",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "어문 종합",
+      "publisher": "한국어문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "어문학",
+      "issn_print": "1225-3774",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003321711",
+        "journal": "어문학",
+        "title": "설화의 디지털 재매개 양상과 특징 고찰- 유튜브 채널 ‘전설의 고냥’을 중심으로",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국언어문학",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "어문 종합",
+      "publisher": "한국언어문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한국언어문학",
+      "workbook_note": "KCI 직접 조회 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003323363",
+        "journal": "한국언어문학",
+        "title": "수행적 드라마투르기의 교육적 의의와 사례 연구",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "국어학",
+      "field": "korean_language",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "국어학",
+      "publisher": "국어학회",
+      "kci_grade": "우수등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "국어학(國語學)",
+      "aliases": [
+        "국어학(國語學)",
+        "國語學"
+      ],
+      "publication_frequency": "계간(연4회)",
+      "workbook_note": "1959년 창립; 국어사 등 역사언어학 포함",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003321555",
+        "journal": "國語學",
+        "title": "보조용언의 전형성과 비전형성 -‘보다’가 형성하는 다양한 구문을 중심으로-",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국어학",
+      "field": "korean_language",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "국어학",
+      "publisher": "한국어학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국어학",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003336778",
+        "journal": "한국어학",
+        "title": "조선어학습서 󰡔朝鮮國字讀󰡕에 대한 연구 - 草稿本 原 󰡔交隣須知󰡕의 가능성에 착목하여 -",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "고전문학연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전문학",
+      "publisher": "한국고전문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "고전문학연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003295097",
+        "journal": "고전문학연구",
+        "title": "서귀본향계당본풀이에서 서사의 경합",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "한국시가연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전문학(시가)",
+      "publisher": "한국시가학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한국시가연구",
+      "workbook_note": "고전 시가 전문; KCI 직접 조회 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003309653",
+        "journal": "한국시가연구",
+        "title": "고시조 종장 첫구의 양식별･시대별 분포 양상- 출현 빈도 통계분석을 중심으로 -",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국고전여성문학연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전문학",
+      "publisher": "한국고전여성문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "미확인",
+      "workbook_title": "한국고전여성문학연구",
+      "workbook_note": "KCI 직접 조회 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003297698",
+        "journal": "한국고전여성문학연구",
+        "title": "연적(硯滴) 서사 속 용녀(龍女)의 형상과 의미 - <김원전>, <이수문전>, <운수전>을 중심으로",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "고소설연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전문학(고소설)",
+      "publisher": "한국고소설학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "고소설연구",
+      "workbook_note": "고전소설(古小說) 전문",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003279622",
+        "journal": "고소설연구",
+        "title": "애정전기소설에 구현된 여성인물의 애정애욕",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "열상고전연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전문학·한문학",
+      "publisher": "열상고전연구회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "열상고전연구",
+      "workbook_note": "고전문학·한문학 종합",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003311499",
+        "journal": "열상고전연구",
+        "title": "한국 <공자 동자 문답> 전승의 종합적 연구",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "국문학연구",
+      "field": "korean_literature",
+      "priority": 2,
+      "source_category": "국어국문학",
+      "source_subfield": "고전·종합",
+      "publisher": "국문학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "국문학연구",
+      "publication_frequency": "반년간(연2회)",
+      "workbook_note": "1983년 창립, 1997년 창간; 고전문학 중심",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003270840",
+        "journal": "국문학연구",
+        "title": "고려 중기 원효의 문학적 형상화 -임춘, 이인로, 이규보의 작품을 중심으로-",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "역사학보",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "종합",
+      "publisher": "역사학회",
+      "kci_grade": "우수등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "역사학보",
+      "issn_print": "1225-1615",
+      "publication_frequency": "계간",
+      "workbook_note": "1952년; 전국역사학대회 주관",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003325629",
+        "journal": "역사학보",
+        "title": "‘진영’의 해체와 ‘국가’의 퇴장, 그리고 ‘인민’의 부상 : 문화대혁명 초기 중국의 외교적 ‘고립’과 대외 메시지 修辭의 변화*",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "진단학보",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "한국학 종합",
+      "publisher": "진단학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "진단학보(震檀學報)",
+      "aliases": [
+        "진단학보(震檀學報)",
+        "震檀學報"
+      ],
+      "issn_print": "1013-4719",
+      "publication_frequency": "반년간(연2회)",
+      "workbook_note": "1934년; 한국 最古 학회. 역사·어문·사상 포괄",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003296353",
+        "journal": "진단학보",
+        "title": "김영수 한국불교사 연구의 시대성 - ｢오교양종에 對하야｣ ｢조계선종에 就하야｣를 중심으로 -",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "한국사연구",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "한국사 종합",
+      "publisher": "한국사연구회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국사연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003322855",
+        "journal": "한국사연구",
+        "title": "신라의 왕성과 왕궁",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "사학연구",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "종합",
+      "publisher": "한국사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "사학연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003326925",
+        "journal": "사학연구",
+        "title": "1980년 사북항쟁을 둘러싼 기억투쟁의 의의와 난제",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사와 현실",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "한국사 종합",
+      "publisher": "한국역사연구회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "역사와 현실",
+      "publication_frequency": "계간",
+      "workbook_note": "1988년 설립; 1994년부터 계간",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003327616",
+        "journal": "역사와 현실",
+        "title": "총론 : 지금, 한미관계와 한미동맹을 다시 생각하다",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국고대사연구",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "고대사",
+      "publisher": "한국고대사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국고대사연구",
+      "workbook_note": "창립명 한국고대사연구회, 1997년 개칭",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003326767",
+        "journal": "한국고대사연구",
+        "title": "秦·漢 교체기의 주민 이동과 위만조선의 성립",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사논총",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "고대사",
+      "publisher": "서강사학연구회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국고대사탐구",
+      "workbook_note": "2009년 창립",
+      "aliases": [
+        "한국고대사탐구",
+        "역사논총(歷史論叢)",
+        "Historical Vistas"
+      ],
+      "kci_sere_id": "SER000003941",
+      "kci_name_correction": {
+        "from_workbook": "한국고대사탐구",
+        "to_kci": "역사논총",
+        "reason": "2026년 1월 서강사학연구회 출범과 함께 한국고대사탐구에서 역사논총으로 제호 변경됨. KCI 현재 권호 목록도 역사논총으로 반환됨",
+        "source_url": "https://www.kci.go.kr/kciportal/po/search/poSereArtiList.kci?sereId=SER000003941&volIsseId=VOL000125296"
+      },
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003281342",
+        "journal": "역사논총",
+        "title": "｢순목황후 묘지명｣과9세기 초 발해의 풍경",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "한국중세사연구",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "고려·중세사",
+      "publisher": "한국중세사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국중세사연구",
+      "workbook_note": "1989년 창설",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003312982",
+        "journal": "한국중세사연구",
+        "title": "신라말 고려초 고승비 찬술과 입멸 서사의 도입",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "조선시대사학보",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "조선시대사",
+      "publisher": "조선시대사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "조선시대사학보",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003325644",
+        "journal": "조선시대사학보",
+        "title": "19세기 후반 沿邑의 砲契 설치와 운영",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국근현대사연구",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "근현대사",
+      "publisher": "한국근현대사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국근현대사연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003326725",
+        "journal": "한국근현대사연구",
+        "title": "1960년 전후(前後) 미국 원조기구의 한국 부랑아 정책 논의 버나드 코건 보고서를 중심으로",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사와 담론",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "종합(지역기반)",
+      "publisher": "호서사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "역사와 담론",
+      "issn_print": "1226-8089",
+      "publication_frequency": "계간",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003336092",
+        "journal": "역사와 담론",
+        "title": "백제 무령왕대 호산 전렵의 배경과 정치적 의미",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사와 경계",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "종합(지역기반)",
+      "publisher": "부산경남사학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "역사와 경계",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003298437",
+        "journal": "역사와경계",
+        "title": "개항기 조선의 대일 어세 정책: ｢仁川暫准捕魚規則｣(1888)과 ｢朝鮮日本兩國通漁章程｣(1889)을 중심으로",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "역사민속학",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "역사민속",
+      "publisher": "한국역사민속학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "역사민속학",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003295463",
+        "journal": "역사민속학",
+        "title": "16세기 조선의 단지(斷指) 확산과 양분화된 평가 정착",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "역사와 실학",
+      "field": "korean_history",
+      "priority": 2,
+      "source_category": "역사학",
+      "source_subfield": "실학·역사",
+      "publisher": "역사실학회",
+      "kci_grade": "등재",
+      "workbook_verification_status": "부분확인",
+      "workbook_title": "역사와 실학",
+      "workbook_note": "학술지 KCI 등재 확인; 발행기관 매칭 추가 확인 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003336086",
+        "journal": "역사와 실학",
+        "title": "한국의 도시 기획자 중앙도시계획위원회 - 조직과 활동을 중심으로",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국학",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "한국학중앙연구원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "부분확인",
+      "workbook_title": "한국학",
+      "workbook_note": "구 『정신문화연구』. 동명 학술지 존재 가능 — 발행기관 확인 권장",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003313961",
+        "journal": "한국학",
+        "title": "3세기 전후 신라의 대외교섭과 물계자(勿稽子) 전승 속 금(琴)의 실체",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "민족문화연구",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "고려대 민족문화연구원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "민족문화연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003315096",
+        "journal": "민족문화연구",
+        "title": "사전학습 언어모델(Pre-trained Language Model) 기반의 고려시대 묘지명에 대한 결락 문자 추정 연구",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "동방학지",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "연세대 국학연구원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "동방학지",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003326996",
+        "journal": "동방학지",
+        "title": "한국문학과 소수자들의 마주침:한국학의 경계와 자기서사의 확장",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "대동문화연구",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "성균관대 대동문화연구원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "대동문화연구",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003319282",
+        "journal": "대동문화연구",
+        "title": "1920~30년대 이도영의 전람회 운영과 『동아일보』의 민족미술 담론",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국문화",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "서울대 규장각한국학연구원",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국문화",
+      "publication_frequency": "계간(연4회)",
+      "workbook_note": "1980년 창간, 2007년 등재. 규장각연구원은 『규장각』도 별도 발간",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003324155",
+        "journal": "한국문화",
+        "title": "조선 후기 중인층 문학에 나타난 ‘국왕’: 숙종-정조 연간을 중심으로",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "한국학연구",
+      "field": "korean_studies",
+      "priority": 3,
+      "source_category": "한국학 종합",
+      "source_subfield": "종합",
+      "publisher": "고려대학교세종캠퍼스 한국학연구소",
+      "kci_grade": "등재",
+      "workbook_verification_status": "확인",
+      "workbook_title": "한국학연구",
+      "issn_print": "1225-195X",
+      "publication_frequency": "계간",
+      "workbook_note": "동명 학술지(인하대 등) 다수 — 발행기관으로 식별 필요",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003317081",
+        "journal": "한국학연구",
+        "title": "중국인 한국어 학습자의 비동의 화행 전략 및 어휘적 완화 장치 사용 연구",
+        "year": "2026"
+      },
+      "kci_sere_id": "001661",
+      "publisher_aliases": [
+        "고려대 한국학연구소",
+        "고려대학교 한국학연구소",
+        "고려대학교세종캠퍼스 한국학연구소"
+      ],
+      "kci_name_correction": {
+        "from_workbook": "한국학연구 / 고려대 한국학연구소",
+        "to_kci": "한국학연구 / 고려대학교세종캠퍼스 한국학연구소",
+        "reason": "KCI 검색 결과의 R_SERE_ID=001661, ISSN 1225-195X, 발행기관 고려대학교세종캠퍼스 한국학연구소로 확인됨. 동명 학술지 혼입 방지를 위해 sere_id를 고정함",
+        "source_url": "https://www.kci.go.kr/kciportal/mobile/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART003317081"
+      }
+    },
+    {
+      "name": "역사교육",
+      "field": "history_education",
+      "priority": 2,
+      "source_category": "역사교육",
+      "source_subfield": "역사교육",
+      "publisher": "역사교육연구회",
+      "workbook_verification_status": "KCI 추가 확인",
+      "workbook_note": "사용자 요청으로 KCI SERE_NM exact-match 검색을 통해 v4에 추가. 원 XLSX에는 없음.",
+      "kci_sere_id": "000198",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003327558",
+        "journal": "역사교육",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사교육연구",
+      "field": "history_education",
+      "priority": 2,
+      "source_category": "역사교육",
+      "source_subfield": "역사교육연구",
+      "publisher": "한국역사교육학회",
+      "workbook_verification_status": "KCI 추가 확인",
+      "workbook_note": "사용자 요청으로 KCI SERE_NM exact-match 검색을 통해 v4에 추가. 원 XLSX에는 없음.",
+      "kci_sere_id": "SER000010269",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003319373",
+        "journal": "역사교육연구",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사교육논집",
+      "field": "history_education",
+      "priority": 2,
+      "source_category": "역사교육",
+      "source_subfield": "역사교육논집",
+      "publisher": "역사교육학회",
+      "workbook_verification_status": "KCI 추가 확인",
+      "workbook_note": "사용자 요청으로 KCI SERE_NM exact-match 검색을 통해 v4에 추가. 원 XLSX에는 없음.",
+      "kci_sere_id": "002017",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003315777",
+        "journal": "역사교육논집",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "역사와교육",
+      "field": "history_education",
+      "priority": 2,
+      "source_category": "역사교육",
+      "source_subfield": "역사와교육",
+      "publisher": "역사와교육학회",
+      "aliases": [
+        "역사와 교육"
+      ],
+      "workbook_verification_status": "KCI 추가 확인",
+      "workbook_note": "사용자 요청으로 KCI SERE_NM exact-match 검색을 통해 v4에 추가. 원 XLSX에는 없음.",
+      "kci_sere_id": "SER000003964",
+      "kci_verified": true,
+      "kci_verified_at": "2026-05-16",
+      "kci_sample": {
+        "kci_id": "ART003275128",
+        "journal": "역사와교육",
+        "year": "2025"
+      }
+    }
+  ],
+  "field_policy": "hanmun은 한문학 일반·한시·사학·동양고전·고전번역을 포괄하되, 한문교육은 hanmun_education으로 별도 집계한다. 역사 분야는 한국사 중심 학술지를 korean_history, 역사교육 학술지를 history_education으로 별도 집계한다.",
+  "field_definitions": {
+    "hanmun": "한문학",
+    "hanmun_education": "한문교육",
+    "korean_literature": "국문학·고전문학",
+    "korean_language": "국어학",
+    "korean_history": "한국사",
+    "history_education": "역사교육",
+    "korean_studies": "한국학 종합"
+  }
+}

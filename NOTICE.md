@@ -6,6 +6,8 @@
 
 - `hanmun-research-assistant`
 - `academic-research-workflow`
+- `kci-korean-studies-trends` — 수집·병합·분석 스크립트와 한국학 학술지 프로파일
+  (자체 큐레이션) 포함. 데이터 출처: KCI 공개 검색(robots·rate limit 준수 수집).
 - `kci-citation-network` — 수집·검색·렌더 스크립트 포함. 데이터 출처: 한국연구재단
   KCI 참고문헌 서비스(data.go.kr 공공데이터) — 수집 데이터의 이용 조건은 해당 서비스
   약관을 따릅니다.
