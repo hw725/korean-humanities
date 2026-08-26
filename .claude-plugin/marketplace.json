@@ -1,0 +1,14 @@
+{
+    "name":  "korean-humanities-marketplace",
+    "description":  "Marketplace for the korean-humanities research skill suite (hanmun source criticism, humanities peer review, academic English, gugyeol/old-Hangul recovery).",
+    "owner":  {
+                  "name":  "hw725"
+              },
+    "plugins":  [
+                    {
+                        "name":  "korean-humanities",
+                        "source":  "./",
+                        "description":  "Korean humanities research suite - source criticism, hermeneutic argument planning, humanities peer review, academic English editing, and gugyeol/old-Hangul recovery for Korean studies. Zero setup - no API keys or external services."
+                    }
+                ]
+}

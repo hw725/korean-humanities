@@ -1,0 +1,51 @@
+{
+  "_doc": "표준 Unicode CJK 영역의 합자 구결자(合字 口訣字) — 한양 PUA에 미포함. extract_pua.py --scan-hapja 옵션이 PDF 본문에서 등장 여부 보고",
+  "_methodology": "Unihan database의 K source(K2~K6)에 등록된 한국 특유 한자 약 10,000건 중 구결자에 해당하는 것을 incremental하게 식별. 각 항목은 학술 reference로 검증",
+  "_sources_consulted": [
+    "Unihan database (https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip)",
+    "위키백과 「구결」 (https://ko.wikipedia.org/wiki/구결)",
+    "한국구결학회 학회지 『구결연구』",
+    "黃善燁 「口訣字 字典과 그 表記體系」",
+    "南豊鉉 『國語史를 위한 口訣硏究』 (太學社, 2002)",
+    "한양정보통신 옛한글 코드표"
+  ],
+  "_korean_source_distribution_in_unihan": {
+    "K0_KS_X_1001": 4888,
+    "K1_KS_X_1002": 2856,
+    "K2_PKS_C_5700_1": 7911,
+    "K3_PKS_C_5700_2": 1834,
+    "K4_PKS_C_5700_3": 172,
+    "K5_KS_X_1027_1": 404,
+    "K6_KS_X_1027_2": 598,
+    "_note": "이 중 구결자에 해당하는 것을 골라내는 작업이 필요. 대부분은 일반 한자(이체자, 古典 한자)이고 일부만 구결자."
+  },
+  "_updated_at": "2026-05-09",
+  "characters": {
+    "U+516F": {
+      "char": "兯",
+      "components": "隹(위) + 隱(은/는) 系",
+      "sound": "한",
+      "function": "토 표지 (관계사 결합)",
+      "k_source": "K2-2425 (PKS C 5700-1, 1994)",
+      "g_source": "GK-6861",
+      "unihan_strokes": 4,
+      "verified_source": "위키백과 「구결」",
+      "context_examples": []
+    }
+  },
+  "_extension_候補": {
+    "_note": "검증 후 characters에 이전. 현재는 K source 기반 한국 특유 한자 후보 풀.",
+    "_candidate_pools": [
+      "U+3400-4DBF CJK Ext A — K3 source 1,834건 다수",
+      "U+2A700-2B73F CJK Ext C — K5 source",
+      "U+2B740-2B81F CJK Ext D — K6 source 다수"
+    ],
+    "_filter_strategy": "Unihan에서 kKorean 필드만 있고 kMandarin/kJapanese 미설정인 한자는 한국 전용 가능성 높음. 학술 reference로 검증 필요.",
+    "_known_combinations_to_search": [
+      "隹 + 隱 = 한 (兯 확인됨)",
+      "其他 한자 + 隱 결합 → 받침 ㄴ 합자 가능성",
+      "其他 한자 + 古 결합 → 종결사 ~고 합자 가능성",
+      "其他 한자 + 厓 결합 → 처격 ~애 합자 가능성"
+    ]
+  }
+}

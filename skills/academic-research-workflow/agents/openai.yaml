@@ -1,0 +1,4 @@
+﻿interface:
+  display_name: "Academic Research Workflow"
+  short_description: "Route papers, reviews, and evidence checks"
+  default_prompt: "Use $academic-research-workflow to plan a literature review with claim and citation checks."

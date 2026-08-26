@@ -1,0 +1,8 @@
+{
+  "_doc": "검증된 (font, codepoint) → 표준 Unicode 매핑 캐시. 학술 PDF 작업하며 incremental 누적. hypua/AKS 자동 매핑은 별도 캐시(reference/aks_*.json, hypua_table.csv)에 있고, 이 파일은 폰트별 컨텍스트가 추가로 필요한 경우 사용.",
+  "_format": "key = '<font>|<HEX>', value = {type, value, unicode, modern, sources, confirmed_in}",
+  "_priority": "extract_pua.py가 매핑 적용 시: hypua > AKS > 이 verified_mappings > 시각 판독 순으로 우선순위",
+  "_updated_at": "2026-05-09",
+  "mappings": {
+  }
+}

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 데이터 캐시 (사용자가 setup.py로 직접 다운로드 — 라이선스·출처 명확화)
+reference/hypua_table.csv
+reference/aks_gukyul_pua.json
+reference/aks_oldhan_pua.json
+reference/unihan_korean.json
+
+# 실행 산출물
+*.normalized.md
+_pua/
+_pua_*/
+
+# 임시·로컬
+*.log
+*.tmp
+local_*/

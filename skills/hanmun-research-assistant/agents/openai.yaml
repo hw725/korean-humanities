@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hanmun Research Assistant"
+  short_description: "Coordinate hanmun (Korean Literary Sinitic) humanities research workflows"
+  default_prompt: "Build or audit a source-grounded hanmun humanities research assistant workflow."
