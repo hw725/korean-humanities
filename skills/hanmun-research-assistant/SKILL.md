@@ -39,6 +39,17 @@ Use this skill as the single router for the user research assistant. It does not
    locale(cp949)이라 한자·옛한글·구결 PUA가 **예외 없이 조용히** 깨진다. `py -X utf8` /
    `PYTHONUTF8=1` 실행은 권장 사항일 뿐 방어선이 아니다 — 코드가 그것에 의존하면 안 되고,
    명시가 정본이다. (열려는 대상이 바이너리면 `"rb"`/`"wb"`로 그 사실을 드러낸다.)
+1-b. **한글·한자를 출력하는 스크립트는 stdout/stderr도 UTF-8로 고정한다.** 파일 I/O만
+   막고 표준 출력을 두면 같은 사고가 콘솔에서 난다 — Windows에서 `python foo.py --help`가
+   `UnicodeEncodeError: 'cp949' codec can't encode character`로 죽는다(2026-08-26 실측:
+   `verify_manuscript_numbers.py --help`가 argparse 도움말의 em dash에서 터졌다).
+   진입점 상단에 다음을 둔다:
+   ```python
+   for _s in (sys.stdout, sys.stderr):
+       if hasattr(_s, "reconfigure"):
+           _s.reconfigure(encoding="utf-8", errors="replace")
+   ```
+   `PYTHONUTF8=1`이나 `py -X utf8`은 사용자 환경에 의존하므로 방어선이 아니다(§4 참조).
 2. **CJK 문자 클래스·프로퍼티 매칭은 stdlib `re` 금지, `regex` 모듈을 쓴다**
    (`pip install regex` 전제). `re`는 유니코드 프로퍼티를 지원하지 않아 `[가-힣]`·
    `[一-鿿]` 하드코딩으로 흐르는데, 그 범위는 옛한글 첫가끝 자모(U+1100·U+A960·

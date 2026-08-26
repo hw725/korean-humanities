@@ -27,6 +27,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 # extract_pua의 매핑 로드 함수 재사용
 from extract_pua import _load_hypua_table, _load_aks_caches, _resolve_sound  # noqa: E402
 
+# CJK 텍스트 계약 E3: Windows 콘솔 기본 cp949에서 한글·한자 출력이
+# UnicodeEncodeError로 죽는 것을 막는다 (환경변수에 의존하지 않는 방어선).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 
 def build_codepoint_lookup() -> dict[int, dict]:
     """codepoint → {value, modern, source} 단일 룩업 테이블.

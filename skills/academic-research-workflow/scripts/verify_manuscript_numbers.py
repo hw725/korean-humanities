@@ -26,6 +26,12 @@ import zipfile
 import zlib
 from pathlib import Path
 
+# CJK 텍스트 계약 E3: Windows 콘솔 기본 cp949에서 한글·한자 출력이
+# UnicodeEncodeError로 죽는 것을 막는다 (환경변수에 의존하지 않는 방어선).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 # HWP 5.0 본문 레코드의 인라인/확장 컨트롤 문자 (8 wchar 점유)
 _INLINE = {4, 5, 6, 7, 8, 9, 19, 20}
 _EXTENDED = {1, 2, 3, 11, 12, 14, 15, 16, 17, 18, 21, 22, 23}

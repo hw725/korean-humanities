@@ -24,6 +24,12 @@ import subprocess
 import sys
 from pathlib import Path
 
+# CJK 텍스트 계약 E3: Windows 콘솔 기본 cp949에서 한글·한자 출력이
+# UnicodeEncodeError로 죽는 것을 막는다 (환경변수에 의존하지 않는 방어선).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = Path(__file__).resolve().parent.parent
 
 

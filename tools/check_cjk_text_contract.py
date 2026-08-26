@@ -6,6 +6,10 @@
   E1  builtins.open() 텍스트 모드 호출에 encoding= 명시 의무.
       Windows에서 미명시 기본값은 locale(cp949)이라 한자·옛한글이 조용히 깨진다.
   E2  Path.read_text()/write_text()에 encoding= 명시 의무 (같은 이유).
+  E3  한글·한자를 출력하는 스크립트는 stdout/stderr를 UTF-8로 재설정해야 한다.
+      Windows 콘솔 기본이 cp949라 argparse 도움말·print의 em dash나 한자에서
+      UnicodeEncodeError로 죽는다(2026-08-26 실측). 진입점에
+      sys.stdout.reconfigure(encoding="utf-8", errors="replace")를 둔다.
   R1  CJK 문자(한자·한글·옛한글 자모·PUA)를 포함한 패턴을 stdlib `re`로 매칭 금지
       — `regex` 모듈로 \\p{Han}·\\p{Hangul} 프로퍼티를 쓴다. stdlib `re`는 유니코드
       프로퍼티 미지원이라 [가-힣] 하드코딩이 옛한글(U+1100 첫가끝)·한자 확장
@@ -22,6 +26,7 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -70,6 +75,15 @@ def check_file(path: Path) -> list[dict]:
                  "rule": "PARSE", "msg": f"파싱 실패: {e.__class__.__name__}"}]
 
     rows: list[dict] = []
+
+    # E3: 한글·한자를 출력하는 실행 스크립트인데 stdout 재설정이 없음.
+    # 대상은 __main__ 진입점이 있는 파일만 — import 전용 모듈은 출력 주체가 아니다.
+    if "__main__" in src and _has_cjk(src):
+        if not re.search(r"reconfigure\s*\(\s*encoding", src) and "PYTHONIOENCODING" not in src:
+            rows.append({"file": str(path), "line": 1, "rule": "E3",
+                         "msg": "한글·한자 출력 스크립트인데 stdout/stderr UTF-8 재설정이 없음 "
+                                "(Windows cp949 콘솔에서 UnicodeEncodeError)"})
+
     imports_stdlib_re = any(
         (isinstance(n, ast.Import) and any(a.name == "re" for a in n.names))
         or (isinstance(n, ast.ImportFrom) and n.module == "re")
