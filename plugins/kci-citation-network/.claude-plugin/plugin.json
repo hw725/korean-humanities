@@ -1,0 +1,16 @@
+{
+    "name":  "kci-citation-network",
+    "version":  "1.2.0",
+    "description":  "Self-serve KCI citation network builder for Korean humanities - give a keyword, collect citation edges via the KCI reference OpenAPI (free data.go.kr key), optionally render Obsidian notes. Stdlib-only scripts, no LLM calls.",
+    "author":  {
+                   "name":  "hw725"
+               },
+    "license":  "See NOTICE.md at marketplace root (per-skill)",
+    "keywords":  [
+                     "korean-studies",
+                     "kci",
+                     "citation-network",
+                     "obsidian",
+                     "claude-skill"
+                 ]
+}

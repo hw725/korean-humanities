@@ -8,7 +8,7 @@ metadata:
   upstream_reference: Imbad0202/academic-research-skills-codex
   suite: korean-humanities
   tier: portable
-  share: core
+  share: korean-humanities
 ---
 
 # Academic Research Workflow (Humanities-First)

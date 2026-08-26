@@ -6,6 +6,9 @@
 
 - `hanmun-research-assistant`
 - `academic-research-workflow`
+- `kci-citation-network` — 수집·검색·렌더 스크립트 포함. 데이터 출처: 한국연구재단
+  KCI 참고문헌 서비스(data.go.kr 공공데이터) — 수집 데이터의 이용 조건은 해당 서비스
+  약관을 따릅니다.
 - `academic-english-editing` — 단 `references/` 3종(`sentence-rules.md`·`ko-to-en.md`·
   `style-guardrails.md`)은 [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills)
   (Apache-2.0)의 nature-polishing에서 파생 — 파일별 파생 관계는 각 파일 머리말,
@@ -23,6 +26,6 @@
 원 저장소를 직접 쓰세요 — 비상업 조건이 붙어 있습니다.
 ## 자체 저작 — 별도 저장소 병존
 
-- `gugyeol-decode` — [hw725/gugyeol-decode](https://github.com/hw725/gugyeol-decode)와 동일
-  저자·양방향 동기화. 라이선스·매핑 출처 고지는 스킬 내 `LICENSE`·`ATTRIBUTION.md` 참조
-  (한양 PUA 매핑·AKS 표준 매핑의 출처 포함).
+- `gugyeol-decode` — 구 단독 저장소 [hw725/gugyeol-decode](https://github.com/hw725/gugyeol-decode)
+  (2026-08-26 아카이브, 후속은 이 마켓플레이스)와 동일 저자. 라이선스·매핑 출처 고지는
+  스킬 내 `LICENSE`·`ATTRIBUTION.md` 참조(한양 PUA 매핑·AKS 표준 매핑의 출처 포함).

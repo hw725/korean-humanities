@@ -9,7 +9,7 @@ metadata:
   upstream_reference: Yuan1z0825/nature-skills @ 745c5f38d1b4a0600bd2f5f5682e394a34fc28b2 (nature-polishing, Apache-2.0)
   suite: korean-humanities
   tier: portable
-  share: core
+  share: korean-humanities
 ---
 
 # Academic English Editing (한국어 → 영어 학술 산문)

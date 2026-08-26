@@ -1,0 +1,16 @@
+{
+    "name":  "korean-humanities",
+    "version":  "0.2.0",
+    "description":  "Korean humanities research methods for Claude Code - hanmun source criticism, hermeneutic argument planning, humanities peer review, and academic English editing. Prompt-only, zero setup.",
+    "author":  {
+                   "name":  "hw725"
+               },
+    "license":  "See NOTICE.md at marketplace root (per-skill)",
+    "keywords":  [
+                     "korean-studies",
+                     "hanmun",
+                     "digital-humanities",
+                     "peer-review",
+                     "claude-skill"
+                 ]
+}

@@ -1,0 +1,17 @@
+{
+    "name":  "gugyeol-decode",
+    "version":  "1.0.3",
+    "description":  "Recover gugyeol (口訣) characters and old Hangul in Korean academic PDFs/HWPX that extract as broken (cid:N) or PUA codepoints. Mapping tables bundled; optional pip install pymupdf for PDF input.",
+    "author":  {
+                   "name":  "hw725"
+               },
+    "license":  "See NOTICE.md at marketplace root (per-skill)",
+    "keywords":  [
+                     "korean-studies",
+                     "gugyeol",
+                     "old-hangul",
+                     "pdf",
+                     "hwpx",
+                     "claude-skill"
+                 ]
+}

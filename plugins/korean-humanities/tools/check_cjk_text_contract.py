@@ -16,7 +16,7 @@
       (U+20000+)을 놓친다. ASCII 구조 패턴(태그·ID·공백·파일명 새니타이즈)은 허용.
 
 용법:
-  py -3 scripts/check_cjk_text_contract.py <dir> [<dir> ...] [--json]
+  py -3 tools/check_cjk_text_contract.py <dir> [<dir> ...] [--json]
 
 exit 0 = 위반 없음, exit 2 = 위반 있음, exit 1 = 사용 오류.
 AST 기반이라 여러 줄 호출도 정확히 본다 (grep 과다 계상 방지 — 2026-08-26 실측 교훈).
@@ -49,8 +49,38 @@ _RE_FUNCS = {"compile", "search", "match", "fullmatch", "sub", "subn",
 _TEXT_RW = {"read_text", "write_text"}
 
 
+def _is_cjk(ch: str) -> bool:
+    return any(lo <= ord(ch) <= hi for lo, hi in _CJK_RANGES)
+
+
 def _has_cjk(s: str) -> bool:
-    return any(any(lo <= ord(ch) <= hi for lo, hi in _CJK_RANGES) for ch in s)
+    """텍스트에 CJK 문자가 하나라도 있는가 — E3(출력 인코딩) 판별용."""
+    return any(_is_cjk(ch) for ch in s)
+
+
+def _has_cjk_in_class(pattern: str) -> bool:
+    """문자클래스 [...] 안에 CJK가 들어간 경우만 위반으로 본다.
+
+    계약의 표적은 [가-힣]·[㐀-鿿] 같은 범위 하드코딩(옛한글·확장 한자를 놓침)이다.
+    구분자 리터럴(ㆍ|·)이나 CJK 고정 문자열 매칭은 stdlib re로 정확하므로 허용 —
+    2026-08-26 실측에서 초기 검사기가 이 둘을 구분 못 해 과잉 검출했다.
+    """
+    depth = 0
+    prev_backslash = False
+    for ch in pattern:
+        if prev_backslash:
+            prev_backslash = False
+            continue
+        if ch == "\\":
+            prev_backslash = True
+            continue
+        if ch == "[":
+            depth += 1
+        elif ch == "]" and depth:
+            depth -= 1
+        elif depth and _is_cjk(ch):
+            return True
+    return False
 
 
 def _kw(call: ast.Call, name: str) -> bool:
@@ -130,9 +160,9 @@ def check_file(path: Path) -> list[dict]:
             if (imports_stdlib_re and isinstance(node.func.value, ast.Name)
                     and node.func.value.id == "re" and node.func.attr in _RE_FUNCS):
                 if node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str):
-                    if _has_cjk(node.args[0].value):
+                    if _has_cjk_in_class(node.args[0].value):
                         rows.append({"file": str(path), "line": node.lineno, "rule": "R1",
-                                     "msg": "CJK 포함 패턴을 stdlib re로 매칭 — regex 모듈의 \\p{Han}/\\p{Hangul}로 전환"})
+                                     "msg": "CJK 문자클래스 범위를 stdlib re로 매칭 — regex 모듈의 \\p{Han}/\\p{Hangul}로 전환"})
     return rows
 
 

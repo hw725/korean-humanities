@@ -9,7 +9,7 @@ metadata:
   phase: v1
   suite: korean-humanities
   tier: portable
-  share: core
+  share: gugyeol-decode
 ---
 
 # gugyeol-decode (구결자·옛한글 PDF/HWPX 복원)

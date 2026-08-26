@@ -1,14 +1,24 @@
 {
-    "name":  "korean-humanities-marketplace",
-    "description":  "Marketplace for the korean-humanities research skill suite (hanmun source criticism, humanities peer review, academic English, gugyeol/old-Hangul recovery).",
+    "name":  "korean-humanities",
+    "description":  "Korean humanities research plugins for Claude Code - pick what you need: research methods (korean-humanities), gugyeol/old-Hangul recovery (gugyeol-decode), KCI citation networks (kci-citation-network).",
     "owner":  {
                   "name":  "hw725"
               },
     "plugins":  [
                     {
                         "name":  "korean-humanities",
-                        "source":  "./",
-                        "description":  "Korean humanities research suite - source criticism, hermeneutic argument planning, humanities peer review, academic English editing, and gugyeol/old-Hangul recovery for Korean studies. Zero setup - no API keys or external services."
+                        "source":  "./plugins/korean-humanities",
+                        "description":  "Korean humanities research methods for Claude Code - hanmun source criticism, hermeneutic argument planning, humanities peer review, and academic English editing. Prompt-only, zero setup."
+                    },
+                    {
+                        "name":  "gugyeol-decode",
+                        "source":  "./plugins/gugyeol-decode",
+                        "description":  "Recover gugyeol (口訣) characters and old Hangul in Korean academic PDFs/HWPX that extract as broken (cid:N) or PUA codepoints. Mapping tables bundled; optional pip install pymupdf for PDF input."
+                    },
+                    {
+                        "name":  "kci-citation-network",
+                        "source":  "./plugins/kci-citation-network",
+                        "description":  "Self-serve KCI citation network builder for Korean humanities - give a keyword, collect citation edges via the KCI reference OpenAPI (free data.go.kr key), optionally render Obsidian notes. Stdlib-only scripts, no LLM calls."
                     }
                 ]
 }

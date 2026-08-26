@@ -1,9 +1,9 @@
-﻿<#
+<#
 .SYNOPSIS
     터미널·파이썬·git의 한글 깨짐 뿌리를 사용자 수준에서 영구 차단한다.
 .USAGE
-    powershell -ExecutionPolicy Bypass -File scripts/setup-terminal-utf8.ps1
-    powershell -ExecutionPolicy Bypass -File scripts/setup-terminal-utf8.ps1 -Check
+    powershell -ExecutionPolicy Bypass -File tools/setup-terminal-utf8.ps1
+    powershell -ExecutionPolicy Bypass -File tools/setup-terminal-utf8.ps1 -Check
 .NOTES
     korean-humanities 슈트 CJK Text Handling Contract §4의 실행체.
     시스템 ACP(레지스트리 Beta UTF-8)는 건드리지 않는다 — HWP 등 구형 한국어

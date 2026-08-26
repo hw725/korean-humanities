@@ -7,7 +7,7 @@ metadata:
   category: cjk-research
   suite: korean-humanities
   tier: portable
-  share: core
+  share: korean-humanities
 ---
 
 # Hanmun Research Assistant
