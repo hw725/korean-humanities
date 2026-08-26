@@ -11,8 +11,17 @@
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
 ```
 
-플러그인 방식 대신 폴더/zip으로 받았다면: `plugins/<이름>/skills/` 아래의 스킬 폴더를
-`~/.claude/skills/`에 복사해도 똑같이 동작합니다.
+## Claude Code가 아니어도 쓸 수 있습니다
+
+플러그인·마켓플레이스는 Claude Code의 **설치 편의 계층**일 뿐이고, 알맹이는 도구 중립입니다:
+
+| 사용 환경 | 방법 |
+|---|---|
+| Claude Code | 위 `/plugin install` — 가장 간단 |
+| Claude Code (수동) | `plugins/<이름>/skills/`의 스킬 폴더를 `~/.claude/skills/`에 복사 |
+| Codex CLI 등 skills 규약 도구 | 같은 스킬 폴더를 해당 도구의 skills 디렉터리(예: `~/.codex/skills/`)에 복사 — SKILL.md 규약이 같아 그대로 동작 |
+| 다른 LLM·챗봇 | 방법론 3종(연구 워크플로·비서 라우터·영문 라이팅)은 프롬프트 문서다 — SKILL.md 본문을 지침으로 투입하면 된다 |
+| **AI 도구 없이** | kci 인용망·동향·gugyeol 추출 스크립트는 순수 Python CLI라 터미널에서 단독 완결 — 각 SKILL.md의 명령을 그대로 실행 (`python3`/`py -3`) |
 
 ## 무엇이 뭘 하나 — 기능과 보증
 
