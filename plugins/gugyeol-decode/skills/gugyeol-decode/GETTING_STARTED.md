@@ -1,6 +1,6 @@
 # Getting Started — gugyeol-decode 시작하기
 
-> **이게 뭐죠?**: 한국 古典·국어학 **PDF/HWPX/HWP** 문서에서 글자가 깨져 나올 때 이를 자동으로 복원하는 명령행 도구입니다.
+> **무엇을 하는 도구입니까?**: 한국 古典·국어학 **PDF/HWPX/HWP** 문서에서 글자가 깨져 나올 때 이를 자동으로 복원하는 명령행 도구입니다.
 >
 > Python만 있으면 누구나 사용 가능. Claude Code 같은 별도 도구 없이도 됩니다.
 
@@ -193,7 +193,7 @@ python scripts/apply_mapping.py <pdf> <mapping.json> --no-normalize
 4. 종결사(斷辭) ‘이라’ ‘이니라’ ‘ᄒᆞᄂᆞ니라’ ‘ᄒᆞ다’ ‘이러라’ ‘ᄒᆞ더라’ ‘이로다’...
 ```
 
-### 자동 매핑이 100% 안 되는 경우 (드뭄)
+### 자동 매핑이 100% 안 되는 경우 (드묾)
 
 `decode.py` 실행 시 `미매핑 (occurrence): N`이 N>0이면 일부 PUA가 자동 매핑 안 된 것. 이때 `--keep-intermediate`로 다시 실행하여 시각 판독:
 
@@ -446,7 +446,7 @@ python scripts/extract_pua.py <PDF> --scan-hapja
 
 ### 학술 작업 인용
 
-본 스킬을 학술 작업에 사용하면 `ATTRIBUTION.md`의 인용 형식 사용 권장. 특히 **kiwiyou/hypua**와 **AKS 한국학중앙연구원**의 기여를 함께 명시할 것.
+본 스킬을 학술 작업에 사용하면 `ATTRIBUTION.md`의 인용 형식 사용 권장. 특히 **kiwiyou/hypua**와 **AKS 한국학중앙연구원**의 기여를 함께 명시합니다.
 
 ---
 

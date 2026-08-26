@@ -2,7 +2,7 @@
 
 > 한국 古典·국어학 PDF/HWPX에서 깨진 글자(구결자·옛한글)를 표준 Unicode로 자동 복원하는 Python CLI.
 
-`pdfplumber` 같은 일반 도구로 한국 학술 PDF를, 또는 한컴 한글에서 만든 HWPX를 텍스트 추출하면 `(cid:6)`이나 PUA codepoint로 깨지는 글자가 두 종류:
+`pdfplumber` 같은 일반 도구로 한국 학술 PDF를, 또는 한컴 한글에서 만든 HWPX를 텍스트 추출하면 `(cid:6)`이나 PUA codepoint로 깨지는 글자는 두 종류입니다:
 
 - **구결자(口訣字)** — 漢文 옆에 토를 적은 약식 글자 (匕→니, 古→고, 兯→한 등)
 - **옛한글** — 아래아·반치음 등이 들어간 자모 (ᄒᆞ, ᇫ 등)
@@ -53,7 +53,7 @@ python ~/.claude/skills/gugyeol-decode/scripts/decode.py <파일.pdf|.hwpx|.hwp>
 - **1-step CLI**: `decode.py <파일>` 한 번으로 추출 + 매핑 + 정규화. 입력 확장자 자동 감지
 - **다중 입력 포맷**: PDF (PyMuPDF) · HWPX (python-hwpx) · HWP (자동 변환)
 - **자동 매핑**: hypua + AKS 표준 매핑 데이터로 시각 판독 거의 불필요
-- **2차 PUA sweep**: 글리프 단계의 (font, codepoint) lookup이 미스해도 codepoint 단독 fallback으로 잔존 PUA 자동 정리
+- **2차 PUA sweep**: 글리프 단계의 (font, codepoint) lookup이 실패해도 codepoint 단독 fallback으로 잔존 PUA 자동 정리
 - **NFC 정규화 자동 적용**: CJK Compatibility Ideographs (U+F900-FAFF, 讀·寧·李 등) → 표준 한자로 자동 변환. canonical equivalence만 처리하므로 학술 텍스트 안전. `--no-normalize`로 우회 가능
 - **합자 구결 스캔**: 표준 Unicode CJK 영역의 합자(兯 등)도 옵션 처리 (PDF 한정)
 - **Claude Code 스킬**: “구결 풀어줘” 같은 자연어로도 호출 가능

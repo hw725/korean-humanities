@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: Super-router for hanmun (Korean Literary Sinitic) humanities research - build, operate, and audit a source-grounded personal AI research assistant for 한문학·전근대 한국 문헌. Owns the suite-wide CJK text contract (UTF-8 강제·regex 유니코드 매칭·NFC·폰트 정책). Trigger - 한문학 연구 비서, 문집·한문 원문 source-grounded Q&A, 한문 사료 디지털화 워크플로 라우팅, 전근대 문헌 지식관리(Obsidian), 새 학술 AI 도구 비교·도입 심사, 연구 비서 커스터마이징, 한글 인코딩 깨짐·CJK 정규식 문제. Delegates 논문 집필·연구사·심사·인용 감사 to academic-research-workflow, 구결·옛한글 복원 to gugyeol-decode.
 metadata:
   author: custom
-  version: 0.8.0
+  version: 0.8.1
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -41,8 +41,8 @@ Use this skill as the single router for the user research assistant. It does not
    명시가 정본이다. (열려는 대상이 바이너리면 `"rb"`/`"wb"`로 그 사실을 드러낸다.)
 1-b. **한글·한자를 출력하는 스크립트는 stdout/stderr도 UTF-8로 고정한다.** 파일 I/O만
    막고 표준 출력을 두면 같은 사고가 콘솔에서 난다 — Windows에서 `python foo.py --help`가
-   `UnicodeEncodeError: 'cp949' codec can't encode character`로 죽는다(2026-08-26 실측:
-   `verify_manuscript_numbers.py --help`가 argparse 도움말의 em dash에서 터졌다).
+   `UnicodeEncodeError: 'cp949' codec can't encode character`로 중단된다(2026-08-26 실측:
+   `verify_manuscript_numbers.py --help`가 argparse 도움말의 em dash에서 실패했다).
    진입점 상단에 다음을 둔다:
    ```python
    for _s in (sys.stdout, sys.stderr):
@@ -97,7 +97,7 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 
 ## Evidence Access Layers (증거 접근 계층)
 
-모든 산출물은 세 계층 중 하나에 속하고, 승격은 한 방향(게이트 통과)만 가능하다. Layer 3는 답을 생성하는 에이전트의 컨텍스트에 절대 동석시키지 않는다(epistemological firewall). 이 모델은 ARS v3.3.2의 ground-truth isolation(`Imbad0202/academic-research-skills`, CC BY-NC 4.0; Anthropic automated-w2s-researcher 2026에서 유래)을 CJK 인문학으로 재구성한 것이다.
+모든 산출물은 세 계층 중 하나에 속하고, 승격은 한 방향(게이트 통과)만 가능하다. Layer 3는 답을 생성하는 에이전트의 컨텍스트에 절대 포함시키지 않는다(epistemological firewall). 이 모델은 ARS v3.3.2의 ground-truth isolation(`Imbad0202/academic-research-skills`, CC BY-NC 4.0; Anthropic automated-w2s-researcher 2026에서 유래)을 CJK 인문학으로 재구성한 것이다.
 
 | `data_access_level` | 계층 | CJK 인문학 대응 |
 |---|---|---|
@@ -122,7 +122,7 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 | Classical text annotation, hanja, hanmun, old Hangul, gugyeol | `hanmun-philology` | `gugyeol-decode`, `hwp`, `hwpx`, `obsidian-cli` |
 | Tool portfolio refresh | `benchmark-refresh` | `source-command-audit-config`, `observability-logging` |
 
-> **graph 재랭킹은 사람이 만든 링크 기반 (CJK-safe).** `source-grounded-qa`의 graph 신호(centrality/activation)는 사용자가 직접 작성한 vault 링크·MOC·태그(Shadow Graph)에서만 나온다. 한문 텍스트에 엔티티 추출(NER)을 하지 않으므로 약한 hanmun NER이 retrieval을 저하시키지 않는다. microsoft식 entity-GraphRAG(엔티티·커뮤니티 추출 인덱싱)는 도입하지 않는다 — graph는 무료의 사람-작성 링크만 사용한다.
+> **graph 재랭킹은 사람이 만든 링크 기반 (CJK-safe).** `source-grounded-qa`의 graph 신호(centrality/activation)는 사용자가 직접 작성한 vault 링크·MOC·태그(Shadow Graph)에서만 나온다. 한문 텍스트에 엔티티 추출(NER)을 하지 않으므로 약한 hanmun NER이 retrieval을 저하시키지 않는다. microsoft식 entity-GraphRAG(엔티티·커뮤니티 추출 인덱싱)는 도입하지 않는다 — graph는 추가 비용 없이 얻는 사용자 작성 링크만 사용한다.
 
 ## Workflow
 

@@ -4,7 +4,7 @@ description: "한국어 학술 원고를 영어로 번역·윤문한다 - 논리
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.1.0
+  version: 1.1.1
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 745c5f38d1b4a0600bd2f5f5682e394a34fc28b2 (nature-polishing, Apache-2.0)
   suite: korean-humanities
@@ -38,7 +38,7 @@ metadata:
 
 ### 1. 설정 확정 (첫 실행 1회)
 
-`references/style-guardrails.md`의 노출 설정 표를 읽고 **철자 변종·로마자 표기·인칭**을 확정한다. 목표 저널이 정해져 있으면 그 관행을 따르고, 없으면 사용자에게 묻는다. 확정값을 한 줄로 보고해 사용자가 싸게 정정할 수 있게 한다.
+`references/style-guardrails.md`의 노출 설정 표를 읽고 **철자 변종·로마자 표기·인칭**을 확정한다. 목표 저널이 정해져 있으면 그 관행을 따르고, 없으면 사용자에게 묻는다. 확정값을 한 줄로 보고해 사용자가 적은 비용으로 정정할 수 있게 한다.
 
 ### 2. 논리 재구성 (문장을 만들기 전)
 
@@ -65,7 +65,7 @@ metadata:
 
 ## Gotchas
 
-- **연대 환산을 지어내지 않는다.** 간지·연호를 서기로 옮길 때 확신이 없으면 `unverified`로 두고 사용자에게 돌린다.
+- **연대 환산을 지어내지 않는다.** 간지·연호를 서기로 옮길 때 확신이 없으면 `unverified`로 두고 사용자 확인으로 넘긴다.
 - **로마자 표기를 원고 안에서 섞지 않는다.** MR과 RR이 뒤섞인 원고는 심사에서 지적된다.
 - **영국식 철자는 기본값이 아니다.** upstream은 강제했지만 여기서는 설정으로 내렸다. 국내 학술지 영문 초록은 대개 미국식이다.
 - **hedging은 걷어내는 것이 아니라 맞추는 것이다.** 한국어의 중첩 hedging(`~것으로 보인다` + `~라고 할 수 있다`)은 하나로 줄이되, 증거가 약한 주장을 단정으로 바꾸지 않는다.

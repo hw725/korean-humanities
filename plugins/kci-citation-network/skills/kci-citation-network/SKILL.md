@@ -3,7 +3,7 @@ name: kci-citation-network
 description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, then optionally renders linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - "OO 키워드로 인용망 수집해줘", 인용망/인용 네트워크/citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key (env KCI_DATA_GO_KR_KEY_DECODING).
 metadata:
   author: custom
-  version: 1.2.1
+  version: 1.2.2
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -35,9 +35,9 @@ Params: `serviceKey`, `pageNo`, `recordCnt` (**max 100** — larger is rejected)
 
 ## Workflow
 
-### 0. 스킬 호출 한 줄이면 된다
+### 0. 한 줄 호출로 시작한다
 
-사용자가 "「운양 김윤식」으로 인용망 수집해줘"처럼 **키워드만 주면**, 이 스킬이 아래 1→2를
+사용자가 “「운양 김윤식」으로 인용망 수집해줘”처럼 **키워드만 지정하면**, 이 스킬이 아래 1→2를
 대신 실행한다: `--query`로 씨앗을 모으고, 제목 목록을 보여 동명이인·무관 논문을 걸러
 확인받은 뒤 수집한다. 키가 없으면 발급 절차(위 Prerequisites)부터 안내한다.
 
@@ -64,7 +64,7 @@ Outputs `out/kys/{nodes,edges,refs}.jsonl` + `collect.seen` (checkpoint/resume).
 `respect_robots=False`로 동작한다(수집 본체는 data.go.kr 공식 API라 무관). 요청 간격을
 지키는 소규모 개인 연구 전제이며 판단·책임은 사용자에게 있다.
 
-**Disambiguation matters.** `--query` uses KCI KEYALL and over-matches (e.g. "김윤식" hits both 雲養 金允植 1835 and 국문학자 김윤식 1936). Review titles and curate a seed TSV for a clean set.
+**Disambiguation matters.** `--query` uses KCI KEYALL and over-matches (e.g. “김윤식” hits both 雲養 金允植 1835 and 국문학자 김윤식 1936). Review titles and curate a seed TSV for a clean set.
 
 ### 2. Render into the vault
 
