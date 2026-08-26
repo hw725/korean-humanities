@@ -16,8 +16,8 @@ Read this file when a new AI research assistant, scientific agent, RAG system, s
 | NotebookLM | Closed source benchmark | Closed SaaS | Source-grounded chat, inline citations, study guide, briefing, mind map, audio overview expectations | Good feature benchmark, not a fork target |
 | Elicit | Commercial academic review assistant | Closed SaaS with API | Search, reports, screening, extraction tables, sentence-level citation expectation | Useful for social-science review patterns, not CJK source work |
 | Consensus | Commercial research answer engine | Closed SaaS | Large scholarly database, weekly refresh, full-text use when available | Useful as search benchmark, not a local assistant base |
-| MARKUS | CJK DH annotation platform | AGPL v3 | Person and place tagging, bureaucratic offices, Buddhist terms, TEI export, ctext and CBDB links | Very high for classical Chinese and Hanmun annotation |
-| HERITAGE or Hanja Platform | Korean Hanja historical document NLP | Research platform and paper | Punctuation restoration, NER, MT, interactive glossary, expert correction loop | Very high for Korean Hanja source handling |
+| MARKUS | CJK DH annotation platform | AGPL v3 | Person and place tagging, bureaucratic offices, Buddhist terms, TEI export, ctext and CBDB links | Very high for classical Chinese and hanmun annotation |
+| HERITAGE or hanja Platform | Korean hanja historical document NLP | Research platform and paper | Punctuation restoration, NER, MT, interactive glossary, expert correction loop | Very high for Korean hanja source handling |
 | Chinese Text Project | Digital text corpus and API | Terms must be checked per use | Canonical text lookup, parallel passages, source identifiers | High for source lookup and comparison, not bulk scraping |
 | INCEpTION | Semantic annotation and KB platform | Apache-2.0 | Collaborative annotation, recommender, entity linking, knowledge-base backed labels | High if a corpus annotation workbench is needed |
 | AutoScientists | Long-running computational science agent team | Public repo; license must be checked before reuse | Shared state, discussion, queue, dead-end registry, experiment log | Pattern only; domain fit low |
@@ -51,7 +51,7 @@ Reject or watchlist a candidate unless it passes the relevant gates.
 | Source grounding | Answers can cite source passages, pages, or stable local IDs |
 | Local sovereignty | Data can stay local or export cleanly to local storage |
 | Obsidian fit | Markdown, frontmatter, backlinks, or API path to vault notes |
-| CJK text handling | Unicode, Hanja, Hanmun, old Hangul, PDF/HWPX extraction, or annotation tested |
+| CJK text handling | Unicode, hanja, hanmun, old Hangul, PDF/HWPX extraction, or annotation tested |
 | Citation audit | Claim-to-evidence checking is explicit, not just bibliography links |
 | Corpus scale | Supports shard, checkpoint, and resume for 100 or more records |
 | License | Fork, connector, or internal use rights are clear |
@@ -101,10 +101,10 @@ The default build remains:
 6. Optional Open Notebook or Khoj only as UI layers after a small pilot.
 7. PaperQA2 patterns for citation RAG, not as a wholesale replacement for CJK source criticism.
 8. ARS 패턴(L3 충실성 보정, data_access_level 격리, 벤치마크 정직성)은 차용하되 플러그인 suite는 통째 설치하지 않는다 — ARW·`/deep-research`와 기능 중복, STEM 기본값 재유입. `/audit-config` 2026-06-06 판정: keep-current + cherry-pick.
-9. Semantica 패턴(W3C PROV-O provenance, 결정 계보 `derived_from`, 충돌 기록)은 `knowledge-memory-workflow`의 facts/takes/thread_event 계약에 **문서 수준으로만** 차용하고 소프트웨어는 설치하지 않는다 — 그래프 스토어·벡터 스토어·Docker/Kubernetes를 전제하는 엔터프라이즈 구성이라 이 환경에 과하고, CJK 텍스트 처리 특화도 없다. 추가 필드 3개(`prov`·`derived_from`·`conflicts_with`)는 기존 JSONL에 얹히며 새 DB를 만들지 않는다. `/audit-config` 2026-08-11 판정: cherry-pick (AUD-20260810-163430-92f29e7e).
+9. Semantica 패턴(W3C PROV-O provenance, 결정 계보 `derived_from`, 충돌 기록)은 `knowledge-memory-workflow`의 facts/takes/thread_event 계약에 **문서 수준으로만** 차용하고 소프트웨어는 설치하지 않는다 — 그래프 스토어·벡터 스토어·Docker/Kubernetes를 전제하는 엔터프라이즈 구성이라 이 환경에 과하고, CJK 텍스트 처리 특화도 없다. 추가 필드 3개(`prov`·`derived_from`·`conflicts_with`)는 기존 JSONL에 얹히며 새 DB를 만들지 않는다. `/audit-config` 2026-08-11 판정: cherry-pick.
 
 ## Audit 이력 (개별 판정)
 
 | 일자 | Candidate | Closest baseline | Passed gates | Failed gates | Decision | Customization target | Evidence |
 |---|---|---|---|---|---|---|---|
-| 2026-08-11 | Semantica (MIT) | knowledge-memory-workflow + hanmun-research-assistant | W3C PROV-O provenance · self-hostable · CLI/MCP/REST · 결정 이력·audit trail 명시 | CJK 텍스트 처리 특화 부재 · Obsidian 로컬 워크플로 직접 적합성 낮음 · 그래프·벡터 스토어 전제의 운영 복잡도 | cherry-pick | `knowledge-memory-workflow/references/knowledge-contracts.md` §Provenance와 결정 계보 | [저장소](https://github.com/semantica-agi/semantica) · [LICENSE](https://github.com/semantica-agi/semantica/blob/main/LICENSE) · AUD-20260810-163430-92f29e7e |
+| 2026-08-11 | Semantica (MIT) | knowledge-memory-workflow + hanmun-research-assistant | W3C PROV-O provenance · self-hostable · CLI/MCP/REST · 결정 이력·audit trail 명시 | CJK 텍스트 처리 특화 부재 · Obsidian 로컬 워크플로 직접 적합성 낮음 · 그래프·벡터 스토어 전제의 운영 복잡도 | cherry-pick | `knowledge-memory-workflow/references/knowledge-contracts.md` §Provenance와 결정 계보 | [저장소](https://github.com/semantica-agi/semantica) · [LICENSE](https://github.com/semantica-agi/semantica/blob/main/LICENSE) |

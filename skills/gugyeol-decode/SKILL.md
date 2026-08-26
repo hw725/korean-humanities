@@ -1,11 +1,11 @@
 ---
 name: gugyeol-decode
-description: Decode Korean academic PDFs and HWPX/HWP documents by recovering kugyeol characters (구결자, 厓·古·爲·匕·兯 abbreviations) and old hangul (옛한글, ᄒᆞ·ᇫ etc.) that extractors render as broken (cid:N) marks or PUA codepoints. Covers 한양 PUA + AKS standard mappings + standard Unicode CJK 합자 구결. Trigger on "구결 풀어줘", "옛한글 복원", "PUA 풀어줘", "한국 학술 PDF 깨짐", "HWPX 옛한글 안 풀려", "(cid:N) 처리".
+description: Decode Korean academic PDFs and HWPX/HWP documents by recovering gugyeol characters (구결자, MR kugyŏl; 厓·古·爲·匕·兯 abbreviations) and old hangul (옛한글, ᄒᆞ·ᇫ etc.) that extractors render as broken (cid:N) marks or PUA codepoints. Covers 한양 PUA + AKS standard mappings + standard Unicode CJK 합자 구결. Trigger on "구결 풀어줘", "옛한글 복원", "PUA 풀어줘", "한국 학술 PDF 깨짐", "HWPX 옛한글 안 풀려", "(cid:N) 처리".
 license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.0.2
+  version: 1.0.3
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -34,11 +34,11 @@ metadata:
 
 ## When to use
 
-- "이 논문 PDF에서 옛한글이 깨져 나와"
-- "(cid:6) (cid:38) 같은 게 잔뜩 있어"
-- "임규직/박문호/윤근수 등 19세기 학자 논문 PDF 복원해줘"
-- "口訣字가 PDF에 나오는데 텍스트 추출이 안 돼"
-- "한국 고전 OCR 결과에 PUA 부호점 나옴"
+- “이 논문 PDF에서 옛한글이 깨져 나와”
+- “(cid:6) (cid:38) 같은 게 잔뜩 있어”
+- “임규직/박문호/윤근수 등 19세기 학자 논문 PDF 복원해줘”
+- “口訣字가 PDF에 나오는데 텍스트 추출이 안 돼”
+- “한국 고전 OCR 결과에 PUA 부호점 나옴”
 - 한국 인문학 PDF를 wiki/논문/DB에 인용하려는데 옛한글이 손실된 경우
 
 ## When NOT to use
@@ -137,7 +137,7 @@ python scripts/fetch_unihan_korean.py # K2~K6 한국 source 한자 10,919건
 1. `hypua_table.csv` — 한양 PUA 옛한글 (압도적 정확도, 시각 판독 대체)
 2. `aks_gukyul_pua.json` — 구결자 PUA → 음가 (한국학중앙연구원 표준)
 3. `aks_oldhan_pua.json` — 옛한글 카테고리 (hypua 미수록 잔여분)
-4. `hapja_kugyeol.json` — 합자 구결자 (한국 한자 표준 + 학술 검증)
+4. `hapja_gugyeol.json` — 합자 구결자 (한국 한자 표준 + 학술 검증)
 5. `unihan_korean.json` — 후보 풀 (사용자 검증 후 hapja에 등록)
 6. 시각 판독 — 위 모두 못 잡는 경우만
 
@@ -160,7 +160,7 @@ python scripts/extract_pua.py <PDF경로> [--out <디렉터리>]
 `_contexts.txt`를 읽고 폰트로 1차 분류 → PNG를 시각 판독:
 
 - **옛한글** 후보:
-  - ᄒᆞ (하 with 아래아) — 가장 흔함. 'ᄒᆞ다', 'ᄒᆞ나니라', 'ᄒᆞ더라' 등
+  - ᄒᆞ (하 with 아래아) — 가장 흔함. ‘ᄒᆞ다’, ‘ᄒᆞ나니라’, ‘ᄒᆞ더라’ 등
   - ᄂᆞ (나 with 아래아)
   - ᄃᆞ (다 with 아래아)
   - ᄉᆞ (사 with 아래아)
@@ -190,7 +190,7 @@ python -m gugyeol_decode.build_mapping <컨텍스트경로> <PDF경로> [--cache
     "TT7064o00": "한양신명조"
   },
   "mappings": {
-    "*명조|F6D0": {"type": "kugyeol", "value": "厓", "modern": "ㄱ", "note": "下 #2 의(ᄋᆞ) 마크"},
+    "*명조|F6D0": {"type": "gugyeol", "value": "厓", "modern": "ㄱ", "note": "下 #2 의(ᄋᆞ) 마크"},
     "TT7064o00|F537": {"type": "old_hangul", "value": "ᄒᆞ", "modern": "하", "note": "verb stem 하-"},
     "TT7064o00|E283": {"type": "old_hangul", "value": "ᄒᆞ", "modern": "하"}
   },
@@ -200,7 +200,7 @@ python -m gugyeol_decode.build_mapping <컨텍스트경로> <PDF경로> [--cache
 }
 ```
 
-`type`은 `old_hangul` / `kugyeol` / `other` 중 하나.
+`type`은 `old_hangul` / `gugyeol` / `other` 중 하나.
 `value`는 가능하면 **표준 Unicode** (Hangul Jamo U+1100-U+11FF + ㆍ U+11A2 결합) 사용.
 `modern`은 현대 한글 정규화 결과.
 
@@ -237,7 +237,7 @@ PDF를 다시 추출하면서 매핑 테이블에 따라 PUA 글자를 옛한글
 - **시각 판독 신뢰도 명시**: Claude/Gemini의 시각 판독 결과에도 오인식이 있을 수 있다. 특히 유사 형태의 구결자(厓/广, 隱/恩 등)는 판독 신뢰도를 [?] 표시하고, 원본 이미지와 1:1 대조를 권장한다.
 - **매핑 출처 추적**: mapping.json의 각 항목이 어떤 소스(hypua 자동 매핑 / AKS 룩업 / 시각 판독 / 사용자 수동)로 확정되었는지 `verified` 필드로 구분한다. 출처 없는 매핑은 검증 불가능하다.
 - **NFC/NFKC 구분 엄수**: NFC만 적용하고 NFKC는 사용하지 않는다. NFKC의 부수 효과(halfwidth/fullwidth 변환)가 학술 텍스트의 의도된 표기를 손상시킬 수 있다. `--no-normalize` 옵션의 존재를 사용자에게 안내한다.
-- **"복원 완료" ≠ "정확성 보장"**: PUA 매핑 적용 후에도 매핑 테이블에 `unknown`이 남아 있으면 "완전 복원"이라 주장하지 않는다. 미매핑 건수를 정직하게 보고한다.
+- **“복원 완료” ≠ “정확성 보장”**: PUA 매핑 적용 후에도 매핑 테이블에 `unknown`이 남아 있으면 “완전 복원”이라 주장하지 않는다. 미매핑 건수를 정직하게 보고한다.
 
 ## Failure modes
 

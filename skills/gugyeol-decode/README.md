@@ -32,9 +32,9 @@ curl -fsSL https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install
 
 설치만 하면 끝. Claude Code가 SKILL.md description을 읽고 자동 활성화:
 
-> "이 PDF에서 옛한글이 깨져 나와 — 풀어줘"
-> "구결 풀어줘"
-> "한컴 HWPX의 ᄒᆞ가 PUA로 안 풀려"
+> “이 PDF에서 옛한글이 깨져 나와 — 풀어줘”
+> “구결 풀어줘”
+> “한컴 HWPX의 ᄒᆞ가 PUA로 안 풀려”
 
 Claude가 자동으로 본 스킬을 호출하여 결과 markdown을 만들어 줍니다.
 
@@ -56,7 +56,7 @@ python ~/.claude/skills/gugyeol-decode/scripts/decode.py <파일.pdf|.hwpx|.hwp>
 - **2차 PUA sweep**: 글리프 단계의 (font, codepoint) lookup이 미스해도 codepoint 단독 fallback으로 잔존 PUA 자동 정리
 - **NFC 정규화 자동 적용**: CJK Compatibility Ideographs (U+F900-FAFF, 讀·寧·李 등) → 표준 한자로 자동 변환. canonical equivalence만 처리하므로 학술 텍스트 안전. `--no-normalize`로 우회 가능
 - **합자 구결 스캔**: 표준 Unicode CJK 영역의 합자(兯 등)도 옵션 처리 (PDF 한정)
-- **Claude Code 스킬**: "구결 풀어줘" 같은 자연어로도 호출 가능
+- **Claude Code 스킬**: “구결 풀어줘” 같은 자연어로도 호출 가능
 
 ## 외부 데이터 의존성
 

@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: Super-router for hanmun (Korean Literary Sinitic) humanities research - build, operate, and audit a source-grounded personal AI research assistant for 한문학·전근대 한국 문헌. Owns the suite-wide CJK text contract (UTF-8 강제·regex 유니코드 매칭·NFC·폰트 정책). Trigger - 한문학 연구 비서, 문집·한문 원문 source-grounded Q&A, 한문 사료 디지털화 워크플로 라우팅, 전근대 문헌 지식관리(Obsidian), 새 학술 AI 도구 비교·도입 심사, 연구 비서 커스터마이징, 한글 인코딩 깨짐·CJK 정규식 문제. Delegates 논문 집필·연구사·심사·인용 감사 to academic-research-workflow, 구결·옛한글 복원 to gugyeol-decode.
 metadata:
   author: custom
-  version: 0.7.1
+  version: 0.7.2
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -107,11 +107,11 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 | Compare or adopt a new AI research tool | `tool-adoption-audit` | `url-triage`, `source-command-audit-config`, `model-selection` |
 | Literature review or paper plan | `literature-and-writing` | `academic-research-workflow`, `kci-korean-studies-trends`, `cross-validation` |
 | Citation or claim verification audit | delegate -> `academic-research-workflow` (`source-fidelity-audit` / 사료 충실성 감사) | `cross-validation`, `knowledge-memory-workflow` |
-| Source-grounded Q&A over PDFs or vault notes | `source-grounded-qa` | vector index + graph 재랭킹 over vault 링크/MOC/태그 (GARS식), `knowledge-memory-workflow`, `obsidian-cli` |
-| Classical text annotation, Hanja, Hanmun, old Hangul, gugyeol | `hanmun-philology` | `gugyeol-decode`, `hwp`, `hwpx`, `obsidian-cli` |
+| Source-grounded Q&A over PDFs or vault notes | `source-grounded-qa` | vector index + graph 재랭킹 over vault 링크/MOC/태그 (graph-augmented retrieval), `knowledge-memory-workflow`, `obsidian-cli` |
+| Classical text annotation, hanja, hanmun, old Hangul, gugyeol | `hanmun-philology` | `gugyeol-decode`, `hwp`, `hwpx`, `obsidian-cli` |
 | Tool portfolio refresh | `benchmark-refresh` | `source-command-audit-config`, `observability-logging` |
 
-> **graph 재랭킹은 사람이 만든 링크 기반 (CJK-safe).** `source-grounded-qa`의 graph 신호(centrality/activation)는 사용자가 직접 작성한 vault 링크·MOC·태그(Shadow Graph)에서만 나온다. 한문 텍스트에 엔티티 추출(NER)을 하지 않으므로 약한 Hanmun NER이 retrieval을 저하시키지 않는다. microsoft식 entity-GraphRAG(엔티티·커뮤니티 추출 인덱싱)는 도입하지 않는다 — graph는 무료의 사람-작성 링크만 사용한다.
+> **graph 재랭킹은 사람이 만든 링크 기반 (CJK-safe).** `source-grounded-qa`의 graph 신호(centrality/activation)는 사용자가 직접 작성한 vault 링크·MOC·태그(Shadow Graph)에서만 나온다. 한문 텍스트에 엔티티 추출(NER)을 하지 않으므로 약한 hanmun NER이 retrieval을 저하시키지 않는다. microsoft식 entity-GraphRAG(엔티티·커뮤니티 추출 인덱싱)는 도입하지 않는다 — graph는 무료의 사람-작성 링크만 사용한다.
 
 ## Workflow
 
@@ -124,14 +124,14 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 
 ## Execution Model: Dynamic Harness
 
-The default Claude Code harness is built for coding (Thariq, "A harness for every task: dynamic workflows in Claude Code," 2026-06-02). Research work writes its own task-specific harness instead of forcing every task through one fixed loop.
+The default Claude Code harness is built for coding (Thariq, “A harness for every task: dynamic workflows in Claude Code,” 2026-06-02). Research work writes its own task-specific harness instead of forcing every task through one fixed loop.
 
 - Simple or conversational request: answer through the mode router. Do not build a harness.
 - Large, repeated, or deterministic work (100+ witness collation, corpus embedding, batch punctuation or translation, citation audit): generate a task-specific harness with the `Workflow` tool.
-  - State lives in the filesystem: 8-layer L1-L8 plus git, the vault, and JSONL logs as the single source of truth. Do not pull raw data into context.
+  - State lives in the filesystem: a layered directory convention plus git, the vault, and JSONL logs as the single source of truth. Do not pull raw data into context.
   - Compute runs as code: heavy steps (CollateX alignment, Scrapling intake, aggregation) run in subprocesses, not in model context. Solve non-coding tasks with code too.
   - Decompose with subagent fan-out: parallel per witness, document, or source. Before any expensive step, run one independent critique (`cross-validation`, `design-review`) to kill dead ends early (AutoScientists pattern).
-  - Persist across sessions: shard, checkpoint, and resume. Within a live session, iterate to the completion goal with `/goal` or `/loop`; both stop when the session or PC closes. Work that must survive a closed session goes to cloud `/schedule` (or an OS scheduled task), resuming from the checkpoint. A passing happy path is not verification — see `cc-workflow`'s primitive selection table and deterministic gates.
+  - Persist across sessions: shard, checkpoint, and resume. Within a live session, iterate to the completion goal with `/goal` or `/loop`; both stop when the session or PC closes. Work that must survive a closed session goes to cloud `/schedule` (or an OS scheduled task), resuming from the checkpoint. A passing happy path is not verification — see `cc-workflow`’s primitive selection table and deterministic gates.
 - Log the harness choice as an `event` so the next run can reuse or improve it.
 
 ## Imported Tool Patterns
@@ -142,7 +142,7 @@ Use external tools as design evidence, not automatic dependencies.
 - From PaperQA2: search, evidence gathering, answer synthesis, citation checking, local paper index, lower-token deterministic call paths before agentic paths.
 - From Khoj: Obsidian-first second brain, custom agents, scheduled research, local or cloud model choice.
 - From NotebookLM, Elicit, and Consensus: source-grounded chat, sentence-level citation expectations, screening and extraction tables, but closed tools stay benchmark references.
-- From MARKUS, HERITAGE, Chinese Text Project, and INCEpTION: CJK annotation, entity linking, Hanja NLP, TEI/export, and human-in-the-loop correction.
+- From MARKUS, HERITAGE, Chinese Text Project, and INCEpTION: CJK annotation, entity linking, hanja NLP, TEI/export, and human-in-the-loop correction.
 
 For the current baseline, read `references/tool-benchmark.md`. For the assistant behavior contract, read `references/assistant-contract.md`.
 

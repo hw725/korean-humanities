@@ -58,7 +58,7 @@ https://github.com/hw725/gugyeol-decode
 
 ```bibtex
 @misc{gugyeol-decode-2026,
-  title  = {gugyeol-decode: Korean PDF kugyeol·old hangul recovery},
+  title  = {gugyeol-decode: Korean PDF gugyeol·old hangul recovery},
   year   = {2026},
   note   = {Built upon kiwiyou/hypua (Unlicense) and AKS 한국역사정보통합시스템},
   url    = {https://github.com/hw725/gugyeol-decode}

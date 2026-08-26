@@ -1,9 +1,9 @@
 ---
 name: academic-research-workflow
-description: Humanities research-deliverable router for Korean classical literature and history in Hanmun (Literary Sinitic) sources - produces and evaluates research outputs, not text tooling. Modes - 연구사 review, 사료비평·교감 (표점/句讀 treated as interpretive claims to argue, not apply), thesis- and source-grounded argument planning and drafting, 인문학 peer review, source-fidelity audit (원문·국역·干支; machine 국역 such as ITKC aitr is draft-only), and manuscript-data consistency audit before 투고. Also covers 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, and supporting quantitative reporting (κ, confidence intervals). Delegates Hanmun text production, OCR/표점 application, TEI, vault knowledge management, source-grounded Q&A, and tool adoption to hanmun-research-assistant. PRISMA and DH evaluation are opt-in; romanization, 기년, 한자 병기 are exposed settings.
+description: Humanities research-deliverable router for Korean classical literature and history in hanmun (Literary Sinitic) sources - produces and evaluates research outputs, not text tooling. Modes - 연구사 review, 사료비평·교감 (표점/句讀 treated as interpretive claims to argue, not apply), thesis- and source-grounded argument planning and drafting, 인문학 peer review, source-fidelity audit (원문·국역·干支; machine 국역 such as ITKC aitr is draft-only), and manuscript-data consistency audit before 투고. Also covers 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, and supporting quantitative reporting (κ, confidence intervals). Delegates hanmun text production, OCR/표점 application, TEI, vault knowledge management, source-grounded Q&A, and tool adoption to hanmun-research-assistant. PRISMA and DH evaluation are opt-in; romanization, 기년, 한자 병기 are exposed settings.
 metadata:
   author: custom
-  version: 2.4.2
+  version: 2.4.3
   category: academic-research
   upstream_reference: Imbad0202/academic-research-skills-codex
   suite: korean-humanities
@@ -20,7 +20,7 @@ metadata:
 - **산출물(이 스킬)**: 연구사, 사료비평·교감 평가, 해석 논증, 심사, 인용·원문 충실성 검증.
 - **환경(HRA)**: AI 비서 구축·운영·커스터마이징, 한문 텍스트 생산/수정, source-grounded Q&A, 새 도구 채택.
 - **표점/句讀 분담(D1)**: 어떻게 끊을지 **판단하고 근거를 제시**하는 일은 ARW(사료비평). 그 판단을 디지털 텍스트에 **적용**하는 일은 `hanmun-philology`.
-- 한 문장: "한문 텍스트를 만들거나 고치는 일 = hanmun-philology. 그 텍스트를 사료로 평가·교감하여 논증에 쓰는 일 = ARW 사료비평."
+- 한 문장: “한문 텍스트를 만들거나 고치는 일 = hanmun-philology. 그 텍스트를 사료로 평가·교감하여 논증에 쓰는 일 = ARW 사료비평.”
 - **문헌·집필 vs 비서 구축**: 연구사·논증·초고·심사 등 산출물 자체를 만드는 일은 ARW, 그 작업을 자동 수행할 literature/writing 비서를 구축·운영하는 일은 `hanmun-research-assistant`. ‘논문 비교·정리해 줘’ → ARW, ‘문헌 비서 만들어 줘’ → HRA.
 
 ## 핵심 원칙

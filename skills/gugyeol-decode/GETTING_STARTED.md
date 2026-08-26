@@ -22,7 +22,7 @@
 
 ### 깨지는 글자 ② — **옛한글**
 
-19세기 이전 한국어 표기에 쓰인 자모 (아래아 ㆍ, 반치음 ㅿ 등). 任圭直의 『句讀解法』 본문에 'ᄒᆞ나니라' 같은 형태로 등장.
+19세기 이전 한국어 표기에 쓰인 자모 (아래아 ㆍ, 반치음 ㅿ 등). 任圭直의 『句讀解法』 본문에 ‘ᄒᆞ나니라’ 같은 형태로 등장.
 
 ```
 (원본)        4. 종결사 ‘ᄒᆞᄂᆞ니라’ ‘ᄒᆞ다’ ‘ᄒᆞ더라’
@@ -107,7 +107,7 @@ python ~/.claude/skills/gugyeol-decode/setup.py --check
 
 ### Claude Code 사용자 — 자연어 호출
 
-> "이 PDF에서 옛한글이 깨져 나와 — 풀어줘"
+> “이 PDF에서 옛한글이 깨져 나와 — 풀어줘”
 
 Claude가 자동으로 본 스킬을 활성화하여 워크플로 수행. **Claude Code가 없어도 CLI로 그대로 사용 가능**합니다.
 
@@ -249,7 +249,7 @@ PNG 보고 매핑 직접 입력 후 `apply_mapping.py`로 재실행 (자세한 �
 | 兯 | U+516F | 隹(위) + 隱(은/는) 系 | 한 |
 | (incremental 추가) | | | |
 
-`reference/hapja_kugyeol.json`에 검증된 글자만 등록. `--scan-hapja` 옵션으로 PDF 본문에 등장 여부 보고.
+`reference/hapja_gugyeol.json`에 검증된 글자만 등록. `--scan-hapja` 옵션으로 PDF 본문에 등장 여부 보고.
 
 또한 `reference/unihan_korean.json`에는 Unihan K2~K6 한국 source 한자 **10,919건**이 후보 풀로 들어 있어, PDF 본문에서 한국 특유 한자가 등장하면 자동 보고합니다 (학술 검증 후 hapja에 정식 등록).
 
@@ -268,9 +268,9 @@ PNG 보고 매핑 직접 입력 후 `apply_mapping.py`로 재실행 (자세한 �
 
 19세기 이전 한국어 표기에 쓰인 자모. 본 스킬에서 가장 자주 등장:
 
-- **ㆍ (아래아)** — 'ᄒᆞ' = ᄒ + 아래아 (현대 '하'에 대응)
-- **ㅿ (반치음)** — 'ᇫ' (15-16세기 위주)
-- **ㅸ (순경음 비읍)** — 'ᄫ'
+- **ㆍ (아래아)** — ‘ᄒᆞ’ = ᄒ + 아래아 (현대 ‘하’에 대응)
+- **ㅿ (반치음)** — ‘ᇫ’ (15-16세기 위주)
+- **ㅸ (순경음 비읍)** — ‘ᄫ’
 
 ### 본 스킬의 옛한글 처리
 
@@ -310,7 +310,7 @@ U+EE88  →  ᄋᆞ  (= U+110B ᄋ + U+119E ᆞ)
 
 ### 표준 Unicode jamo 결합형
 
-옛한글 'ᄒᆞ'는 두 글자의 결합:
+옛한글 ‘ᄒᆞ’는 두 글자의 결합:
 - `U+1112` (ᄒ, HANGUL CHOSEONG HIEUH) — 초성
 - `U+119E` (ᆞ, HANGUL JUNGSEONG ARAEA) — 중성 (아래아)
 
@@ -393,7 +393,7 @@ python scripts/font_alias.py "*ÇÑ¾ç½Å¸íÁ¶"
 python scripts/extract_pua.py <PDF> --scan-hapja
 ```
 
-`reference/hapja_kugyeol.json` (검증된 합자) + `reference/unihan_korean.json` (K2~K6 한국 source 한자 후보 풀) 활용.
+`reference/hapja_gugyeol.json` (검증된 합자) + `reference/unihan_korean.json` (K2~K6 한국 source 한자 후보 풀) 활용.
 
 ---
 
@@ -419,7 +419,7 @@ python scripts/extract_pua.py <PDF> --scan-hapja
 
 #### 합자 구결자 추가
 
-새로운 합자 구결자를 학술 자료에서 확인하면 `reference/hapja_kugyeol.json`에 추가:
+새로운 합자 구결자를 학술 자료에서 확인하면 `reference/hapja_gugyeol.json`에 추가:
 
 ```json
 {
