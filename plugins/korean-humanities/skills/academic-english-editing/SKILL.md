@@ -4,7 +4,7 @@ description: "한국어 학술 원고를 영어로 번역·윤문한다 - 논리
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.0.0
+  version: 1.1.0
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 745c5f38d1b4a0600bd2f5f5682e394a34fc28b2 (nature-polishing, Apache-2.0)
   suite: korean-humanities
@@ -42,7 +42,7 @@ metadata:
 
 ### 2. 논리 재구성 (문장을 만들기 전)
 
-`references/ko-to-en.md`를 읽고 그 절차를 적용한다. 핵심 명제를 평이한 영어로 먼저 나열하고, 한국어가 생략한 인과·대조·한계 연결을 복원한다. 고유명사·서명·간지 연대는 이 단계에서 고정한다.
+`references/ko-to-en.md`를 읽고 그 절차를 적용한다. 핵심 명제를 평이한 영어로 먼저 나열하고, 한국어가 생략한 인과·대조·한계 연결을 복원한다. 고유명사·서명·간지 연대는 이 단계에서 고정한다 — **용어·고유명사의 영문 대역과 로마자 표기값은 `references/terminology-authorities.md`의 전거(AKS 한국학 영문 용어·용례 사전)를 따른다**: 웹 조회 가능하면 실조회, 불가하면 관행 대역에 `unverified`를 달고 확인 경로를 남긴다. 임의 번역·직접 로마자 변환으로 만들지 않는다.
 
 절 단위 직역을 하지 않는다.
 

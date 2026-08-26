@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: Super-router for hanmun (Korean Literary Sinitic) humanities research - build, operate, and audit a source-grounded personal AI research assistant for 한문학·전근대 한국 문헌. Owns the suite-wide CJK text contract (UTF-8 강제·regex 유니코드 매칭·NFC·폰트 정책). Trigger - 한문학 연구 비서, 문집·한문 원문 source-grounded Q&A, 한문 사료 디지털화 워크플로 라우팅, 전근대 문헌 지식관리(Obsidian), 새 학술 AI 도구 비교·도입 심사, 연구 비서 커스터마이징, 한글 인코딩 깨짐·CJK 정규식 문제. Delegates 논문 집필·연구사·심사·인용 감사 to academic-research-workflow, 구결·옛한글 복원 to gugyeol-decode.
 metadata:
   author: custom
-  version: 0.7.2
+  version: 0.8.0
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -159,7 +159,7 @@ For the current baseline, read `references/tool-benchmark.md`. For the assistant
 
 ## Output Contract
 
-Always report:
+Always report (대화형 첫 응답·온보딩에서는 mode·decision·next 3필드 요약으로 충분하다 — 전체 6필드는 산출물이 있는 턴에):
 
 - `mode`: selected mode.
 - `verified_inputs`: what was read or checked.
@@ -186,5 +186,12 @@ Always report:
 | corpus pipeline | `<corpus-pipeline>` | 논문·코퍼스 수집/정제 산출물이 파일로 남는 파이프라인 |
 | vector index | `<vector-index>` | vault·PDF를 임베딩해 벡터 검색을 제공하는 인덱스 |
 | reference manager | `<your-reference-manager>` | KCI ID·서지 필드를 보존하는 서지 관리 저장소 |
+
+**바인딩이 비어 있으면(신규 설치)**: 있는 척하지 않는다. 각 모드는 축소 동작한다 —
+source-grounded Q&A는 「매 질문마다 원문 직접 재독」의 저효율 경로로, 지식 축적·재랭킹은
+불가로 명시하고, 부트스트랩 순서를 안내한다: ① 원자료를 읽기 전용 폴더로 ② 자료
+인벤토리(스캔 vs 텍스트층) ③ 바인딩 4칸 채우기 — 도구 선정은 즉석 추천하지 않고
+`tool-adoption-audit` 모드로 거친다. 위임 대상 스킬(예: academic-research-workflow)이
+미설치면 대행하지 말고 설치를 안내한다.
 
 `references/` 두 문서(assistant-contract·tool-benchmark)는 이 바인딩이 채워진 **로컬 인스턴스 기준**으로 서술돼 있다 — 이식자는 자기 스택으로 대응 항목을 치환해 읽는다.

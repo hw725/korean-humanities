@@ -3,7 +3,7 @@ name: kci-citation-network
 description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, then optionally renders linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - "OO 키워드로 인용망 수집해줘", 인용망/인용 네트워크/citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key (env KCI_DATA_GO_KR_KEY_DECODING).
 metadata:
   author: custom
-  version: 1.2.0
+  version: 1.2.1
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -46,6 +46,8 @@ Params: `serviceKey`, `pageNo`, `recordCnt` (**max 100** — larger is rejected)
 Run from any working directory — outputs land under `--out-dir` (cwd-relative). `${SKILL_DIR}` below means this skill's directory. (macOS/Linux에서는 `py -3` 대신 `python3`.)
 
 ```bash
+# 0단계: 씨앗 후보 미리보기 — 키 불필요, 수집 안 함. 무관·동명이인 행을 지워 seeds.tsv로 저장
+py -3 ${SKILL_DIR}/scripts/kci_citation_collect.py --query "운양 김윤식" --max 40 --preview
 # 검색어로 씨앗 자동 수집 — 동봉 kci_search가 처리, 추가 설치 불필요
 py -3 ${SKILL_DIR}/scripts/kci_citation_collect.py --query "운양 김윤식" --max 40 --out-dir out/kys
 # 또는 큐레이션한 artiId 목록(줄당 "ARTID<탭>제목<탭>연도")
@@ -57,6 +59,10 @@ py -3 ${SKILL_DIR}/scripts/kci_citation_collect.py --query "운양 김윤식" --
 실측(2026-08-26): `--query "운양 김윤식" --max 3` → 3편 처리, 노드 17·엣지 14,
 직접인용률 26.4% — 아래 「~25%」 서술과 일치.
 Outputs `out/kys/{nodes,edges,refs}.jsonl` + `collect.seen` (checkpoint/resume). 100건↑는 나눠 실행.
+
+**씨앗 검색의 robots 고지**: KCI robots.txt는 전면 Disallow라 씨앗 검색(kci_search)은
+`respect_robots=False`로 동작한다(수집 본체는 data.go.kr 공식 API라 무관). 요청 간격을
+지키는 소규모 개인 연구 전제이며 판단·책임은 사용자에게 있다.
 
 **Disambiguation matters.** `--query` uses KCI KEYALL and over-matches (e.g. "김윤식" hits both 雲養 金允植 1835 and 국문학자 김윤식 1936). Review titles and curate a seed TSV for a clean set.
 

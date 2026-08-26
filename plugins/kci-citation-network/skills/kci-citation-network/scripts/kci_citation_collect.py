@@ -177,11 +177,26 @@ def main(argv=None) -> int:
     ap.add_argument("--since", type=int, help="발행연도 하한")
     ap.add_argument("--until", type=int, help="발행연도 상한")
     ap.add_argument("--snowball", action="store_true", help="인용된 KCI 논문을 노드로 1홉 확장")
-    ap.add_argument("--out-dir", type=Path, required=True)
+    ap.add_argument("--out-dir", type=Path, help="산출 디렉터리 (--preview가 아니면 필수)")
     ap.add_argument("--env", type=Path, default=DEFAULT_ENV)
     ap.add_argument("--sleep", type=float, default=0.25, help="API 요청 간 sleep 초")
+    ap.add_argument("--preview", action="store_true",
+                    help="씨앗 후보만 TSV로 출력하고 종료 — 동명이인·무관 논문 확인용 (수집 안 함, 키 불필요)")
     args = ap.parse_args(argv)
 
+    # --preview: 씨앗 후보만 보여주고 종료 (SKILL.md §0의 "제목 보여주고 확인" 공식 수단)
+    if args.preview:
+        if not args.query:
+            sys.exit("[에러] --preview는 --query와 함께 쓴다")
+        seeds = resolve_seeds_by_query(args.query, args.max, args.since, args.until, args.sleep)
+        print("# 씨앗 후보 — 무관·동명이인 행을 지우고 --arti-ids 파일로 저장해 수집하라")
+        print("# kci_id	title	year	journal")
+        for s_ in seeds:
+            print(f"{s_['kci_id']}	{s_['title']}	{s_['year']}	{s_['journal']}")
+        return 0
+
+    if not args.out_dir:
+        sys.exit("[에러] --out-dir이 필요하다 (--preview 모드가 아니면)")
     key = load_key(args.env)
     out = args.out_dir
     out.mkdir(parents=True, exist_ok=True)

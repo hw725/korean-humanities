@@ -3,7 +3,7 @@ name: academic-research-workflow
 description: Humanities research-deliverable router for Korean classical literature and history in hanmun (Literary Sinitic) sources - produces and evaluates research outputs, not text tooling. Modes - 연구사 review, 사료비평·교감 (표점/句讀 treated as interpretive claims to argue, not apply), thesis- and source-grounded argument planning and drafting, 인문학 peer review, source-fidelity audit (원문·국역·干支; machine 국역 such as ITKC aitr is draft-only), and manuscript-data consistency audit before 투고. Also covers 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, and supporting quantitative reporting (κ, confidence intervals). Delegates hanmun text production, OCR/표점 application, TEI, vault knowledge management, source-grounded Q&A, and tool adoption to hanmun-research-assistant. PRISMA and DH evaluation are opt-in; romanization, 기년, 한자 병기 are exposed settings.
 metadata:
   author: custom
-  version: 2.4.3
+  version: 2.5.0
   category: academic-research
   upstream_reference: Imbad0202/academic-research-skills-codex
   suite: korean-humanities
@@ -36,6 +36,13 @@ metadata:
 9. 서브에이전트 병렬은 사용자가 명시적으로 요청했을 때만 쓴다.
 10. 원고에 들어간 모든 수치는 데이터 정본에서 재계산 가능해야 한다. 데이터 정제·표본 변경이 일어나면 영향 범위는 ‘재분석한 절’이 아니라 ‘원고 전체의 수치’이며, 체크리스트가 아니라 전수 대조로 닫는다.
 11. 핵심 주장·사료·가정에는 안정적 ID(주장 C1, 사료 S1, 가정 A1 등)를 부여하고 가정은 본문에 인라인으로 태깅한다. 충실성·정합 감사를 막연한 체크리스트가 아니라 ID 대조(주장 Cn ↔ 근거 Sn)로 닫고, 미해소 가정 An은 드러내 추적한다.
+12-a. **모델 내부 지식(학습 기억)은 전거가 아니다.** 기억과의 일치는 검증이 아니며,
+   기억만으로 라벨을 올리지 않는다. 단 기억을 숨기지도 않는다 — `unverified` 라벨을
+   유지한 채 「기억 일치, 신뢰도 높음/보통/낮음」을 병기해 검증 우선순위 정보로만 쓴다.
+12-b. **검증 수단이 전무한 세션에서도 감사는 개시한다** — 전건 `unverified`로 내되,
+   각 주장의 최단 검증 경로(어느 DB의 어느 문서, 예상 소요)를 함께 제시한다.
+   사용자가 「급하니까 확인된 걸로」를 요구해도 라벨은 양보하지 않는다 — 속도 요구는
+   검증 경로 설계로 흡수한다.
 12. 확증 사료만 모으지 않는다. 채택하려는 독법·연대·진위 판정마다 그것을 **무너뜨릴 반증 사료·이본·이설**을 의도적으로 탐색하고, 탐색 예산의 일정 비율을 반증 쪽에 배분한다. 반증을 못 찾았으면 「찾지 못함」을 명시하되, 반증 탐색을 생략한 채 확증을 결론으로 삼지 않는다. 이는 원칙 5(경쟁 해석 설명력)의 사료 단계 대응물이다.
 
 ## 빠른 라우팅

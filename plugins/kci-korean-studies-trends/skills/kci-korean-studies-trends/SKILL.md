@@ -1,8 +1,8 @@
 ---
 name: kci-korean-studies-trends
-description: Self-serve KCI Korean-studies trend reports - build your own year x field corpus from KCI (no API key; polite web collection) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - "OO년 OO분야 KCI 동향 코퍼스 만들어 보고서 내줘", 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일(어떤 학술지를 어떤 전공으로 묶는지)은 동봉 기본값을 사용자가 편집해 자기 분야에 맞춘다.
+description: Self-serve KCI Korean-studies trend reports - build your own year x field corpus from KCI (no API key; rate-limited collection - robots 고지 참조) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - "OO년 OO분야 KCI 동향 코퍼스 만들어 보고서 내줘", 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일(어떤 학술지를 어떤 전공으로 묶는지)은 동봉 기본값을 사용자가 편집해 자기 분야에 맞춘다.
 metadata:
-  version: 2.0.0
+  version: 2.0.1
   category: academic-research
   suite: korean-humanities
   tier: portable
@@ -25,8 +25,10 @@ metadata:
 | `--citation-lag-years` | 인용수 사용 하한(발행 후 N년 — 최신 논문 인용수는 무의미) | 2 |
 | (선택) `--inbox` / `KCI_VAULT_NAME` | Obsidian vault 노트 적재 — **명시할 때만 켜짐**, 동향 용도에는 불필요 | 꺼짐 |
 
-API 키 불필요(공개 검색 페이지의 예의 바른 수집 — sleep·robots 준수).
-LLM 호출은 어떤 스크립트에도 없다.
+API 키 불필요 — 공개 검색 페이지를 수집한다. **정직한 고지**: KCI의 robots.txt는
+전면 Disallow라, robots를 준수하면 이 수집 자체가 불가능하다. 스크립트는 요청 간격
+(sleep)·소규모 개인 연구 범위를 지키는 조건으로 `--no-robots-check`를 쓰며, 그 판단과
+책임은 사용자에게 있다 — 대량·상업적 수집에 쓰지 마라. LLM 호출은 어떤 스크립트에도 없다.
 
 ## Grounding Rules
 

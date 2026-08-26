@@ -23,7 +23,7 @@
                     {
                         "name":  "kci-korean-studies-trends",
                         "source":  "./plugins/kci-korean-studies-trends",
-                        "description":  "Build your own year x field KCI corpus (no API key; polite web collection with a user-editable journal profile) and generate hallucination-resistant Korean-studies trend reports - topic clusters, representative-paper candidates, journal breakdowns. Stdlib-only, no LLM calls."
+                        "description":  "Build your own year x field KCI corpus (no API key; rate-limited collection with a user-editable journal profile - see the robots notice in SKILL.md) and generate hallucination-resistant Korean-studies trend reports - topic clusters, representative-paper candidates, journal breakdowns. Stdlib-only, no LLM calls."
                     }
                 ]
 }
