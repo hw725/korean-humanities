@@ -46,7 +46,7 @@ PDF·HWPX에서 `(cid:6)`이나 PUA로 깨져 나오는 구결자(口訣, MR kug
 불필요. PDF 입력만 `pip install pymupdf`가 필요하고 HWPX는 표준 라이브러리로 처리합니다.
 자동 매핑이 못 푸는 글자는 못 풀었다고 보고합니다(추측 치환 없음).
 
-### `kci-citation-network` — KCI 인용망 수집기 (자급자족)
+### `kci-citation-network` — KCI 인용망 수집기 (키워드만으로 직접 수집)
 
 **키워드만 입력하면 됩니다** — “「운양 김윤식」으로 인용망 수집해줘”라고 하면 스킬이 KCI에서
 씨앗 논문을 검색하고(동명이인 확인을 거쳐) 참고문헌 API로 인용 엣지를 수집합니다.
@@ -60,7 +60,7 @@ OpenAlex가 커버하지 않는 한국 인문학 인용 데이터의 실질적 �
 - 알려진 한계: 정확 엣지는 KCI 수록 참고문헌(실측 약 25%)에 한정 — 문집·단행본·해외
   문헌은 텍스트 참조로만 남습니다.
 
-### `kci-korean-studies-trends` — KCI 동향 코퍼스·보고서 (자급자족)
+### `kci-korean-studies-trends` — KCI 동향 코퍼스·보고서 (연도·분야만으로 직접 수집)
 
 **연도·분야만 지정하면 됩니다** — “2025년 한문학 동향 코퍼스 만들어 보고서 내줘”라고 하면
 스킬이 저널 프로파일 기준으로 KCI를 서버 부담을 줄이는 간격으로 수집(sleep·체크포인트 내장, API 키
@@ -84,11 +84,17 @@ OpenAlex가 커버하지 않는 한국 인문학 인용 데이터의 실질적 �
   정의하며, 그 표를 고치면 전체가 따릅니다.
 - 언어: 스킬 지침은 한국어·영어 혼용입니다. 대상 사용자가 한국학 연구자이기 때문입니다.
 
-## 함께 쓰면 좋은 것 (여기 없는 것 — 링크 안내)
+## 함께 쓰면 좋은 것 (별도 설치)
 
-- **한국어 산문 AI 티 제거**: [epoko77-ai/im-not-ai](https://github.com/epoko77-ai/im-not-ai)
-  — 초록·소개문 등 현대 한국어 산문의 번역투·기계적 문체를 다듬을 때. 이 모음은
-  전근대 문헌 연구용이라 축이 달라 포함하지 않았습니다.
+현대 한국어 산문 품질 도구는 전근대 문헌 연구라는 이 모음의 축과 달라 포함하지
+않았습니다. 검토를 거쳐 함께 쓰는 외부 스킬은 다음과 같습니다.
+
+| 용도 | 외부 스킬 |
+|---|---|
+| AI 티 제거 (문체·리듬) | [epoko77-ai/im-not-ai](https://github.com/epoko77-ai/im-not-ai) |
+| 맞춤법·문서 스타일 일관성 | [DaleSeo/korean-skills](https://github.com/DaleSeo/korean-skills) |
+| 번역문 번역투 교정 | [amondnet/yoonmoon](https://github.com/amondnet/yoonmoon) |
+| 전보문 한국어 예방 (출력 스타일) | [snflkd/fluent-korean](https://github.com/snflkd/fluent-korean) |
 
 ## 라이선스
 
