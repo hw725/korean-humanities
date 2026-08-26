@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.0.5
+  version: 1.0.6
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -105,7 +105,7 @@ font 이름이 mojibake(`*ÇÑ¾ç½Å¸íÁ¶`)로 나와도 패턴은 보존�
 
 ## Workflow
 
-### 0. (1회 setup) 표준 매핑 캐시 구축 — **이게 정확도 핵심**
+### 0. (1회 setup) 표준 매핑 캐시 구축 — **이 단계가 정확도의 핵심**
 
 원클릭 install이나 `python setup.py` 실행 시 **모두 자동 처리**된다. 아래는 내부적으로 어떤 자료를 받는지의 설명 (수동 fallback이 필요한 경우만 직접 사용).
 

@@ -458,7 +458,7 @@ python scripts/extract_pua.py <PDF> --scan-hapja
 - [ ] `pip install pymupdf`
 - [ ] `python setup.py` (또는 `python setup.py --skip-unihan` 가벼운 버전)
 - [ ] `python setup.py --check` 로 ✓ 모두 확인
-- [ ] **`python scripts/decode.py <PDF>`** ← 이게 끝
+- [ ] **`python scripts/decode.py <PDF>`** ← 이것으로 끝입니다
 - [ ] `<PDF>.normalized.md` 검토
 
 질문·버그·기여는 git repo의 issue/PR로.
