@@ -41,7 +41,7 @@
 ## 5. 본 스킬 자체
 
 - **라이선스**: MIT
-- **저자**: Claude (Anthropic) + sickreader (hw725@g.skku.edu) collaboration
+- **저자**: hw725 (hw725@g.skku.edu) + Claude (Anthropic) collaboration
 - **저장소**: 사용자 본인 git repo로 배포 시 본 스킬 디렉터리(`~/.claude/skills/gugyeol-decode/`)를 그대로 push
 
 ## 6. 기여·인용 시 권장 형식
