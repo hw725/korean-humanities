@@ -59,7 +59,8 @@ py -3 ${SKILL_DIR}/scripts/kci_ingest.py --journal-profile --journal-field hanmu
 - 체크포인트 내장(`.queue/`) — 끊겨도 재실행하면 이어서 받는다.
 - **소요 시간 고지**: 분야 하나·한 해 전수는 저널 수 × 논문 수 × sleep으로 수십 분,
   다년 전분야 전수는 며칠 단위다. `--per-journal-max`·`--journal-scan-max`로
-  표본 수집부터 시작한다. 실측(2026-08-26): hanmun 4저널 × 2편 = 18편, 수 분.
+  표본 수집부터 시작한다. 실측(2026-08-26): hanmun 11저널 × 저널당 최대 2편
+  (`--per-journal-max 2`) → 총 18편, 수 분.
 
 ### 2. (다년/다분야일 때) 샤드 병합
 

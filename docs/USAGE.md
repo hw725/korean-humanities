@@ -19,8 +19,9 @@ idempotent) · `check_cjk_text_contract.py`(자기 스크립트의 인코딩·�
 ## `gugyeol-decode` — 깨진 구결·옛한글 복원 (도구 스킬)
 
 PDF·HWPX에서 `(cid:6)`이나 PUA로 깨져 나오는 구결자(口訣, MR kugyŏl)·옛한글을 표준
-유니코드로 복원합니다. **매핑 데이터(한양 PUA + AKS 표준, 약 3.6MB) 동봉** — 다운로드
-불필요. PDF 입력만 `pip install pymupdf`가 필요하고 HWPX는 표준 라이브러리로 처리합니다.
+유니코드로 복원합니다. **참조 데이터 약 3.6MB 동봉**(한양 PUA + AKS 표준 매핑 0.6MB +
+Unihan 한자 후보 풀 3.0MB) — 다운로드 불필요. PDF 입력은 `pip install pymupdf`,
+HWPX 입력은 `pip install python-hwpx`가 필요합니다.
 자동 매핑이 못 푸는 글자는 못 풀었다고 보고합니다(추측 치환 없음).
 
 ## `kci-citation-network` — KCI 인용망 수집기 (키워드만으로 직접 수집)
