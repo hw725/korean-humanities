@@ -1,0 +1,48 @@
+{
+  "_comment": "벤더링 분기 계약. 2026-09-01 월례 감사에서 신설. 이 스킬은 upstream 전면 도입이 아니라 references 3종을 개명·재배치해 만든 신설 스킬이다 — path_map이 1:1이 아니므로 동기화는 항상 수동 검토를 거친다. 판단 근거 정본은 docs/UPSTREAM-INTAKE.md 해당 행이고, 파일별 파생 관계는 각 references 머리말에 있다.",
+  "upstream_repo": "Yuan1z0825/nature-skills",
+  "pinned_commit": "745c5f38d1b4a0600bd2f5f5682e394a34fc28b2",
+  "path_map": {
+    "language/en.md": "skills/academic-english-editing/references/sentence-rules.md",
+    "language/zh-to-en.md": "skills/academic-english-editing/references/ko-to-en.md",
+    "references/style-guardrails.md": "skills/academic-english-editing/references/style-guardrails.md"
+  },
+  "never_adopt": [
+    "LICENSE",
+    "README.md"
+  ],
+  "always_manual": [
+    "skills/academic-english-editing/SKILL.md",
+    "skills/academic-english-editing/references/ko-to-en.md",
+    "skills/academic-english-editing/references/terminology-authorities.md"
+  ],
+  "escalate_to_audit_if": {
+    "upstream_paths_changed": [
+      "LICENSE",
+      "LICENSE.md",
+      "NOTICE"
+    ],
+    "_comment": "Apache-2.0라 LICENSE 외에 NOTICE 변경도 재심사 대상이다(라이선스 조건상 NOTICE는 배포 시 보존 의무가 있다). 그 밖에는 미지 경로 등장과 계약 테스트 실패만 재심사한다."
+  },
+  "derived_locally_maintained": {
+    "skills/academic-english-editing/references/ko-to-en.md": "upstream language/zh-to-en.md의 중한 대응을 한영 대응으로 재작성한 파생물. upstream이 zh-to-en을 고치면 논리 재구성 절차 부분만 손으로 옮기고, 언어쌍 예시는 옮기지 않는다",
+    "skills/academic-english-editing/references/terminology-authorities.md": "upstream에 대응물이 없는 순수 로컬 자산 — CJK 고유명사·서명·간지 연대 표기 권위 목록. 동기화 대상이 아니다"
+  },
+  "protected": [
+    {
+      "file": "skills/academic-english-editing/references/sentence-rules.md",
+      "why": "upstream language/en.md에서 개명·이관한 파생물. 문장 길이 밴드가 이 스킬 판정의 핵심 수치라 동기화가 조용히 바꾸면 안 된다",
+      "must_contain": [
+        "10"
+      ]
+    },
+    {
+      "file": "skills/academic-english-editing/SKILL.md",
+      "scope": "description",
+      "why": "라우팅 경계 — 비학술 영어 산문은 stop-slop이 맡는다. upstream 동기화가 description을 덮어써 이 경계가 사라지면 일반 영문 윤문까지 흡수해 오발화한다",
+      "must_contain": [
+        "stop-slop"
+      ]
+    }
+  ]
+}

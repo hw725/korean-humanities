@@ -1,6 +1,6 @@
 ---
 name: kci-korean-studies-trends
-description: Self-serve KCI Korean-studies trend reports - build your own year x field corpus from KCI (no API key; rate-limited collection - robots 고지 참조) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - "OO년 OO분야 KCI 동향 코퍼스 만들어 보고서 내줘", 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일(어떤 학술지를 어떤 전공으로 묶는지)은 동봉 기본값을 사용자가 편집해 자기 분야에 맞춘다.
+description: Self-serve KCI Korean-studies trend reports - build a year x field corpus from KCI (no API key; rate-limited) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - KCI 동향 코퍼스, 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일은 동봉 기본값을 편집해 쓴다.
 metadata:
   version: 2.0.3
   category: academic-research

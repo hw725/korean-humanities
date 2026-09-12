@@ -1,6 +1,6 @@
 ---
 name: academic-research-workflow
-description: Humanities research-deliverable router for Korean classical literature and history in hanmun (Literary Sinitic) sources - produces and evaluates research outputs, not text tooling. Modes - 연구사 review, 사료비평·교감 (표점/句讀 treated as interpretive claims to argue, not apply), thesis- and source-grounded argument planning and drafting, 인문학 peer review, source-fidelity audit (원문·국역·干支; machine 국역 such as ITKC aitr is draft-only), and manuscript-data consistency audit before 투고. Also covers 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, and supporting quantitative reporting (κ, confidence intervals). Delegates hanmun text production, OCR/표점 application, TEI, vault knowledge management, source-grounded Q&A, and tool adoption to hanmun-research-assistant. PRISMA and DH evaluation are opt-in; romanization, 기년, 한자 병기 are exposed settings.
+description: Humanities research-deliverable router for Korean classical literature and history in hanmun (Literary Sinitic) - produces and evaluates research outputs, not text tooling. Covers 연구사 review, 사료비평·교감(표점/句讀는 적용이 아니라 논증 대상), 논증 기획·집필, 인문학 peer review, 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, 투고 전 원고-데이터 정합 감사. 한문 텍스트 산출·OCR/표점 적용·TEI·vault 지식관리·source-grounded Q&A·도구 도입 심사는 hanmun-research-assistant가 맡는다.
 metadata:
   author: custom
   version: 2.5.1

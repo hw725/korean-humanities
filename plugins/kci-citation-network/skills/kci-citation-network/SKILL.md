@@ -1,6 +1,6 @@
 ---
 name: kci-citation-network
-description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, then optionally renders linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - "OO 키워드로 인용망 수집해줘", 인용망/인용 네트워크/citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key (env KCI_DATA_GO_KR_KEY_DECODING).
+description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, optionally rendering linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - 인용망 수집, 인용 네트워크, citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key.
 metadata:
   author: custom
   version: 1.2.2

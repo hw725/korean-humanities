@@ -88,11 +88,23 @@ def decode_pdf(args: argparse.Namespace) -> int:
     print(colored(f"\n[OK] 완료: {out}", "green"))
 
     if not args.keep_intermediate:
+        # 전역 정책 §5: 영구삭제 금지 — 휴지통 경유가 기본이다.
+        # 이 디렉터리는 이 실행이 방금 만든 파생 중간물이라 실해는 낮지만,
+        # 정책 예외를 코드에 두지 않는다(2026-09-01 감사).
+        # send2trash가 없으면 삭제하지 않고 경로를 알린다 — 조용한 영구삭제보다 낫다.
         try:
-            shutil.rmtree(pua_dir)
-            print(colored(f"  중간 파일 삭제: {pua_dir}", "cyan"))
-        except OSError:
-            pass
+            from send2trash import send2trash  # type: ignore
+        except ImportError:
+            print(colored(
+                f"  중간 파일 보존(휴지통 이동 불가): {pua_dir}/\n"
+                f"  send2trash 미설치 — 휴지통 이동을 원하면 `pip install send2trash`, "
+                f"직접 지우려면 위 경로를 수동 처리한다.", "yellow"))
+        else:
+            try:
+                send2trash(str(pua_dir))
+                print(colored(f"  중간 파일 휴지통 이동: {pua_dir}", "cyan"))
+            except OSError as exc:
+                print(colored(f"  중간 파일 휴지통 이동 실패({exc}) — 보존: {pua_dir}/", "yellow"))
     else:
         print(colored(f"  중간 파일 보존: {pua_dir}/", "cyan"))
     return 0
