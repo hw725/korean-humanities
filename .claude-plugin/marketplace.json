@@ -1,6 +1,6 @@
 {
     "name":  "korean-humanities",
-    "description":  "Korean humanities research plugins for Claude Code - pick what you need: research methods (korean-humanities), gugyeol/old-Hangul recovery (gugyeol-decode), KCI citation networks (kci-citation-network).",
+    "description":  "Korean humanities research plugins for Claude Code - pick what you need: research methods (korean-humanities), gugyeol/old-Hangul recovery (gugyeol-decode), KCI citation networks (kci-citation-network), KCI Korean-studies trend corpora (kci-korean-studies-trends).",
     "owner":  {
                   "name":  "hw725"
               },
