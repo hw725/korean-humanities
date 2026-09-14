@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: Super-router for hanmun (Korean Literary Sinitic) humanities research - build, operate, and audit a source-grounded personal AI research assistant for 한문학·전근대 한국 문헌. Owns the suite-wide CJK text contract (UTF-8·regex 유니코드 매칭·NFC·폰트). Trigger - 한문학 연구 비서, 문집·한문 원문 source-grounded Q&A, 한문 사료 디지털화 라우팅, 전근대 문헌 지식관리(Obsidian), 새 학술 AI 도구 도입 심사, 한글 인코딩 깨짐·CJK 정규식 문제. 논문 집필·심사·인용 감사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.8.1
+  version: 0.9.0
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -64,6 +64,13 @@ Use this skill as the single router for the user research assistant. It does not
    입출력 UTF-8 + `chcp 65001` ③ `git core.quotepath=false`(한글 파일명이 `\354...`
    이스케이프로 깨지는 것 차단). 시스템 ACP(레지스트리 Beta UTF-8)는 **의도적으로 건드리지
    않는다** — HWP 등 구형 한국어 앱을 깨뜨릴 수 있다. 새 PC 셋업 시 이 스크립트를 돌린다.
+5. **서지 제목 동일성은 `scripts/cjk_title_match.py`로 판정한다.** 색인 DB(KCI·CrossRef·
+   OpenAlex)의 제목과 우리 제목이 어긋나는 원인은 내용이 아니라 표기 잡음 — NFD 한글, 서명
+   부호 `《》「」`, 꼬리 `。`, 한자 사이 공백, 전각 구두점 — 이므로 그것만 제거하고 비교한다
+   (`normalize_cjk_title`·`title_key`·`cjk_titles_match`). §3의 NFC만 쓰고 NFKC·casefold 광역
+   정규화는 하지 않는다(「Ⅱ」≠「II」는 제목에서 내용 차이다). 양쪽 모두 CJK일 때만 판정하며
+   한쪽만 CJK면 「다르다」가 아니라 「판정 불가」(False)다 — 국문·영문 병기 제목은 DOI·연도·
+   저자로 따로 본다. `--selftest`가 회귀 케이스 11건. 개념 출처는 NOTICE §3(코드 미참조).
 
 ## 폰트 정책 (산출물 공통 — 사용자 편집 지점)
 
