@@ -5,7 +5,7 @@
 
 ## 기능과 보증
 
-## `korean-humanities` — 연구 방법론 (스킬 3종, 준비물 0)
+## `korean-humanities` — 연구 방법론 (스킬 3종, 본문은 준비물 0)
 
 | 스킬 | 하는 일 | 지키는 것 (행동 보증) |
 |---|---|---|
@@ -15,6 +15,14 @@
 
 동봉 `tools/`: `setup-terminal-utf8.ps1`(Windows 한글 깨짐 뿌리 3곳 영구 차단 — 강력 권장,
 idempotent) · `check_cjk_text_contract.py`(자기 스크립트의 인코딩·정규식 계약 검사, AST 기반).
+둘 다 준비물이 없습니다.
+
+`hanmun-research-assistant/scripts/cjk_title_match.py`(0.9.0 신설)는 색인 DB 제목과 내
+제목이 같은 논문인지 판정합니다 — 서명 부호 `《》「」`·꼬리 `。`·한자 사이 공백만 잡음으로
+걷어내고 NFC 한 번만 정규화하며, 양쪽 모두 CJK일 때만 판정하고 한쪽만 CJK면 「다르다」가
+아니라 「판정 불가」를 냅니다. 이 파일만 `pip install regex`가 필요합니다(유니코드 프로퍼티
+`\p{Han}`·`\p{Hangul}` 매칭 — stdlib `re`로는 한자 확장 평면·옛한글 첫가끝을 놓칩니다).
+자체 회귀 검사는 `py -3 scripts/cjk_title_match.py --selftest`.
 
 ## `gugyeol-decode` — 깨진 구결·옛한글 복원 (도구 스킬)
 

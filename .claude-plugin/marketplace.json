@@ -8,7 +8,7 @@
                     {
                         "name":  "korean-humanities",
                         "source":  "./plugins/korean-humanities",
-                        "description":  "Korean humanities research methods for Claude Code - hanmun source criticism, hermeneutic argument planning, humanities peer review, and academic English editing. Prompt-only, zero setup."
+                        "description":  "Korean humanities research methods for Claude Code - hanmun source criticism, hermeneutic argument planning, humanities peer review, and academic English editing. The research skills are prompt-only; the bundled CJK text helpers are optional, and one of them needs pip install regex."
                     },
                     {
                         "name":  "gugyeol-decode",

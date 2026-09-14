@@ -12,7 +12,7 @@
 
 ```
 /plugin marketplace add hw725/korean-humanities
-/plugin install korean-humanities        # 연구 방법론 (프롬프트 전용, 준비물 0)
+/plugin install korean-humanities        # 연구 방법론 (스킬은 프롬프트 전용, 동봉 헬퍼는 선택)
 /plugin install gugyeol-decode           # 깨진 구결·옛한글 복원 도구
 /plugin install kci-citation-network     # KCI 인용망 수집기 (무료 API 키 필요)
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
@@ -26,7 +26,7 @@
 
 | 플러그인 | 하는 일 | 준비물 |
 |---|---|---|
-| `korean-humanities` | 연구 방법론 스킬 3종 — 연구사·사료비평·논증·심사 / 연구 비서 라우터·CJK 텍스트 계약 / 학술 영문 라이팅 | 없음 (프롬프트 전용) |
+| `korean-humanities` | 연구 방법론 스킬 3종 — 연구사·사료비평·논증·심사 / 연구 비서 라우터·CJK 텍스트 계약 / 학술 영문 라이팅 | 스킬 본문은 없음 (프롬프트 전용). 동봉 CJK 텍스트 헬퍼를 직접 돌릴 때만 — `tools/check_cjk_text_contract.py`·`tools/setup-terminal-utf8.ps1`은 준비물 0, `hanmun-research-assistant/scripts/cjk_title_match.py`는 `pip install regex` |
 | `gugyeol-decode` | PDF·HWPX의 깨진 구결자·옛한글을 표준 유니코드로 복원 | PDF 입력만 `pip install pymupdf` |
 | `kci-citation-network` | 키워드만으로 KCI 인용망 수집 (선택: Obsidian 렌더) | 무료 data.go.kr API 키 |
 | `kci-korean-studies-trends` | 연도·분야만으로 KCI 동향 코퍼스·보고서 | 없음 (키 불필요) |

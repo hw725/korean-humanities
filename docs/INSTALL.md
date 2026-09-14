@@ -4,7 +4,7 @@ Claude Code 마켓플레이스 설치가 가장 간단합니다:
 
 ```
 /plugin marketplace add hw725/korean-humanities
-/plugin install korean-humanities        # 연구 방법론 (프롬프트 전용, 준비물 0)
+/plugin install korean-humanities        # 연구 방법론 (스킬은 프롬프트 전용, 동봉 헬퍼는 선택)
 /plugin install gugyeol-decode           # 깨진 구결·옛한글 복원 도구
 /plugin install kci-citation-network     # KCI 인용망 수집기 (무료 API 키 필요)
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
@@ -55,7 +55,10 @@ cp -r korean-humanities/plugins/gugyeol-decode/skills/gugyeol-decode ~/.codex/sk
 
 kci 인용망·동향·gugyeol 복원 스크립트는 순수 Python이라 단독 실행됩니다.
 Python 3만 있으면 되고(표준 라이브러리 사용), 추가 설치는 gugyeol의 PDF 입력용
-`pip install pymupdf` 하나뿐입니다. 실행 명령은 아래 각 플러그인 절의 «사용법»
+`pip install pymupdf`와 HWPX 입력용 `pip install python-hwpx` 둘뿐입니다.
+korean-humanities의 동봉 헬퍼 중 `hanmun-research-assistant/scripts/cjk_title_match.py`만
+`pip install regex`가 필요하고(유니코드 프로퍼티 매칭), 나머지 `tools/` 2종은 준비물이
+없습니다. 실행 명령은 아래 각 플러그인 절의 «사용법»
 코드 블록을 그대로 쓰되, Windows는 `py -3`, macOS/Linux는 `python3`을 사용합니다.
 
 ## 알아 둘 것 — 선택 단위
