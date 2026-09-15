@@ -12,7 +12,9 @@ Obsidian Graph View에서 인용 네트워크가 그려진다(Zotero Citation-Ne
       --folder "wiki/인용망/운양김윤식"
 
 규칙:
-  - 자동 생성 구역은 <!-- KCI-AUTO --> ... <!-- /KCI-AUTO --> 사이. 그 아래 수동 메모는 재실행해도 보존.
+  - 자동 생성 구역은 <!-- KCI-AUTO --> ... <!-- /KCI-AUTO --> 사이. 그 앞뒤의 수동 메모는 재실행해도 보존.
+  - 표지 두 개가 다 있는 파일만 이 도구의 노트로 보고 재생성한다. 표지가 없는 동명 파일은
+    사람이 쓴 노트로 간주해 **건너뛰고 목록으로 보고한다** — 덮어쓰지 않는다.
   - 위키 폴더 경로는 vault 규칙을 따른다(한글 폴더 허용).
   - 노트 basename = 저자·제목 슬러그. 링크는 [[basename]].
   - references/·writing/ 등 자동생성 보호 폴더에는 쓰지 않는다(대상은 wiki/ 하위).
@@ -56,14 +58,33 @@ def read_jsonl(p: Path) -> list[dict]:
     return [json.loads(ln) for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
 
 
-def preserve_manual(note_path: Path) -> str:
-    """기존 노트에서 자동구역 밖(수동 메모)만 살려 반환."""
+_FRONTMATTER_RE = re.compile(r"\A---\n.*?\n---\n", re.S)
+
+
+def classify_note(note_path: Path) -> tuple[str, str, str]:
+    """기존 노트의 소유권을 판정하고 살릴 수동 메모를 꺼낸다.
+
+    반환 `(owner, head, tail)` — owner는 셋 중 하나다.
+      new     : 파일이 없다. 그대로 쓴다.
+      ours    : 자동구역 표지 두 개가 다 있다. 우리가 만든 노트이므로 재생성한다.
+      foreign : 파일은 있는데 표지가 없다. **우리 것이 아니므로 건드리지 않는다.**
+
+    `foreign`을 따로 두는 이유: 예전 판은 표지가 없으면 빈 문자열을 돌려줬고
+    호출부가 그것으로 파일을 덮어썼다. 대상 폴더에 논문 제목과 같은 이름의
+    **수동 연구노트가 있으면 원문이 조용히 사라졌다**(2026-09-15 Codex 교차검증 Critical 1).
+
+    head/tail은 `ours`일 때만 채운다 — frontmatter는 매번 재생성하므로 제외하고,
+    자동구역 **앞**(head)과 **뒤**(tail)의 사람 글을 모두 살린다. 예전 판은 뒤만
+    살려서 자동구역 위에 쓴 메모가 유실됐다(같은 리뷰가 함께 지적).
+    """
     if not note_path.exists():
-        return ""
+        return ("new", "", "")
     text = note_path.read_text(encoding="utf-8")
-    if AUTO_END in text:
-        return text.split(AUTO_END, 1)[1].lstrip("\n")
-    return ""
+    if AUTO_START not in text or AUTO_END not in text:
+        return ("foreign", "", "")
+    head = _FRONTMATTER_RE.sub("", text.split(AUTO_START, 1)[0]).strip("\n")
+    tail = text.split(AUTO_END, 1)[1].lstrip("\n")
+    return ("ours", head, tail)
 
 
 def main(argv=None) -> int:
@@ -111,6 +132,7 @@ def main(argv=None) -> int:
     folder = args.vault / args.folder
     tags = ["kci", "인용망", "논문"] + (args.tag or [])
     written = 0
+    skipped: list[Path] = []
     for k in targets:
         n = nodes[k]
         title = nfc(n.get("title", "")) or k
@@ -152,23 +174,35 @@ def main(argv=None) -> int:
             body.append("- _(집합 내 피인용 없음)_")
         body += ["", AUTO_END, ""]
 
-        manual = preserve_manual(folder / f"{slug[k]}.md")
-        content = "\n".join(fm) + "\n".join(body)
-        if manual:
-            content += "\n" + manual
-        else:
-            content += "\n## 메모\n\n"
+        note_file = folder / f"{slug[k]}.md"
+        owner, head, tail = classify_note(note_file)
+        if owner == "foreign":
+            # 우리 표지가 없는 파일 = 사람이 쓴 노트. 덮어쓰지 않고 건너뛴다.
+            skipped.append(note_file)
+            continue
+
+        content = "\n".join(fm)
+        if head:
+            content += head + "\n\n"
+        content += "\n".join(body)
+        content += "\n" + tail if tail else "\n## 메모\n\n"
 
         if args.dry_run:
             written += 1
             continue
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / f"{slug[k]}.md").write_text(content, encoding="utf-8")
+        note_file.write_text(content, encoding="utf-8")
         written += 1
 
     print(f"노드 {len(nodes)}, 노트 대상 {len(targets)} (min-degree={args.min_degree}), "
           f"{'작성예정' if args.dry_run else '작성'} {written}")
     print(f"집합 내부 인용 엣지: {sum(len(set(v)) for v in out_edges.values())}")
+    if skipped:
+        print(f"\n[건너뜀] 자동구역 표지가 없는 기존 파일 {len(skipped)}건 — 덮어쓰지 않았다.")
+        for p in skipped:
+            print(f"  {p}")
+        print("  이 파일들은 이 도구가 만든 노트가 아니다(사람이 쓴 노트일 수 있다).")
+        print("  노트를 새로 만들려면 기존 파일의 이름을 바꾸거나 다른 --folder를 쓴다.")
     if not args.dry_run:
         print(f"→ {folder}")
         print("Obsidian에서 이 폴더로 Graph View 필터(path:) 걸면 인용망이 보입니다.")

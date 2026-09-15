@@ -3,7 +3,7 @@ name: kci-citation-network
 description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, optionally rendering linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - 인용망 수집, 인용 네트워크, citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key.
 metadata:
   author: custom
-  version: 1.2.2
+  version: 1.3.0
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -73,7 +73,8 @@ py -3 ${SKILL_DIR}/scripts/kci_graph_to_wiki.py --in-dir out/kys \
     --vault "<vault-root>" --folder "wiki/인용망/운양김윤식" --seeds-only
 ```
 - `--seeds-only`: 씨앗 논문만 노드로 (피인용된 외부 KCI 논문 제외) → 깨끗한 코어 인용망. 생략 시 인용된 KCI 논문까지 노드(스노볼형).
-- Writes one note per paper with `[[wikilinks]]` for 인용/피인용. Auto region is between `<!-- KCI-AUTO -->` markers; manual 메모 below is preserved on re-run.
+- Writes one note per paper with `[[wikilinks]]` for 인용/피인용. Auto region is between `<!-- KCI-AUTO -->` markers; manual 메모 both **above and below** that region is preserved on re-run.
+- **Never overwrites a file it did not create.** A same-named note without both markers is treated as hand-written: the run skips it and lists the paths at the end. Rename the existing file or pass a different `--folder` if you want the generated note. (2026-09-15 Codex 교차검증 Critical 1 — the previous version replaced such files with generated content and the original was lost.)
 - Respects the vault contract: writes only under `wiki/` (never `references/`, `writing/`, `highlights/`).
 
 ### 3. Index and view
