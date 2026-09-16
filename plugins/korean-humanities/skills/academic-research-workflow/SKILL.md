@@ -61,7 +61,15 @@ metadata:
 | (옵션) DH 평가 프로토콜 | `experiment-planning` (DH-eval stub, opt-in) | 평가 설계 + 재현성 리스크 |
 | 연구질문부터 논문까지 전체 | `full-pipeline` | 단계표 + 체크포인트 계획 |
 
-상세 모드 기준은 `references/mode-router.md`, 산출물 형식과 설정은 `references/output-contracts.md`를 읽는다. 사료 충실성 감사의 전거 앵커·게이트·감사기 보정(선택)은 `references/source-fidelity-calibration.md`를 읽는다. 원고 수치 전수 대조 절차(HWP 직접 파싱 포함)는 `references/manuscript-data-consistency.md`, 계량 요소가 있는 논문의 보고 표준(κ·95% CI·층화·합의 정의 민감도·LLM-as-judge 특칙)은 `references/quantitative-humanities.md`를 읽는다.
+참조는 해당 모드에서만 연다.
+
+| 필요한 것 | 파일 |
+|---|---|
+| 상세 모드 기준 | `references/mode-router.md` |
+| 산출물 형식·설정 | `references/output-contracts.md` |
+| 사료 충실성 감사의 전거 앵커·게이트·감사기 보정(선택) | `references/source-fidelity-calibration.md` |
+| 원고 수치 전수 대조(HWP 직접 파싱 포함) | `references/manuscript-data-consistency.md` |
+| 계량 요소 논문의 보고 표준(κ·95% CI·층화·합의 정의 민감도·LLM-as-judge) | `references/quantitative-humanities.md` |
 
 ## 실행 절차
 

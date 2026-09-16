@@ -1,10 +1,10 @@
 ---
 name: academic-english-editing
-description: "한국어 학술 원고를 영어로 번역·윤문한다 - 논리 연결 복원, 문장 길이 밴드(10-30어), 학술 hedging 보정, 과잉주장 점검, em dash 제거, CJK 고유명사·서명·간지 연대 표기 고정. Trigger on 영문 초록, 논문 영역, 영어 논문 윤문, abstract 영작, 학술 영어, 투고용 영문, English abstract, academic English editing, proofread my abstract. 인문학 논증·구조·심사는 academic-research-workflow, 비학술 일반 영어 산문은 stop-slop이 맡는다."
+description: "영문 초록·논문 영역·투고용 영문 윤문 요청에 쓴다. 한국어 학술 원고를 영어 학술 산문으로 옮기며 논리 연결·문장 길이(10–30어)·hedging을 보정한다(비학술 영어는 stop-slop)."
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.1.1
+  version: 1.1.2
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 745c5f38d1b4a0600bd2f5f5682e394a34fc28b2 (nature-polishing, Apache-2.0)
   suite: korean-humanities
@@ -36,9 +36,11 @@ metadata:
 
 ## 절차
 
+참조 3종은 해당 단계에서만 연다 — 설정=`references/style-guardrails.md`, 논리 재구성=`references/ko-to-en.md`, 문장 규칙=`references/sentence-rules.md`.
+
 ### 1. 설정 확정 (첫 실행 1회)
 
-`references/style-guardrails.md`의 노출 설정 표를 읽고 **철자 변종·로마자 표기·인칭**을 확정한다. 목표 저널이 정해져 있으면 그 관행을 따르고, 없으면 사용자에게 묻는다. 확정값을 한 줄로 보고해 사용자가 적은 비용으로 정정할 수 있게 한다.
+`references/style-guardrails.md`의 노출 설정 표를 읽고 **철자 변종·로마자 표기·인칭**을 확정한다. 목표 저널이 정해져 있으면 그 관행을 따르고, 없으면 표의 기본값(미국식 철자·MR 로마자·3인칭)으로 진행한다 — 비대화형에서도 묻지 않는다. 확정값을 한 줄로 보고해 사용자가 적은 비용으로 정정할 수 있게 한다.
 
 ### 2. 논리 재구성 (문장을 만들기 전)
 

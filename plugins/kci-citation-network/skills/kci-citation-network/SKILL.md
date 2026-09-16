@@ -1,9 +1,9 @@
 ---
 name: kci-citation-network
-description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, optionally rendering linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - 인용망 수집, 인용 네트워크, citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key.
+description: "키워드 하나로 KCI 참고문헌 OpenAPI에서 인용망(nodes/edges JSONL)을 수집하고 선택적으로 Obsidian 노트로 렌더한다. «인용망 수집»·«citation graph»처럼 한국 인문학 논문의 인용 관계가 필요할 때 쓴다(data.go.kr 무료 키 필요)."
 metadata:
   author: custom
-  version: 1.4.1
+  version: 1.4.2
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -45,7 +45,7 @@ Params: `serviceKey`, `pageNo`, `recordCnt` (**max 100** — larger is rejected)
 
 사용자가 “「운양 김윤식」으로 인용망 수집해줘”처럼 **키워드만 지정하면**, 이 스킬이 아래 1→2를
 대신 실행한다: `--query`로 씨앗을 모으고, 제목 목록을 보여 동명이인·무관 논문을 걸러
-확인받은 뒤 수집한다. 키가 없으면 발급 절차(위 Prerequisites)부터 안내한다.
+확인받은 뒤 수집한다. 비대화형이면 씨앗 후보 목록만 산출하고 수집은 하지 않는다. 키가 없으면 발급 절차(위 Prerequisites)를 안내하고 종료한다.
 
 ### 1. Collect the network
 
@@ -70,8 +70,6 @@ Outputs `out/kys/{nodes,edges,refs}.jsonl` + `collect.seen` (checkpoint/resume).
 - **재실행은 기존 `nodes.jsonl`을 먼저 복원해 병합한다.** 지난 실행에서 발견한 피인용 노드가 유지되며, 복원 건수를 실행 시작에 보고한다.
 - **API 오류는 완료로 기록하지 않는다.** XML 파싱 실패·`resultCode` 오류·중간 페이지 누락은 예외로 올라가 그 논문이 `collect.seen`에 들어가지 않으므로, 키·네트워크를 고친 뒤 같은 명령을 다시 돌리면 그 논문부터 재시도한다. 실패 건수도 끝에 보고한다.
 
-(위 세 항목은 2026-09-15 Codex 교차검증 Important 3·4·7의 수정이다. 예전 판은 재실행 시 노드가 사라지고, 오류를 「참고문헌 0건 성공」으로 확정했으며, 「1홉」이라 적고도 깊이 제한 없이 확장했다.)
-
 **씨앗 검색의 robots 고지**: KCI robots.txt는 전면 Disallow라 씨앗 검색(kci_search)은
 `respect_robots=False`로 동작한다(수집 본체는 data.go.kr 공식 API라 무관). 요청 간격을
 지키는 소규모 개인 연구 전제이며 판단·책임은 사용자에게 있다.
@@ -86,7 +84,7 @@ py -3 ${SKILL_DIR}/scripts/kci_graph_to_wiki.py --in-dir out/kys \
 ```
 - `--seeds-only`: 씨앗 논문만 노드로 (피인용된 외부 KCI 논문 제외) → 깨끗한 코어 인용망. 생략 시 인용된 KCI 논문까지 노드(스노볼형).
 - Writes one note per paper with `[[wikilinks]]` for 인용/피인용. Auto region is between `<!-- KCI-AUTO -->` markers; manual 메모 both **above and below** that region is preserved on re-run.
-- **Never overwrites a file it did not create.** A same-named note without both markers is treated as hand-written: the run skips it and lists the paths at the end. Rename the existing file or pass a different `--folder` if you want the generated note. (2026-09-15 Codex 교차검증 Critical 1 — the previous version replaced such files with generated content and the original was lost.)
+- **Never overwrites a file it did not create.** A same-named note without both markers is treated as hand-written: the run skips it and lists the paths at the end. Rename the existing file or pass a different `--folder` if you want the generated note.
 - Respects the vault contract: writes only under `wiki/` (never `references/`, `writing/`, `highlights/`).
 
 ### 3. Index and view

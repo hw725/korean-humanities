@@ -1,11 +1,11 @@
 ---
 name: gugyeol-decode
-description: Decode Korean academic PDFs and HWPX/HWP documents by recovering gugyeol characters (구결자, MR kugyŏl; 厓·古·爲·匕·兯 abbreviations) and old hangul (옛한글, ᄒᆞ·ᇫ etc.) that extractors render as broken (cid:N) marks or PUA codepoints. Covers 한양 PUA + AKS standard mappings + standard Unicode CJK 합자 구결. Trigger on "구결 풀어줘", "옛한글 복원", "PUA 풀어줘", "한국 학술 PDF 깨짐", "HWPX 옛한글 안 풀려", "(cid:N) 처리".
+description: "한국 학술 PDF·HWPX에서 구결자·옛한글이 (cid:N)이나 PUA 코드포인트로 깨져 나올 때 쓴다. 한양 PUA·AKS 매핑으로 표준 유니코드를 복원하고 미해결 코드포인트는 목록으로 보고한다."
 license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.1
+  version: 1.1.2
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -232,17 +232,10 @@ PDF를 다시 추출하면서 매핑 테이블에 따라 PUA 글자를 옛한글
 - `reference/옛한글.md` — 옛한글 자모·결합 규칙·Unicode 매핑
 - `reference/구결자.md`, `reference/옛한글.md`, `ATTRIBUTION.md` — 최식2011 작업 근거와 학술 인용
 
-## Done when
-
-- 모든 PUA 글자 (codepoint, font) 조합이 매핑 테이블에 등록됨
-- 의도적으로 미식별로 남긴 글자는 `type: "unknown"` + 사유 기재
-- 정규화된 본문이 검증 가능한 형태로 저장됨
-- 위키·논문에 인용할 때 PUA 손실 없이 옮길 수 있음
-
 ## Guardrails
 
 - **매핑 날조 금지**: PUA codepoint의 대응 글자를 추측으로 배정하지 않는다. hypua 테이블·AKS 캐시에 없고 시각 판독으로도 불확실하면 `type: "unknown"`으로 남긴다. 잘못된 매핑은 학술 텍스트의 의미를 왜곡한다.
-- **시각 판독 신뢰도 명시**: Claude/Gemini의 시각 판독 결과에도 오인식이 있을 수 있다. 특히 유사 형태의 구결자(厓/广, 隱/恩 등)는 판독 신뢰도를 [?] 표시하고, 원본 이미지와 1:1 대조를 권장한다.
+- **시각 판독 신뢰도 명시**: 멀티모달 모델의 시각 판독 결과에도 오인식이 있을 수 있다. 특히 유사 형태의 구결자(厓/广, 隱/恩 등)는 판독 신뢰도를 [?] 표시하고, 원본 이미지와 1:1 대조를 권장한다.
 - **매핑 출처 추적**: mapping.json의 각 항목이 어떤 소스(hypua 자동 매핑 / AKS 룩업 / 시각 판독 / 사용자 수동)로 확정되었는지 `verified` 필드로 구분한다. 출처 없는 매핑은 검증 불가능하다.
 - **NFC/NFKC 구분 엄수**: NFC만 적용하고 NFKC는 사용하지 않는다. NFKC의 부수 효과(halfwidth/fullwidth 변환)가 학술 텍스트의 의도된 표기를 손상시킬 수 있다. `--no-normalize` 옵션의 존재를 사용자에게 안내한다.
 - **“복원 완료” ≠ “정확성 보장”**: PUA 매핑 적용 후에도 매핑 테이블에 `unknown`이 남아 있으면 “완전 복원”이라 주장하지 않는다. 미매핑 건수를 정직하게 보고한다.

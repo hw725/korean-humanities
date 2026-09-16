@@ -180,8 +180,7 @@ Always report (대화형 첫 응답·온보딩에서는 mode·decision·next 3�
 - Do not install a new assistant stack merely because it is new or popular.
 - Do not route CJK source criticism through STEM benchmark defaults without a local evaluation sample.
 - Do not treat social-science evidence synthesis tools as adequate for premodern texts unless original text handling, annotation, and source provenance are tested.
-- Do not move or rewrite `primary_data/`.
-- Do not recommend `gpt-4` or `gpt-4o` defaults; replace expensive defaults with approved model choices or local endpoints.
+- Do not leave a superseded, expensive model as a default; replace it with approved model choices or local endpoints.
 
 ## Local Instance Binding (역할 이름 → 내 환경의 실물)
 
