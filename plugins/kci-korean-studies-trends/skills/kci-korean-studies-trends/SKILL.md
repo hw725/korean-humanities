@@ -2,7 +2,7 @@
 name: kci-korean-studies-trends
 description: Self-serve KCI Korean-studies trend reports - build a year x field corpus from KCI (no API key; rate-limited) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - KCI 동향 코퍼스, 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일은 동봉 기본값을 편집해 쓴다.
 metadata:
-  version: 2.1.0
+  version: 2.1.1
   category: academic-research
   suite: korean-humanities
   tier: portable
@@ -10,6 +10,12 @@ metadata:
 ---
 
 # KCI Korean Studies Trends
+
+## 완료 조건
+
+- 코퍼스: 요청한 연도×분야의 JSONL이 있고, 행마다 KCI ID·제목·학술지·연도가 있으며, 같은 인자로 **재실행해도** 중복 행이 늘지 않는다.
+- 보고서: frontmatter에 `verification_scope: abstract-only`가 있고, 논문 언급마다 제목·저자·학술지·연도·KCI ID가 붙어 있으며, 코퍼스에 없는 학술지·논문·수치가 없다.
+- 위 조건의 기계 판정은 원본 저장소(hw725/claude-skills) `tests/test_kci_ingest_corpus_resume.py`다.
 
 기억이 아니라 **자기 코퍼스**로 동향 보고서를 만든다. 스크립트·저널 프로파일이 전부
 이 스킬에 동봉돼 있어(2026-08-26 이식) 별도 파이프라인 없이 동작한다 — 코퍼스는

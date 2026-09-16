@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.0
+  version: 1.1.1
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -13,6 +13,13 @@ metadata:
 ---
 
 # gugyeol-decode (구결자·옛한글 PDF/HWPX 복원)
+
+## 완료 조건
+
+- 출력에 남은 PUA 코드포인트·`(cid:N)`는 미해결 목록(코드포인트·폰트·카테고리·문맥)으로 보고돼 있다 — 조용히 빈칸으로 두지 않는다.
+- 치환은 매핑 테이블에 있는 문자만 한다. 카테고리 라벨(AKS 표의 «옛한글» 같은 분류명)은 힌트일 뿐 본문에 들어가지 않는다.
+- 결과는 NFC 정규화 상태다(NFKC가 아니다).
+- 위 조건의 기계 판정은 원본 저장소(hw725/claude-skills) `tests/test_decode_hwpx_oldhan.py`다.
 
 ## What this skill does
 

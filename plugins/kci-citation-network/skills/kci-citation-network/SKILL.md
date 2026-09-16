@@ -3,7 +3,7 @@ name: kci-citation-network
 description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, optionally rendering linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - 인용망 수집, 인용 네트워크, citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key.
 metadata:
   author: custom
-  version: 1.4.0
+  version: 1.4.1
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -11,6 +11,12 @@ metadata:
 ---
 
 # KCI Citation Network
+
+## 완료 조건
+
+- 수집: `nodes.jsonl`·`edges.jsonl`이 쓰였고, 같은 인자로 **재실행해도** 노드가 사라지거나 중복되지 않는다(체크포인트가 이어 받는다). API 오류로 받지 못한 논문은 완료로 기록되지 않는다.
+- 렌더(`--vault`): 이 스킬이 만들지 않은 노트는 덮어쓰지 않고, 자동 구역 앞뒤의 수동 메모는 보존되며, 생성 노트의 frontmatter는 유효한 YAML이다.
+- 위 조건의 기계 판정은 원본 저장소(hw725/claude-skills) `tests/test_kci_citation_collect.py`·`tests/test_kci_graph_to_wiki.py`다.
 
 ## Overview
 

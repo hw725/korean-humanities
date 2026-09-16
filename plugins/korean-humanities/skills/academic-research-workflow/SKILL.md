@@ -1,9 +1,9 @@
 ---
 name: academic-research-workflow
-description: Humanities research-deliverable router for Korean classical literature and history in hanmun (Literary Sinitic) - produces and evaluates research outputs, not text tooling. Covers 연구사 review, 사료비평·교감(표점/句讀는 적용이 아니라 논증 대상), 논증 기획·집필, 인문학 peer review, 논문 심사, 투고 수정, 인용 충실성 검증, 원고 수치 검증, 투고 전 원고-데이터 정합 감사. 한문 텍스트 산출·OCR/표점 적용·TEI·vault 지식관리·source-grounded Q&A·도구 도입 심사는 hanmun-research-assistant가 맡는다.
+description: 한문학·전근대 한국사 연구 산출물의 라우터 — 연구사 리뷰, 사료비평·교감 논증, 논증 기획·집필, 인문학 peer review·논문 심사·투고 수정, 인용 충실성·원고 수치·원고-데이터 정합 검증. Trigger: 연구사 정리, 논문 심사, 투고 수정, 인용 검증, 원고 수치 대조. 텍스트 산출·OCR·표점 적용·지식관리·도구 심사는 hanmun-research-assistant.
 metadata:
   author: custom
-  version: 2.5.1
+  version: 2.5.2
   category: academic-research
   upstream_reference: Imbad0202/academic-research-skills-codex
   suite: korean-humanities

@@ -1,9 +1,9 @@
 ---
 name: hanmun-research-assistant
-description: Super-router for hanmun (Korean Literary Sinitic) humanities research - build, operate, and audit a source-grounded personal AI research assistant for 한문학·전근대 한국 문헌. Owns the suite-wide CJK text contract (UTF-8·regex 유니코드 매칭·NFC·폰트). Trigger - 한문학 연구 비서, 문집·한문 원문 source-grounded Q&A, 한문 사료 디지털화 라우팅, 전근대 문헌 지식관리(Obsidian), 새 학술 AI 도구 도입 심사, 한글 인코딩 깨짐·CJK 정규식 문제. 논문 집필·심사·인용 감사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
+description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.0
+  version: 0.9.1
   category: cjk-research
   suite: korean-humanities
   tier: portable
