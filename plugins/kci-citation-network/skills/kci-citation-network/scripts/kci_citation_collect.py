@@ -13,7 +13,7 @@ KCI 참고문헌 서비스 `refInfo/openApiM320List`(★ 접두사 M — D272/D3
   python kci_citation_collect.py --query "운양 김윤식" --max 40 --out-dir out/kys
   # artiId 목록 파일(줄당 ART#########)로
   python kci_citation_collect.py --arti-ids ids.txt --out-dir out/kys
-  # 스노볼: 인용된 KCI 논문도 노드로 1홉 확장
+  # 스노볼: 인용된 KCI 논문도 노드로 1홉 확장 (깊이는 --max-depth, 기본 1)
   python kci_citation_collect.py --query "운양 김윤식" --max 40 --snowball --out-dir out/kys
 
 산출(out-dir):
@@ -81,6 +81,10 @@ def nfc(s: str) -> str:
     return unicodedata.normalize("NFC", s or "")
 
 
+class KciApiError(RuntimeError):
+    """KCI API가 성공 응답을 주지 않았다. 이 논문은 완료로 기록하지 않는다."""
+
+
 def fetch_refs(key: str, arti_id: str, sleep: float, retries: int = 3) -> list[dict]:
     """openApiM320List로 논문 한 편의 전체 참고문헌을 페이지네이션하여 반환."""
     refs: list[dict] = []
@@ -99,16 +103,25 @@ def fetch_refs(key: str, arti_id: str, sleep: float, retries: int = 3) -> list[d
                 if attempt == retries - 1:
                     raise
                 time.sleep(1.5 * (attempt + 1))
+        # 오류를 「참고문헌 0건」으로 삼키지 않는다. 예전 판은 파싱 실패·빈 응답에서
+        # break로 빠져 빈 리스트를 성공처럼 돌려줬고, 호출부가 그 논문을 완료로 기록해
+        # **키·네트워크를 고친 뒤 재개해도 영원히 건너뛰었다**
+        # (2026-09-15 Codex 교차검증 Important 4). 실패는 예외로 올려 호출부가 미완료로 남긴다.
         try:
             root = ET.fromstring(raw)
-        except ET.ParseError:
-            break
+        except ET.ParseError as e:
+            raise KciApiError(
+                f"{arti_id} p{page}: XML 파싱 실패 — 응답 앞부분 {raw[:120]!r}") from e
+        code = (root.findtext(".//resultCode") or "").strip()
         msg = (root.findtext(".//resultMsg") or "").strip()
-        if "recordCnt" in msg and "100" in msg:  # 방어: 상한 안내
-            pass
+        if code and code not in ("00", "0"):
+            raise KciApiError(f"{arti_id} p{page}: API 오류 resultCode={code} resultMsg={msg!r}")
         items = root.findall(".//item")
         if not items:
-            break
+            if page == 1:
+                break  # 참고문헌이 실제로 0건 — 정상
+            # 2페이지 이후가 비었다는 것은 앞서 totalCount가 더 있다고 했다는 뜻이다.
+            raise KciApiError(f"{arti_id} p{page}: 페이지가 비었으나 앞 페이지는 더 있다고 보고했다")
         for it in items:
             g = lambda t: nfc((it.findtext(t) or "").strip())
             refs.append({
@@ -157,6 +170,24 @@ def resolve_seeds_by_query(query: str, max_n: int, since: Optional[int], until: 
     return out
 
 
+def read_jsonl_safe(path: Path) -> list[dict]:
+    """jsonl을 읽되 없거나 깨진 줄은 건너뛴다(재실행 복원용)."""
+    if not path.exists():
+        return []
+    out: list[dict] = []
+    for ln in path.read_text(encoding="utf-8").splitlines():
+        ln = ln.strip()
+        if not ln:
+            continue
+        try:
+            obj = json.loads(ln)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict):
+            out.append(obj)
+    return out
+
+
 def load_seen(path: Path) -> set[str]:
     if not path.exists():
         return set()
@@ -176,7 +207,11 @@ def main(argv=None) -> int:
     ap.add_argument("--max", type=int, default=40, help="--query 시 씨앗 최대 수")
     ap.add_argument("--since", type=int, help="발행연도 하한")
     ap.add_argument("--until", type=int, help="발행연도 상한")
-    ap.add_argument("--snowball", action="store_true", help="인용된 KCI 논문을 노드로 1홉 확장")
+    ap.add_argument("--snowball", action="store_true",
+                    help="인용된 KCI 논문을 노드로 확장 (기본 1홉 — --max-depth로 조정)")
+    ap.add_argument("--max-depth", type=int, default=1,
+                    help="--snowball 확장 깊이. 씨앗이 0, 씨앗의 참고문헌이 1. "
+                         "기본 1 = 문서가 말하는 1홉. 0이면 확장하지 않는다")
     ap.add_argument("--out-dir", type=Path, help="산출 디렉터리 (--preview가 아니면 필수)")
     ap.add_argument("--env", type=Path, default=DEFAULT_ENV)
     ap.add_argument("--sleep", type=float, default=0.25, help="API 요청 간 sleep 초")
@@ -220,28 +255,47 @@ def main(argv=None) -> int:
                           "journal": nfc(parts[3].strip()) if len(parts) > 3 else ""})
 
     seen = load_seen(seen_p)
+    # 재실행 복원: 기존 nodes.jsonl을 먼저 읽어 들인다. 예전 판은 빈 사전에서 시작해
+    # 씨앗만 등록하고 마지막에 nodes.jsonl을 통째로 덮어써서, 재실행하면 **지난번에
+    # 발견한 피인용 노드가 전부 사라졌다.** 엣지는 남지만 그래프 변환기가 노드 집합
+    # 밖이라며 연결을 버린다(2026-09-15 Codex 교차검증 Important 3).
     node_meta: dict[str, dict] = {}          # kci_id -> {title,year,journal,seed}
+    restored = 0
+    for rec in read_jsonl_safe(nodes_p):
+        kid = rec.get("kci_id")
+        if kid:
+            node_meta[kid] = {k: v for k, v in rec.items() if k != "kci_id"}
+            restored += 1
     for s in seeds:
-        node_meta.setdefault(s["kci_id"], {**s, "seed": True})
+        # 씨앗은 언제나 seed=True로 올린다(지난 실행에서 피인용 노드로 먼저 들어왔을 수 있다).
+        node_meta[s["kci_id"]] = {**node_meta.get(s["kci_id"], {}), **s, "seed": True}
 
     print("=" * 66)
-    print(f"씨앗 {len(seeds)}편, snowball={args.snowball}, out={out}")
-    print(f"이미 처리(resume): {len(seen)}편")
+    snow = f"snowball=깊이 {args.max_depth}" if args.snowball else "snowball=off"
+    print(f"씨앗 {len(seeds)}편, {snow}, out={out}")
+    print(f"이미 처리(resume): {len(seen)}편, 복원한 기존 노드: {restored}")
     print("=" * 66)
 
-    queue = [s["kci_id"] for s in seeds]
+    # 큐는 (kci_id, depth). 씨앗이 0, 씨앗의 참고문헌이 1이다. 예전 판은 깊이를 들고
+    # 다니지 않아 새로 찾은 노드를 조건 없이 큐에 넣었고, 문서가 말한 「1홉 확장」과 달리
+    # A→B→C→D…로 **깊이 제한 없이 퍼졌다**(2026-09-15 Codex 교차검증 Important 7).
+    queue: list[tuple[str, int]] = [(s["kci_id"], 0) for s in seeds]
     edge_pairs: set[tuple] = set()
     processed = 0
     tot_ref = tot_link = 0
+    depth_capped = 0
+    failed = 0
 
     while queue:
-        aid = queue.pop(0)
+        aid, depth = queue.pop(0)
         if aid in seen:
             continue
         try:
             refs = fetch_refs(key, aid, args.sleep)
         except Exception as e:
-            print(f"  {aid} 실패: {type(e).__name__}")
+            # 완료(seen)로 기록하지 않는다 — 다음 실행이 이 논문을 다시 시도한다.
+            print(f"  {aid} 실패(미완료로 남김): {type(e).__name__}: {e}")
+            failed += 1
             continue
         n_link = sum(1 for r in refs if r["dst"])
         tot_ref += len(refs); tot_link += n_link
@@ -262,7 +316,13 @@ def main(argv=None) -> int:
                 node_meta[dst] = {"title": r["title"], "year": r["year"],
                                   "journal": r["journal"], "seed": False}
                 if args.snowball:
-                    queue.append(dst)
+                    # 씨앗이 깊이 0, 씨앗의 참고문헌이 1. max-depth 1 = 「1홉 확장」이므로
+                    # 깊이 1까지는 그 논문의 참고문헌도 캔다(경계 포함).
+                    if depth + 1 <= args.max_depth:
+                        queue.append((dst, depth + 1))
+                    else:
+                        # 노드·엣지로는 남기되 이 노드의 참고문헌은 더 캐지 않는다.
+                        depth_capped += 1
         with seen_p.open("a", encoding="utf-8") as f:
             f.write(aid + "\n")
         seen.add(aid)
@@ -276,6 +336,11 @@ def main(argv=None) -> int:
 
     print("=" * 66)
     print(f"처리 {processed}편, 노드 {len(node_meta)}, 엣지 {len(edge_pairs)}")
+    if depth_capped:
+        print(f"깊이 상한({args.max_depth})에서 확장 중단한 노드 {depth_capped}개 — "
+              f"노드·엣지로는 남아 있다. 더 캐려면 --max-depth를 올린다")
+    if failed:
+        print(f"실패 {failed}편 — 완료로 기록하지 않았다. 같은 명령을 다시 돌리면 그 논문부터 재시도한다")
     if tot_ref:
         print(f"참조 {tot_ref}건 중 KCI 직접인용 {tot_link}건 ({tot_link/tot_ref*100:.1f}%)")
     print(f"→ {nodes_p}\n→ {edges_p}\n→ {refs_p}")

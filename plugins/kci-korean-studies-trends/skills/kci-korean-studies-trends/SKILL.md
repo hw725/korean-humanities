@@ -2,7 +2,7 @@
 name: kci-korean-studies-trends
 description: Self-serve KCI Korean-studies trend reports - build a year x field corpus from KCI (no API key; rate-limited) and generate hallucination-resistant 동향 보고서 with topic clusters, representative-paper candidates, and journal breakdowns. Trigger - KCI 동향 코퍼스, 한국학/한문학/국어학/한국사 학술지 전수조사, 연도별·전공별 동향 보고서, 대표 논문 후보. 저널 프로파일은 동봉 기본값을 편집해 쓴다.
 metadata:
-  version: 2.0.3
+  version: 2.1.0
   category: academic-research
   suite: korean-humanities
   tier: portable
@@ -56,7 +56,7 @@ py -3 ${SKILL_DIR}/scripts/kci_ingest.py --journal-profile --journal-field hanmu
 
 - `--journal-profile`(값 없이) = 동봉 기본 프로파일. 사본 경로를 주면 그것을 쓴다.
 - `--dry-run`이 핵심 — vault 적재 없이 코퍼스 JSONL만 쓴다.
-- 체크포인트 내장(`.queue/`) — 끊겨도 재실행하면 이어서 받는다.
+- 체크포인트 내장(`.queue/`) — 끊겨도 재실행하면 이어서 받는다. 코퍼스 수집(`--dry-run --corpus-out`)은 **노트 생성과 별개 체크포인트**(`kci-corpus-seen.jsonl`)를 쓴다. 코퍼스 행을 쓴 뒤에만 완료로 기록하므로 중간에 끊겨도 쓴 데까지가 완료이고, 재실행이 같은 논문을 다시 요청해 중복 행을 더하지 않는다. 두 체크포인트가 독립이라 코퍼스를 받아 둔 논문도 나중에 `--dry-run` 없이 돌리면 노트가 만들어지고, 이미 노트가 있는 논문도 코퍼스에는 들어간다. (2026-09-15 Codex 교차검증 Important 5 수정 — 예전 판은 dry-run 분기가 완료 기록을 건너뛰어 재실행 때마다 중복 적재했다.)
 - **소요 시간 고지**: 분야 하나·한 해 전수는 저널 수 × 논문 수 × sleep으로 수십 분,
   다년 전분야 전수는 며칠 단위다. `--per-journal-max`·`--journal-scan-max`로
   표본 수집부터 시작한다. 실측(2026-08-26): hanmun 11저널 × 저널당 최대 2편

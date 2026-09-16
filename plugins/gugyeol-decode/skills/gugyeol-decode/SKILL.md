@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.0.6
+  version: 1.1.0
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -136,7 +136,7 @@ python scripts/fetch_unihan_korean.py # K2~K6 한국 source 한자 10,919건
 **우선순위 체계**:
 1. `hypua_table.csv` — 한양 PUA 옛한글 (압도적 정확도, 시각 판독 대체)
 2. `aks_gukyul_pua.json` — 구결자 PUA → 음가 (한국학중앙연구원 표준)
-3. `aks_oldhan_pua.json` — 옛한글 카테고리 (hypua 미수록 잔여분)
+3. `aks_oldhan_pua.json` — 옛한글 **카테고리** (hypua 미수록 잔여분). label은 카테고리 대표 글자·범위이지 정확한 대응 문자가 아니므로 **본문 치환에 쓰지 않는다** — `decode_hwpx.py`는 이 항목을 판독 힌트로만 싣고 해당 PUA는 미매핑으로 보고한다(2026-09-15 Codex 교차검증 Important 2)
 4. `hapja_gugyeol.json` — 합자 구결자 (한국 한자 표준 + 학술 검증)
 5. `unihan_korean.json` — 후보 풀 (사용자 검증 후 hapja에 등록)
 6. 시각 판독 — 위 모두 못 잡는 경우만
@@ -177,11 +177,10 @@ python scripts/extract_pua.py <PDF경로> [--out <디렉터리>]
 
 ### 3. 매핑 테이블 작성
 
-```bash
-python -m gugyeol_decode.build_mapping <컨텍스트경로> <PDF경로> [--cache <캐시JSON>]
-```
-
-또는 사용자/Claude가 `mapping.json`을 직접 작성:
+**자동 작성 도구는 없다.** `mapping.json`은 2단계에서 뽑은 컨텍스트 PNG를 보고
+사용자·Claude가 직접 쓴다 — PUA 글자의 정확한 음가는 시각 판독이 필요하기 때문이다.
+(2026-09-15 정정: 여기 있던 `python -m gugyeol_decode.build_mapping`은 실재하지 않는
+모듈이었다. `gugyeol_decode` 패키지 자체가 없다.)
 
 ```json
 {
@@ -207,8 +206,10 @@ python -m gugyeol_decode.build_mapping <컨텍스트경로> <PDF경로> [--cache
 ### 4. 본문 정규화 적용
 
 ```bash
-python -m gugyeol_decode.apply_mapping <PDF경로> <mapping.json> -o <output.md>
+python scripts/apply_mapping.py <PDF경로> <mapping.json> --out <output.md>
 ```
+
+출력 옵션은 `--out`이다(`-o` 단축형은 없다). `--mode value|modern|both`로 치환 형태를 고른다.
 
 PDF를 다시 추출하면서 매핑 테이블에 따라 PUA 글자를 옛한글 또는 구결자로 치환. 결과는 깔끔한 markdown.
 

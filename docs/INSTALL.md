@@ -54,11 +54,16 @@ cp -r korean-humanities/plugins/gugyeol-decode/skills/gugyeol-decode ~/.codex/sk
 ## AI 도구 없이 — 터미널만으로
 
 kci 인용망·동향·gugyeol 복원 스크립트는 순수 Python이라 단독 실행됩니다.
-Python 3만 있으면 되고(표준 라이브러리 사용), 추가 설치는 gugyeol의 PDF 입력용
-`pip install pymupdf`와 HWPX 입력용 `pip install python-hwpx` 둘뿐입니다.
-korean-humanities의 동봉 헬퍼 중 `hanmun-research-assistant/scripts/cjk_title_match.py`만
-`pip install regex`가 필요하고(유니코드 프로퍼티 매칭), 나머지 `tools/` 2종은 준비물이
-없습니다. 실행 명령은 아래 각 플러그인 절의 «사용법»
+Python 3만 있으면 되고(표준 라이브러리 사용), 추가로 필요한 패키지는 다음뿐입니다.
+
+| 패키지 | 쓰는 곳 |
+|---|---|
+| `pymupdf` | gugyeol-decode의 **PDF 입력** |
+| `python-hwpx` | gugyeol-decode의 **HWPX 입력** |
+| `olefile` | academic-research-workflow의 `verify_manuscript_numbers.py`가 **HWP(바이너리) 원고**를 읽을 때. 없으면 그 자리에서 중단합니다(HWPX·DOCX·MD 입력에는 필요 없습니다) |
+| `regex` | korean-humanities 동봉 헬퍼 `hanmun-research-assistant/scripts/cjk_title_match.py`(유니코드 프로퍼티 매칭) |
+
+`tools/` 2종은 준비물이 없습니다. 실행 명령은 아래 각 플러그인 절의 «사용법»
 코드 블록을 그대로 쓰되, Windows는 `py -3`, macOS/Linux는 `python3`을 사용합니다.
 
 ## 알아 둘 것 — 선택 단위
@@ -66,3 +71,18 @@ korean-humanities의 동봉 헬퍼 중 `hanmun-research-assistant/scripts/cjk_ti
 폴더 복사의 선택 단위는 **스킬 하나**입니다 — 플러그인(묶음, 4종)보다 잘게, 스킬 6종 중
 원하는 것만 골라 복사할 수 있습니다. 각 스킬은 단독 동작하며, 동반 스킬이 없을 때의
 동작도 각 SKILL.md에 명시돼 있습니다.
+
+**한 가지 예외 — `tools/` 2종은 스킬 폴더 밖에 있습니다.** `hanmun-research-assistant`의
+SKILL.md는 CJK 텍스트 계약 항목에서 `tools/setup-terminal-utf8.ps1`과
+`tools/check_cjk_text_contract.py`를 실행하라고 안내하는데, 이 둘은 스킬 폴더가 아니라
+**korean-humanities 플러그인 루트의 `tools/`**에 있습니다. 그 스킬을 폴더 복사로 쓸
+생각이면 `tools/`도 함께 복사하고, SKILL.md의 `tools/...` 명령은 복사한 위치 기준으로
+경로를 바꿔 실행합니다.
+
+```bash
+# 예: 스킬과 공통 도구를 함께 가져오기
+cp -r korean-humanities/plugins/korean-humanities/skills/hanmun-research-assistant ~/.claude/skills/
+cp -r korean-humanities/plugins/korean-humanities/tools ~/.claude/skills/hanmun-research-assistant/tools
+```
+
+마켓플레이스로 설치하면 플러그인 전체가 들어오므로 이 문제는 없습니다.

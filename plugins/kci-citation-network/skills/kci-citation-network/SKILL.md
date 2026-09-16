@@ -3,7 +3,7 @@ name: kci-citation-network
 description: Self-serve KCI citation network builder - give it a keyword (연구 주제·인물·저자) and it collects a citation network from the KCI 참고문헌 OpenAPI, optionally rendering linked Obsidian notes with Graph View. For Korean humanities, where OpenAlex has no coverage. Trigger - 인용망 수집, 인용 네트워크, citation graph of 한문학·한국사·국어학 papers, KCI references to Obsidian wikilinks. Needs a free data.go.kr API key.
 metadata:
   author: custom
-  version: 1.3.0
+  version: 1.4.0
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -59,6 +59,12 @@ py -3 ${SKILL_DIR}/scripts/kci_citation_collect.py --query "운양 김윤식" --
 실측(2026-08-26): `--query "운양 김윤식" --max 3` → 3편 처리, 노드 17·엣지 14,
 직접인용률 26.4% — 아래 「~25%」 서술과 일치.
 Outputs `out/kys/{nodes,edges,refs}.jsonl` + `collect.seen` (checkpoint/resume). 100건↑는 나눠 실행.
+
+- `--snowball`의 확장 깊이는 `--max-depth`(기본 1 = 위 주석의 1홉)로 정한다. 씨앗이 깊이 0, 씨앗의 참고문헌이 1이며, 상한을 넘은 논문도 **노드·엣지로는 남고** 그 논문의 참고문헌만 캐지 않는다. 몇 건이 그렇게 멈췄는지 실행 끝에 보고한다.
+- **재실행은 기존 `nodes.jsonl`을 먼저 복원해 병합한다.** 지난 실행에서 발견한 피인용 노드가 유지되며, 복원 건수를 실행 시작에 보고한다.
+- **API 오류는 완료로 기록하지 않는다.** XML 파싱 실패·`resultCode` 오류·중간 페이지 누락은 예외로 올라가 그 논문이 `collect.seen`에 들어가지 않으므로, 키·네트워크를 고친 뒤 같은 명령을 다시 돌리면 그 논문부터 재시도한다. 실패 건수도 끝에 보고한다.
+
+(위 세 항목은 2026-09-15 Codex 교차검증 Important 3·4·7의 수정이다. 예전 판은 재실행 시 노드가 사라지고, 오류를 「참고문헌 0건 성공」으로 확정했으며, 「1홉」이라 적고도 깊이 제한 없이 확장했다.)
 
 **씨앗 검색의 robots 고지**: KCI robots.txt는 전면 Disallow라 씨앗 검색(kci_search)은
 `respect_robots=False`로 동작한다(수집 본체는 data.go.kr 공식 API라 무관). 요청 간격을

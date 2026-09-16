@@ -34,16 +34,20 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8", errors="replace")
 
 
-def build_codepoint_lookup() -> dict[int, dict]:
-    """codepoint → {value, modern, source} 단일 룩업 테이블.
+def build_codepoint_lookup() -> tuple[dict[int, dict], dict[int, str]]:
+    """`(lookup, category_hint)`를 돌려준다.
 
-    HWPX는 폰트별 분기 없이 codepoint 단독으로 매핑. hypua 우선,
-    AKS gukyul/oldhan 보조.
+    lookup        codepoint → {value, modern, source}. **본문 치환에 쓰는 확정 매핑만** 담는다.
+    category_hint codepoint → AKS 옛한글 카테고리 라벨. 치환하지 않고 미매핑 보고에만 쓴다.
+
+    HWPX는 폰트별 분기 없이 codepoint 단독으로 매핑. hypua 우선, AKS gukyul 보조.
+    AKS oldhan은 카테고리일 뿐이라 확정 매핑이 아니다(아래 주석 참조).
     """
     hypua = _load_hypua_table()
     gukyul, oldhan = _load_aks_caches()
 
     lookup: dict[int, dict] = {}
+    category_hint: dict[int, str] = {}
 
     # hypua: PUA → IPF jamo 결합형
     for cp, jamo in hypua.items():
@@ -62,7 +66,14 @@ def build_codepoint_lookup() -> dict[int, dict]:
             # gukyul은 hypua와 codepoint 영역이 다름 (겹쳐도 gukyul이 의미상 우선)
             lookup[cp] = {"value": sound, "modern": sound, "source": "aks_gukyul"}
 
-    # AKS oldhan: 옛한글 카테고리 (label = 표준 자모 결합)
+    # AKS oldhan: 옛한글 **카테고리**. label은 정확한 대응 문자가 아니다 —
+    # `fetch_aks_oldhan.py`가 스스로 「카테고리 대표 글자 또는 범위(예: 'ㄱ-가').
+    # 정확한 음가 매핑은 각 PUA 글자의 시각 판독 필요」라고 적어 둔 값이다.
+    # 예전 판은 이 label을 `value`로 등록해 본문에 치환했다. 그러면 hypua에 없고
+    # AKS 카테고리에만 있는 PUA가 **대표 라벨·범위로 조용히 바뀌고 미매핑으로도 잡히지
+    # 않았다**(2026-09-15 Codex 교차검증 Important 2 — 합성 매핑 U+E000→'CATEGORY_RANGE'로
+    # 재현). 그래서 치환은 하지 않고 **판독 힌트로만** 싣는다: 본문에는 미매핑 표시가
+    # 남고, 보고에는 그 글자가 속한 카테고리가 함께 나온다.
     for key, entry in oldhan.items():
         if not key.startswith("U+"):
             continue
@@ -74,9 +85,9 @@ def build_codepoint_lookup() -> dict[int, dict]:
             continue  # hypua 우선
         label = entry.get("label", "")
         if label:
-            lookup[cp] = {"value": label, "modern": "", "source": "aks_oldhan"}
+            category_hint[cp] = label
 
-    return lookup
+    return lookup, category_hint
 
 
 def normalize_text(text: str, lookup: dict[int, dict],
@@ -190,7 +201,7 @@ def main() -> int:
     raw = extract_hwpx_markdown(src)
 
     print(f"[2/2] PUA 매핑 적용")
-    lookup = build_codepoint_lookup()
+    lookup, category_hint = build_codepoint_lookup()
     normalized, unmapped = normalize_text(raw, lookup, mode=args.mode)
 
     # NFC 정규화: CJK Compatibility Ideographs → 표준 한자 (canonical equivalence만, 안전)
@@ -217,9 +228,15 @@ def main() -> int:
     print(f"  미매핑 (occurrence): {len(unmapped)}")
     if unmapped:
         unique = sorted(set(unmapped))
+        hinted = [cp for cp in unique if cp in category_hint]
         print(f"  처음 5개 미매핑 codepoint:")
         for cp in unique[:5]:
-            print(f"    U+{cp:04X}")
+            hint = category_hint.get(cp)
+            # 카테고리는 확정 매핑이 아니라 판독 단서다 — 본문에 넣지 않고 여기서만 알린다.
+            print(f"    U+{cp:04X}" + (f"  (AKS 옛한글 카테고리: {hint} — 시각 판독 필요)" if hint else ""))
+        if hinted:
+            print(f"  이 중 {len(hinted)}종은 AKS 옛한글 카테고리에 속한다 — "
+                  f"카테고리는 대표 글자·범위일 뿐이라 자동 치환하지 않는다.")
     return 0
 
 

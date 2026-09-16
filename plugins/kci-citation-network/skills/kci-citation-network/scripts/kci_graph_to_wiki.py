@@ -43,6 +43,18 @@ def nfc(s: str) -> str:
     return unicodedata.normalize("NFC", s or "")
 
 
+def yaml_str(value) -> str:
+    """YAML 큰따옴표 스칼라로 직렬화.
+
+    JSON 문자열 리터럴은 그대로 유효한 YAML 큰따옴표 스칼라다(따옴표·역슬래시·제어문자
+    이스케이프 규칙이 같다). 예전 판은 `f'title: "{title}"'`로 값을 그냥 끼워 넣어서
+    제목에 직선 큰따옴표가 있으면 문자열이 중간에 끝나고 역슬래시는 이스케이프로
+    해석됐다 — Obsidian이 frontmatter를 파싱하지 못한다
+    (2026-09-15 Codex 교차검증 Important 8, `A "B" study`로 ParserError 재현).
+    """
+    return json.dumps("" if value is None else str(value), ensure_ascii=False)
+
+
 def slugify(title: str, kci_id: str) -> str:
     t = nfc(title).strip()
     if not t:
@@ -143,14 +155,14 @@ def main(argv=None) -> int:
         node_tags = tags + (["씨앗논문"] if is_seed else ["피인용외부"])
         fm = [
             "---",
-            f'title: "{title}"',
+            f"title: {yaml_str(title)}",
             "type: paper",
             f"kci_id: {k}",
             f"seed: {str(is_seed).lower()}",
-            f'year: "{n.get("year","")}"',
-            f'journal: "{nfc(n.get("journal",""))}"',
+            f'year: {yaml_str(n.get("year", ""))}',
+            f'journal: {yaml_str(nfc(n.get("journal", "")))}',
             f"source_url: https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId={k}",
-            "tags: [" + ", ".join(node_tags) + "]",
+            "tags: [" + ", ".join(yaml_str(t) for t in node_tags) + "]",
             "---",
             "",
         ]

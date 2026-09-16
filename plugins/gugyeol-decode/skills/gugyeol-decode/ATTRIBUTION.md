@@ -28,7 +28,13 @@
   - https://www.unicode.org/charts/unihan.html
   - https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip
 - **라이선스**: Unicode License (free use with attribution)
-- **사용**: K2~K6 source 정보로 한국 특유 한자(구결자 후보) 식별. 본 스킬은 직접 임베드하지 않으나, 합자 구결자 reference 작성 시 참조.
+- **사용**: K2~K6 source 정보로 한국 특유 한자(구결자 후보) 식별. 합자 구결자 reference 작성 시 참조.
+- **동봉 형태**: `reference/unihan_korean.json`(약 3.1MB)에 **파생 데이터를 동봉한다.**
+  `scripts/fetch_unihan_korean.py`가 Unihan 원본에서 한국 관련 항목만 추출한 것이며,
+  Unihan 원본 전체를 그대로 싣지는 않는다. Unicode License는 고지와 함께 자유 사용을
+  허용하므로 이 항목이 그 고지에 해당한다.
+  (2026-09-15 정정: 여기 「본 스킬은 직접 임베드하지 않으나」라고 적혀 있었으나 사실과
+  달랐다 — 파일은 실제로 동봉돼 있고 공개 배포본에도 포함된다.)
 
 ## 4. 학술 reference
 

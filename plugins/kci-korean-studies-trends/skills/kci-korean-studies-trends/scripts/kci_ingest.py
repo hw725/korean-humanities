@@ -722,6 +722,49 @@ def load_seen(queue_dir: Path) -> set[str]:
     return out
 
 
+CORPUS_SEEN_NAME = "kci-corpus-seen.jsonl"
+
+
+def load_corpus_seen(queue_dir: Path) -> set[str]:
+    """코퍼스에 이미 적재한 논문 집합.
+
+    노트 생성 체크포인트(`kci-seen.jsonl`)와 **분리한다.** 둘은 완료 조건이 다르다 —
+    `--dry-run --corpus-out`은 노트를 만들지 않고 코퍼스 행만 쌓는데, 예전 판은
+    dry-run 분기에서 `append_corpus` 뒤 바로 반환해 `mark_seen`을 건너뛰었다. 그래서
+    문서대로 수집하다 끊고 재실행하면 **이미 받은 논문을 다시 요청하고 같은 코퍼스에
+    중복 행을 더했다**(2026-09-15 Codex 교차검증 Important 5).
+
+    하나로 합치지 않는 이유: dry-run 수집 뒤 노트를 만들려고 `--dry-run` 없이 다시 돌리면,
+    체크포인트가 하나뿐일 때 전부 「이미 봤다」로 건너뛰어 노트가 하나도 안 생긴다.
+    """
+    path = queue_dir / CORPUS_SEEN_NAME
+    if not path.exists():
+        return set()
+    out: set[str] = set()
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            try:
+                data = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if data.get("kci_id"):
+                out.add(data["kci_id"])
+            if data.get("url"):
+                out.add(data["url"])
+    return out
+
+
+def mark_corpus_seen(queue_dir: Path, article: KCIArticle) -> None:
+    queue_dir.mkdir(parents=True, exist_ok=True)
+    with (queue_dir / CORPUS_SEEN_NAME).open("a", encoding="utf-8") as f:
+        f.write(json.dumps({
+            "kci_id": article.kci_id,
+            "url": article.url,
+            "title": article.title,
+            "seen_at": dt.datetime.now().isoformat(timespec="seconds"),
+        }, ensure_ascii=False) + "\n")
+
+
 def mark_seen(queue_dir: Path, article: KCIArticle) -> None:
     queue_dir.mkdir(parents=True, exist_ok=True)
     with (queue_dir / "kci-seen.jsonl").open("a", encoding="utf-8") as f:
@@ -963,9 +1006,15 @@ def process_article(
     download_pdf_enabled: bool,
     seen: set[str],
     query: Optional[str],
+    corpus_seen: Optional[set[str]] = None,
 ) -> IngestResult:
     ts = dt.datetime.now().isoformat(timespec="seconds")
-    if article_stub.kci_id in seen or article_stub.url in seen:
+    # 코퍼스 수집(dry-run + --corpus-out)과 노트 생성은 완료 조건이 다르므로
+    # **보는 체크포인트도 다르다.** 코퍼스 수집이 노트 체크포인트를 보면, 이미 노트를 만든
+    # 논문이 코퍼스에서 통째로 빠진다(코퍼스 행은 쓴 적이 없는데도).
+    corpus_mode = bool(dry_run and corpus_out is not None)
+    dedupe_against = corpus_seen if (corpus_mode and corpus_seen is not None) else seen
+    if article_stub.kci_id in dedupe_against or article_stub.url in dedupe_against:
         result = IngestResult(
             timestamp=ts,
             kci_id=article_stub.kci_id,
@@ -1008,6 +1057,11 @@ def process_article(
             )
             append_log(queue_dir, result)
             append_corpus(corpus_out, article, result, query)
+            if corpus_out:
+                # 코퍼스 행을 쓴 뒤에만 완료로 기록한다 — 중간에 끊겨도 쓴 데까지가 완료다.
+                mark_corpus_seen(queue_dir, article)
+                corpus_seen.add(article.kci_id)
+                corpus_seen.add(article.url)
             return result
 
         out_path = write_note(article, inbox)
@@ -1188,6 +1242,8 @@ def main(argv: Optional[list[str]] = None) -> int:
     client = HTTPClient(sleep_seconds=args.sleep, respect_robots=not args.no_robots_check)
     targets, query_label = build_targets(args, client)
     seen = load_seen(args.queue)
+    # 코퍼스 수집은 노트 생성과 별개 체크포인트를 쓴다(load_corpus_seen 주석 참조).
+    corpus_seen = load_corpus_seen(args.queue) if args.corpus_out else set()
     results: list[IngestResult] = []
 
     print("=" * 60)
@@ -1201,7 +1257,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     if args.download_pdf:
         print(f"pdf output: {args.pdf_output_dir}")
     if args.corpus_out:
-        print(f"corpus out: {args.corpus_out}")
+        print(f"corpus out: {args.corpus_out} (코퍼스 체크포인트 {len(corpus_seen)}건 복원)")
     print("=" * 60)
 
     for idx, target in enumerate(targets, start=1):
@@ -1217,6 +1273,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             download_pdf_enabled=args.download_pdf,
             seen=seen,
             query=query_label,
+            corpus_seen=corpus_seen,
         )
         results.append(result)
         if result.action == "ingested":
