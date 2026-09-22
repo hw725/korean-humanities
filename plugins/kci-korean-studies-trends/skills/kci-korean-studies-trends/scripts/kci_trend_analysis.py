@@ -18,7 +18,7 @@ import re
 import unicodedata
 import sys
 
-# CJK Text Contract 1-b: Windows cp949 콘솔에서 한글 출력이 UnicodeEncodeError로 죽는 것 차단
+# CJK Text Contract E3: Windows cp949 콘솔에서 한글 출력이 UnicodeEncodeError로 죽는 것 차단
 for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8", errors="replace")

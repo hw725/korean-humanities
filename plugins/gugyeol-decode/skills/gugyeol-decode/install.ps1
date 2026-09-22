@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     gugyeol-decode 원클릭 설치 (Windows)
 

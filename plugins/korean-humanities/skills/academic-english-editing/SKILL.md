@@ -4,9 +4,9 @@ description: "영문 초록·논문 영역·투고용 영문 윤문 요청에 �
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.1.2
+  version: 1.2.0
   category: academic-research
-  upstream_reference: Yuan1z0825/nature-skills @ 745c5f38d1b4a0600bd2f5f5682e394a34fc28b2 (nature-polishing, Apache-2.0)
+  upstream_reference: Yuan1z0825/nature-skills @ 9cecfef6ac683fa59d7d15d2e22f98fa71dacaf5 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
   suite: korean-humanities
   tier: portable
   share: korean-humanities
@@ -21,6 +21,8 @@ metadata:
 `nature-polishing`(Apache-2.0)에서 **언어·문체 규칙만** 체리픽했다. 도입하지 않은 것: Nature/Nature Communications/NMI 저널 포맷, Results-Discussion 분리 규율, 통계 보고 규칙, LaTeX 조판, 그래픽 초록. 이들은 STEM 실증 논문 전제라 CJK 인문학 원고(KCI·HWP 제출)와 맞지 않는다.
 
 라이선스 원문은 `LICENSE.upstream`, 파일별 파생 관계는 각 `references/*.md` 머리말에 있다.
+
+2026-09-20(v1.2.0): upstream `9cecfef6`으로 pin을 올렸다 — 벤더링 3종은 upstream에서 무변경(no-op)이고, `.upstream.json` path_map 키를 upstream 실경로로 정정했다(신설 이후 접두 매치가 한 번도 성립하지 않았다). 신설 `nature-shared/core/discussion-argument-language.md`의 서법 사다리·한계 서술은 `style-guardrails.md` 「논증 강도 사다리」로 **재서술**했고, 게이트는 실험 설계 대신 전거·판본 근거로 치환했다.
 
 ## 경계
 
@@ -54,7 +56,7 @@ metadata:
 
 ### 4. 가드레일 점검
 
-`references/style-guardrails.md`의 관사·숫자·과잉주장·무결성 절을 마지막에 훑는다.
+`references/style-guardrails.md`의 관사·숫자·과잉주장·논증 강도 사다리·무결성 절을 마지막에 훑는다. `must`·`cannot`·`demonstrates`가 남아 있으면 그 강도를 허락하는 전거를 댈 수 있는지 확인하고, 없으면 한 단계 내린다.
 
 ## 출력 형식
 
@@ -70,4 +72,4 @@ metadata:
 - **연대 환산을 지어내지 않는다.** 간지·연호를 서기로 옮길 때 확신이 없으면 `unverified`로 두고 사용자 확인으로 넘긴다.
 - **로마자 표기를 원고 안에서 섞지 않는다.** MR과 RR이 뒤섞인 원고는 심사에서 지적된다.
 - **영국식 철자는 기본값이 아니다.** upstream은 강제했지만 여기서는 설정으로 내렸다. 국내 학술지 영문 초록은 대개 미국식이다.
-- **hedging은 걷어내는 것이 아니라 맞추는 것이다.** 한국어의 중첩 hedging(`~것으로 보인다` + `~라고 할 수 있다`)은 하나로 줄이되, 증거가 약한 주장을 단정으로 바꾸지 않는다.
+- **hedging은 걷어내는 것이 아니라 맞추는 것이다.** 한국어의 중첩 hedging(`~것으로 보인다` + `~라고 할 수 있다`)은 하나로 줄이되, 증거가 약한 주장을 단정으로 바꾸지 않는다. 단계는 `style-guardrails.md`의 논증 강도 사다리(전거·판본 게이트)로 정한다.

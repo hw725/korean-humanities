@@ -1,12 +1,13 @@
 {
   "_comment": "벤더링 분기 계약. 2026-09-01 월례 감사에서 신설. 이 스킬은 upstream 전면 도입이 아니라 references 3종을 개명·재배치해 만든 신설 스킬이다 — path_map이 1:1이 아니므로 동기화는 항상 수동 검토를 거친다. 판단 근거 정본은 docs/UPSTREAM-INTAKE.md 해당 행이고, 파일별 파생 관계는 각 references 머리말에 있다.",
   "upstream_repo": "Yuan1z0825/nature-skills",
-  "pinned_commit": "745c5f38d1b4a0600bd2f5f5682e394a34fc28b2",
+  "pinned_commit": "9cecfef6ac683fa59d7d15d2e22f98fa71dacaf5",
   "path_map": {
-    "language/en.md": "skills/academic-english-editing/references/sentence-rules.md",
-    "language/zh-to-en.md": "skills/academic-english-editing/references/ko-to-en.md",
-    "references/style-guardrails.md": "skills/academic-english-editing/references/style-guardrails.md"
+    "skills/nature-polishing/static/fragments/language/en.md": "skills/academic-english-editing/references/sentence-rules.md",
+    "skills/nature-polishing/static/fragments/language/zh-to-en.md": "skills/academic-english-editing/references/ko-to-en.md",
+    "skills/nature-polishing/references/style-guardrails.md": "skills/academic-english-editing/references/style-guardrails.md"
   },
+  "_path_map_note": "키는 upstream 저장소 루트 기준 전체 경로다. 2026-09-01 신설본은 꼬리(language/en.md)만 적혀 접두 매치가 한 번도 성립하지 않았다(AUD-20260920-144844-888ca45d에서 정정). 벤더링 3종 밖의 upstream 파일은 전부 미지 경로로 떨어져 [중단]되므로, 그 밖의 upstream 변경은 dry-run 미지 목록을 사람이 읽고 채택 여부를 정한다 — 이 스킬은 체리픽 스킬이라 그것이 의도된 동작이다.",
   "never_adopt": [
     "LICENSE",
     "README.md"

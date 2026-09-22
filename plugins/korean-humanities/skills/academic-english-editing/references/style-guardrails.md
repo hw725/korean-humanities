@@ -63,6 +63,35 @@
 | `best` / `superior` | `among the strongest` |
 | `first` | `in this cohort` / `to our knowledge` |
 
+## 논증 강도 사다리 (근거 강도에 맞춘 서법)
+
+> 출처: [Yuan1z0825/nature-skills](https://github.com/Yuan1z0825/nature-skills) `9cecfef6`,
+> `skills/nature-shared/core/discussion-argument-language.md` §Calibrate modality·§Modal safeguards·§Write limitations의 **재서술**(전재 아님). Apache-2.0(`../LICENSE.upstream`).
+> **로컬 치환**: 원문의 게이트는 실험과학 전제(design feature·mechanism)다. 여기서는 **전거·판본·문헌 근거**로 바꿨다 — 한문학 논문이 문헌 대조로 확정한 사실을 실험 설계가 없다는 이유로 약화시키지 않기 위해서다. 2026-09-20, AUD-20260920-144844-888ca45d.
+
+설득력이 아니라 **근거가 허락하는 가장 강한 표현**을 고른다. 한국어 원고의 「~로 보인다」·「~라 할 수 있다」·「~임이 분명하다」를 옮길 때 이 표로 단계를 정한다.
+
+| 근거 상태 | 전형 표현 | 게이트 (이 단계를 쓰려면) |
+|---|---|---|
+| 전거·판본·문헌 대조로 직접 확정 | `shows`, `establishes`, `demonstrates` | 인용한 전거·판본 대조가 명제를 직접 뒷받침하고, 대안 독법이 문헌상 남지 않는다 |
+| 뒷받침되나 유일하게 확정되지는 않음 | `supports`, `indicates`, `suggests`, `is consistent with` | 다른 독법·다른 전거가 하나라도 살아 있거나, 간접 추론(정황·양식·연대 추정)에 기댄다 |
+| 해석·추정·외삽 | `may`, `might`, `could`, `appears to`, `raises the possibility` | 전거가 직접 말하지 않는 데까지 나아가며, 잠정임을 문장이 스스로 표시한다 |
+| 필연·배제 | `must`, `cannot` | 문헌·연대·논리 제약이 다른 가능성을 실제로 배제할 때만. 드물어야 정상이다 |
+
+`must`·`cannot`·`demonstrates`·인과 동사를 쓰기 전에 **그 강도를 허락하는 전거(어느 판본·어느 기록·어느 대조)를 한 줄로 댈 수 있는지** 본다. 댈 수 없으면 한 단계 내린다.
+
+### 서법 안전장치
+
+- `may not`은 「아닐 수 있다」(가능성), `cannot`은 「~일 수 없다」(불가능)다. 「~라고 보기 어렵다」는 대개 `may not`·`is unlikely to`이지 `cannot`이 아니다.
+- `must not`은 금지다. 「~할 필요는 없다」는 `need not`·`does not need to`로 쓴다.
+- **hedge를 겹쳐 쌓지 않는다**(`may perhaps suggest that`). 서법 하나 또는 보정된 보고 동사 하나면 충분하다. 둘 이상은 서로 다른 불확실성을 가리킬 때만 — 한국어의 중첩 hedging(`~것으로 보인다` + `~라고 할 수 있다`)은 하나로 합친다.
+- 해석 문장마다 기계적으로 hedge를 붙이지 않는다. 과잉 hedging은 과잉주장과 같은 정도로 주장을 흐린다.
+- 「후속 연구가 필요하다」(공동체 권고, `future studies should`)와 「우리가 하겠다」(저자 약속, `we will`)를 구분한다. 약속하지 않은 일을 약속형으로 쓰지 않는다.
+
+### 한계는 주장의 경계로 쓴다
+
+한계를 목록으로 나열하지 않고 순서로 쓴다: **영향받는 주장 → 검토하지 못한 자료·판본·조건 → 해석에 미치는 결과 → 그래도 남는 것 → 이를 해소할 자료·대조**. 「한 판본만 보았다」는 그 자체가 한계가 아니라 「이 독법을 다른 판본으로 확대할 수 없다」는 경계다. 긍정 결과로 심각한 한계를 지우지 않고, 반대로 중심 결론을 그대로 두는 경계를 치명적인 것처럼 쓰지도 않는다.
+
 ## 무결성 규칙
 
 - 참고문헌을 지어내지 않는다.

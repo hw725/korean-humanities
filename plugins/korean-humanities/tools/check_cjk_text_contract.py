@@ -112,10 +112,32 @@ def check_file(path: Path) -> list[dict]:
     # E3: 한글·한자를 출력하는 실행 스크립트인데 stdout 재설정이 없음.
     # 대상은 __main__ 진입점이 있는 파일만 — import 전용 모듈은 출력 주체가 아니다.
     if "__main__" in src and _has_cjk(src):
-        if not re.search(r"reconfigure\s*\(\s*encoding", src) and "PYTHONIOENCODING" not in src:
+        # 고정으로 인정하는 방식 셋:
+        #   ① 직접 reconfigure(encoding=…)
+        #   ② PYTHONIOENCODING 을 스스로 세팅
+        #   ③ humanize-korean/scripts/console.py 의 force_utf8_console()·run_gate()  ← #84
+        # ③을 빼두어 **실제로 고정하는** verify_gates.py 를 E3 로 잡고 있었다
+        # (2026-09-22 발견). 거짓을 내는 검사는 결국 꺼진다.
+        _hardened = (
+            re.search(r"reconfigure\s*\(\s*encoding", src)
+            or "PYTHONIOENCODING" in src
+            or re.search(r"\b(force_utf8_console|run_gate)\s*\(", src)
+        )
+        if not _hardened:
             rows.append({"file": str(path), "line": 1, "rule": "E3",
                          "msg": "한글·한자 출력 스크립트인데 stdout/stderr UTF-8 재설정이 없음 "
                                 "(Windows cp949 콘솔에서 UnicodeEncodeError)"})
+
+    # 이 파일이 import 한 **모듈 이름**들 — `fitz.open()` 같은 모듈 함수를
+    # Path 메서드로 오인하지 않기 위해 쓴다.
+    _imported_modules: set[str] = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Import):
+            for a in n.names:
+                _imported_modules.add((a.asname or a.name).split(".")[0])
+        elif isinstance(n, ast.ImportFrom):
+            for a in n.names:
+                _imported_modules.add(a.asname or a.name)
 
     imports_stdlib_re = any(
         (isinstance(n, ast.Import) and any(a.name == "re" for a in n.names))
@@ -134,10 +156,19 @@ def check_file(path: Path) -> list[dict]:
                              "msg": "open() 텍스트 모드에 encoding= 없음 (Windows 기본 cp949)"})
 
         if isinstance(node.func, ast.Attribute):
-            # E2: read_text/write_text — encoding 없음
+            # E2: read_text/write_text — encoding 없음.
+            # 단 **이름만 같은 남의 메서드**는 뺀다. PyMuPDF 의
+            # `TextWriter.write_text(page, render_mode=3, morph=…)` 가 그것이다.
+            # `Path` 쪽이 받는 키워드는 encoding·errors·newline 뿐이므로,
+            # 그 밖의 키워드가 하나라도 있으면 Path 가 아니다(2026-09-22 실측).
             if node.func.attr in _TEXT_RW and not _kw(node, "encoding"):
-                rows.append({"file": str(path), "line": node.lineno, "rule": "E2",
-                             "msg": f"{node.func.attr}()에 encoding= 없음"})
+                _alien_kw = any(
+                    k.arg is not None and k.arg not in ("encoding", "errors", "newline")
+                    for k in node.keywords
+                )
+                if not _alien_kw:
+                    rows.append({"file": str(path), "line": node.lineno, "rule": "E2",
+                                 "msg": f"{node.func.attr}()에 encoding= 없음"})
             # E1(attr): <expr>.open(...) — Path.open은 mode가 **첫 인자**다 (내장 open과 다름).
             # zipfile member open(z.open(name))처럼 첫 인자가 모드 문자열이 아니면
             # 판정 불가로 보고 건너뛴다 — 오탐이 위반 놓침보다 해롭다(2026-08-26 실측:
@@ -154,7 +185,15 @@ def check_file(path: Path) -> list[dict]:
                     else:
                         mode = "?"  # 모드 아님(zipfile member 등) — 판정 불가
                 if mode is None:
-                    mode = "r"  # Path.open() 무인자 = 텍스트 기본
+                    # 무인자 `.open()`. 수신자가 **이 파일이 import 한 모듈**이면
+                    # Path 가 아니다 — `fitz.open()`(PyMuPDF)·`zipfile.open()` 등.
+                    # 모듈의 open 은 encoding 을 받지 않으므로 요구할 것이 없다
+                    # (2026-09-22 실측: fitz.open() 을 E1 으로 잡고 있었다).
+                    if (isinstance(node.func.value, ast.Name)
+                            and node.func.value.id in _imported_modules):
+                        mode = "?"
+                    else:
+                        mode = "r"  # Path.open() 무인자 = 텍스트 기본
                 if mode != "?" and "b" not in mode:
                     rows.append({"file": str(path), "line": node.lineno, "rule": "E1",
                                  "msg": ".open() 텍스트 모드에 encoding= 없음"})
@@ -172,6 +211,11 @@ def check_file(path: Path) -> list[dict]:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="CJK 텍스트 처리 계약 검사기")
     ap.add_argument("paths", nargs="+", type=Path)
+    ap.add_argument(
+        "--exclude", action="append", default=[], metavar="GLOB",
+        help="제외할 경로 조각(여러 번 가능). 벤더링된 상류 파일용 — "
+             "예: --exclude '*/ndlocr/*'. 무엇을 빼는지 호출 자리에 보이게 한다.",
+    )
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
 
@@ -182,6 +226,17 @@ def main(argv=None) -> int:
         elif p.is_dir():
             files.extend(f for f in sorted(p.rglob("*.py"))
                          if ".venv" not in f.parts and "__pycache__" not in f.parts)
+    if args.exclude:
+        # 벤더링된 상류 파일 등을 뺀다(전역 규칙 §8 — 상류 원문은 손대지 않는다).
+        # 경로는 POSIX 꼴로 맞춰 비교한다 — Windows 역슬래시로는 글로브가 안 먹는다.
+        import fnmatch
+
+        def _kept(f: Path) -> bool:
+            posix = f.as_posix()
+            return not any(fnmatch.fnmatch(posix, g) for g in args.exclude)
+
+        files = [f for f in files if _kept(f)]
+
     if not files:
         print("[에러] 검사할 .py 없음", file=sys.stderr)
         return 1
