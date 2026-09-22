@@ -73,15 +73,15 @@ Use this skill as the single router for the user research assistant. It does not
    저자로 따로 본다. `--selftest`가 회귀 케이스 11건. 개념 출처는 NOTICE §3(코드 미참조).
 
 6. **사용자에게 건네는 명령은 PowerShell 문법으로 적는다.** §4가 환경을 고정한다면
-   이것은 **명령을 건네는 쪽**의 규약이다. 한국어 Windows 사용자는 대개 PowerShell 에서
-   실행하며(Claude Code 데스크톱 앱의 Run 단추도 PowerShell 이다), 거기서는
-   `cmd < file` 이 «`<` 연산자는 나중에 사용하도록 예약되어 있습니다»로 **시작조차 못 한다**.
-   파일을 stdin 으로 넘길 때는 `Get-Content <파일> -Raw | <명령>`. 같은 이유로
-   `&&`·`||`(5.1 에 없음), `2>&1`(네이티브 exe 에서 `$?`를 거짓으로 만든다),
-   `rm -rf`·`which`·`head`·`touch`·`mkdir -p` 도 그대로 주지 않는다.
-   에이전트가 **자기 Bash 도구 안에서** 쓰는 문법과 혼동하기 쉬운 자리다 — 그쪽은 Git Bash 라
+   이것은 **명령을 건네는 쪽**의 규약이다. 한국어 Windows 사용자는 대개 PowerShell에서
+   실행하며(Claude Code 데스크톱 앱의 Run 단추도 PowerShell이다), 거기서는
+   `cmd < file`이 «`<` 연산자는 나중에 사용하도록 예약되어 있습니다»로 **시작조차 못 한다**.
+   파일을 stdin으로 넘길 때는 `Get-Content <파일> -Raw | <명령>`. 같은 이유로
+   `&&`·`||`(5.1에 없음), `2>&1`(네이티브 exe에서 `$?`를 거짓으로 만든다),
+   `rm -rf`·`which`·`head`·`touch`·`mkdir -p`도 그대로 주지 않는다.
+   에이전트가 **자기 Bash 도구 안에서** 쓰는 문법과 혼동하기 쉬운 자리다 — 그쪽은 Git Bash라
    전부 된다. 갈리는 것은 문법이 아니라 **누가 실행하느냐**다.
-   (2026-09-23 실측: `codex exec ... - < prompt.md` 를 건넸다가 RedirectionNotSupported.)
+   (2026-09-23 실측: `codex exec ... - < prompt.md`를 건넸다가 RedirectionNotSupported.)
 
 ## 폰트 정책 (산출물 공통 — 사용자 편집 지점)
 
