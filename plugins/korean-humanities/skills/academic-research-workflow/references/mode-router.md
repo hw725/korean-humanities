@@ -20,7 +20,7 @@
 
 완료 기준은 답할 수 있는 연구질문 1-3개 + 제외 범위 + 연구사 좌표가 생기는 것이다.
 
-## 2. 연구사 (historiographical-review) — 구 literature-review를 대체
+## 2. 연구사 (historiographical-review)
 
 `연구사 / historiographical-review`를 선택한다.
 
@@ -30,7 +30,7 @@
 
 이것은 PRISMA식 “남은 공백” 채우기가 아니다. **재독해·재맥락화**가 목표다. 필수 산출물은 **해석 계보도**: 학파(예: 실증사학 / 민족주의사학 / 사회경제사학 / 식민사학 비판 / 뉴라이트 논쟁) → 대표 연구·연구자 → 핵심 독법 → 그 독법이 가리는 것(은폐·침묵) → 이 연구의 개입 지점(개입의 핵심이 된 학설 충돌은 어느 두 연구가 어느 명제에서 갈리는지와 각자의 사료·판본 근거까지 짚는다 — 충돌을 전수 목록화하거나 ‘충돌 없음’까지 적지는 않는다). 단순 요약 나열로 끝내지 않는다.
 
-## 3. 사료비평·교감 (source-criticism-collation) — 신규, 방법론의 척추
+## 3. 사료비평·교감 (source-criticism-collation) — 방법론의 척추
 
 `사료비평·교감 / source-criticism-collation`을 선택한다.
 
@@ -47,7 +47,7 @@
 
 필수 산출물은 사료비평 시트 + 이본 대조표 + 채택 독법 근거다.
 
-## 4. 해석 논증 (hermeneutic-argument-planning) — 구 paper-planning/drafting
+## 4. 해석 논증 (hermeneutic-argument-planning)
 
 `해석 논증 / hermeneutic-argument-planning`을 선택한다.
 
@@ -87,7 +87,7 @@
 
 보고는 결함을 **심각도 등급 표준**(`output-contracts.md`의 치명/주요/사소)에 따라 분류하고 판정 근거를 단다. **치명 결함이 하나라도 있으면 게재 불가(Accept 불가)로 판정한다.** **Risk-of-Bias·통계 방법·재현성 점검은 쓰지 않는다.**
 
-## 7. 사료 충실성 감사 (source-fidelity-audit) — 구 claim-citation-audit
+## 7. 사료 충실성 감사 (source-fidelity-audit)
 
 `사료 충실성 감사 / source-fidelity-audit`을 선택한다.
 
@@ -135,4 +135,4 @@
 7. 수정과 response matrix
 8. 형식 변환(HWP/HWPX)과 제출 점검
 
-각 단계는 입력, 산출물, 통과 기준, 미해결 리스크를 남긴다. (구 STEM 순서의 검색→screening→dedup은 8번 DH 옵션일 때만.)
+각 단계는 입력, 산출물, 통과 기준, 미해결 리스크를 남긴다. 검색→screening→dedup은 8번 DH 옵션일 때만 넣는다.

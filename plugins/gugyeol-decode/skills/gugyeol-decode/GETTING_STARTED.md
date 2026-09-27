@@ -50,35 +50,26 @@
 - **Python 3.9 이상** (`python --version` 으로 확인)
 - **인터넷 연결** (1회 setup 시 매핑 데이터 다운로드)
 
-### 원클릭 설치
+### 설치
 
-**Windows (PowerShell)**:
-```powershell
-iwr -useb https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.ps1 | iex
-```
+스킬 폴더에 `reference/` 매핑 데이터가 이미 들어 있으면(korean-humanities 슈트 배포본) `pip install pymupdf`만 하면 됩니다(HWPX/HWP는 `pip install python-hwpx` 추가).
 
-**macOS / Linux / WSL (bash)**:
+매핑 데이터가 없으면 스킬 폴더에서 한 번 실행합니다:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.sh | bash
+python setup.py            # 의존성 확인 + 데이터 자동 처리
 ```
 
 자동 처리되는 것:
-1. `~/.claude/skills/gugyeol-decode/`에 git clone
-2. `pymupdf` (필수) + `python-hwpx` (선택) pip install — 실패 시 `--user` 자동 재시도
-3. **hypua 옛한글 매핑** (kiwiyou/hypua, public domain, 5660건) 다운로드
-4. **AKS 구결자 매핑** (한국학중앙연구원, 255건) 다운로드
-5. **AKS 옛한글 카테고리** (5299건) 다운로드
-6. **Unihan K source 한자** (합자 구결 후보 풀, 10,919건, 약 8MB) 다운로드
+1. `pymupdf` (필수) 확인 — 없으면 pip install, 실패 시 `--user` 자동 재시도
+2. **hypua 옛한글 매핑** (kiwiyou/hypua, public domain, 5660건) 다운로드
+3. **AKS 구결자 매핑** (한국학중앙연구원, 255건) 다운로드
+4. **AKS 옛한글 카테고리** (5299건) 다운로드
+5. **Unihan K source 한자** (합자 구결 후보 풀, 10,919건, 약 8MB) 다운로드
+
+`python-hwpx`는 설치하지 않고 안내만 합니다 — HWPX/HWP를 처리할 때 따로 설치합니다.
 
 **소요 시간**: 약 5-10분 (대부분 AKS 옛한글 lookup). 한 번만 받아두면 끝.
-
-### 수동 설치 (원클릭이 막힌 경우)
-
-```bash
-git clone https://github.com/hw725/gugyeol-decode.git ~/.claude/skills/gugyeol-decode
-cd ~/.claude/skills/gugyeol-decode
-python setup.py            # 의존성 + 데이터 자동 처리
-```
 
 ### 옵션
 
@@ -249,7 +240,7 @@ PNG 보고 매핑 직접 입력 후 `apply_mapping.py`로 재실행 (자세한 �
 | 兯 | U+516F | 隹(위) + 隱(은/는) 系 | 한 |
 | (incremental 추가) | | | |
 
-`reference/hapja_gugyeol.json`에 검증된 글자만 등록. `--scan-hapja` 옵션으로 PDF 본문에 등장 여부 보고.
+`reference/hapja_kugyeol.json`에 검증된 글자만 등록. `--scan-hapja` 옵션으로 PDF 본문에 등장 여부 보고.
 
 또한 `reference/unihan_korean.json`에는 Unihan K2~K6 한국 source 한자 **10,919건**이 후보 풀로 들어 있어, PDF 본문에서 한국 특유 한자가 등장하면 자동 보고합니다 (학술 검증 후 hapja에 정식 등록).
 
@@ -393,7 +384,7 @@ python scripts/font_alias.py "*ÇÑ¾ç½Å¸íÁ¶"
 python scripts/extract_pua.py <PDF> --scan-hapja
 ```
 
-`reference/hapja_gugyeol.json` (검증된 합자) + `reference/unihan_korean.json` (K2~K6 한국 source 한자 후보 풀) 활용.
+`reference/hapja_kugyeol.json` (검증된 합자) + `reference/unihan_korean.json` (K2~K6 한국 source 한자 후보 풀) 활용.
 
 ---
 
@@ -419,7 +410,7 @@ python scripts/extract_pua.py <PDF> --scan-hapja
 
 #### 합자 구결자 추가
 
-새로운 합자 구결자를 학술 자료에서 확인하면 `reference/hapja_gugyeol.json`에 추가:
+새로운 합자 구결자를 학술 자료에서 확인하면 `reference/hapja_kugyeol.json`에 추가:
 
 ```json
 {

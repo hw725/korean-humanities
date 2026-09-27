@@ -9,22 +9,21 @@
 
 본 도구는 표준 매핑 데이터를 활용해 이들을 정상 Unicode로 복원하고, 본문 전체를 깨끗한 markdown으로 출력합니다.
 
-## 원클릭 설치
+## 설치
 
-**Windows (PowerShell)**:
-```powershell
-iwr -useb https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.ps1 | iex
-```
+스킬 폴더에 `reference/` 매핑 데이터가 이미 들어 있으면(korean-humanities 슈트 배포본) `pip install pymupdf`만 하면 됩니다(HWPX/HWP는 `pip install python-hwpx` 추가).
 
-**macOS / Linux / WSL (bash)**:
+매핑 데이터가 없으면 스킬 폴더에서 한 번 실행합니다:
+
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.sh | bash
+python setup.py
 ```
 
-이 한 줄이 자동으로:
-1. `~/.claude/skills/gugyeol-decode/`에 git clone
-2. `pymupdf` (필수) + `python-hwpx` (선택) 자동 pip install
-3. hypua + AKS 매핑 데이터 다운로드 (5-10분)
+이 명령이 자동으로:
+1. `pymupdf` (필수) 확인 — 없으면 pip install
+2. hypua + AKS 매핑 데이터 다운로드 (5-10분)
+
+`python-hwpx`는 설치하지 않고 안내만 합니다 — HWPX/HWP를 처리할 때 따로 설치합니다.
 
 ## 사용 방법 (설치 후)
 

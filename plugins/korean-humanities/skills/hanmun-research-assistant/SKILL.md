@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.1
+  version: 0.9.2
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -12,10 +12,9 @@ metadata:
 
 # Hanmun Research Assistant
 
-> 구 `cjk-research-assistant` — 2026-08-26 개명. 사용자 전공은 한문학(한국의 전근대
-> 한문 기록 문학)이라 C·J 학문까지 암시하는 cjk가 과대 표기였다. 아래 «CJK Text
-> Handling Contract» 절 이름의 CJK는 학문 범위가 아니라 **문자 층위**(유니코드
-> CJK Unified Ideographs·확장 평면)를 가리키므로 유지한다.
+> 범위는 한문학(한국의 전근대 한문 기록 문학)이다. 아래 «CJK Text Handling Contract»의
+> CJK는 학문 범위가 아니라 **문자 층위**(유니코드 CJK Unified Ideographs·확장 평면)를
+> 가리킨다.
 
 ## Overview
 
@@ -49,7 +48,6 @@ Use this skill as the single router for the user research assistant. It does not
        if hasattr(_s, "reconfigure"):
            _s.reconfigure(encoding="utf-8", errors="replace")
    ```
-   `PYTHONUTF8=1`이나 `py -X utf8`은 사용자 환경에 의존하므로 방어선이 아니다(§4 참조).
 2. **CJK 문자 클래스·프로퍼티 매칭은 stdlib `re` 금지, `regex` 모듈을 쓴다**
    (`pip install regex` 전제). `re`는 유니코드 프로퍼티를 지원하지 않아 `[가-힣]`·
    `[一-鿿]` 하드코딩으로 흐르는데, 그 범위는 옛한글 첫가끝 자모(U+1100·U+A960·
@@ -81,7 +79,6 @@ Use this skill as the single router for the user research assistant. It does not
    `rm -rf`·`which`·`head`·`touch`·`mkdir -p`도 그대로 주지 않는다.
    에이전트가 **자기 Bash 도구 안에서** 쓰는 문법과 혼동하기 쉬운 자리다 — 그쪽은 Git Bash라
    전부 된다. 갈리는 것은 문법이 아니라 **누가 실행하느냐**다.
-   (2026-09-23 실측: `codex exec ... - < prompt.md`를 건넸다가 RedirectionNotSupported.)
 
 ## 폰트 정책 (산출물 공통 — 사용자 편집 지점)
 
@@ -144,12 +141,10 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 
 ## Workflow
 
-1. Classify the request into one mode from the router.
-2. Identify evidence boundaries: local source, local derived artifact, external authority, or unverified.
-3. Choose the narrowest existing specialist skill or local script before inventing a new tool.
-4. Produce a concrete artifact: note, evidence matrix, tool comparison table, JSONL log, connector plan, or edit.
-5. If a new external tool is involved, read `references/tool-benchmark.md` and route through `/audit-config`.
-6. If a reusable behavior emerges, update this skill or its references instead of adding scattered prompt text.
+Mark each input's evidence boundary (local source, local derived artifact, external authority, unverified).
+Prefer the narrowest existing specialist skill or local script over a new tool.
+When a new external tool is involved, read `references/tool-benchmark.md` and route through `/audit-config`.
+When a reusable behavior emerges, update this skill or its references instead of adding scattered prompt text.
 
 ## Execution Model: Dynamic Harness
 

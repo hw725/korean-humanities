@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.2
+  version: 1.1.3
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -34,9 +34,17 @@ metadata:
 - **HWPX 경로**: python-hwpx로 텍스트 추출 → codepoint 단독 룩업(한컴 PUA 표준) → 본문 치환
 - **HWP 경로**: HWPX 자동 변환(hwpx 스킬 활용) → HWPX 흐름
 
+자동 감지 진입점은 `scripts/decode.py`다:
+
+```bash
+python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode value|modern|both] [--keep-intermediate]
+```
+
+아래 Workflow 1~4는 자동 매핑이 못 잡은 PUA를 시각 판독으로 채울 때의 수동 경로다. `--no-normalize`는 `apply_mapping.py`·`decode_hwpx.py`에만 있다.
+
 추가로 모든 경로에서 자동 적용:
 
-- **PUA 폰트 무시 fallback**: 같은 codepoint이지만 다른 폰트로 등장한 PUA가 있을 경우(예: U+F537 = ᄒᆞ가 본문 폰트와 강조 폰트에서 동시 등장) 첫 매핑을 fallback으로 적용. 이전 버전의 잔존 PUA 누락 케이스 해소.
+- **PUA 폰트 무시 fallback**: 같은 codepoint이지만 다른 폰트로 등장한 PUA가 있을 경우(예: U+F537 = ᄒᆞ가 본문 폰트와 강조 폰트에서 동시 등장) 첫 매핑을 fallback으로 적용.
 - **NFC 정규화**: CJK Compatibility Ideographs(U+F900-FAFF)가 정규 분해를 가진 경우 표준 CJK Unified Ideographs로 자동 변환(예: 讀 U+F95A → 讀 U+8B80, 寧 U+F95F → 寧 U+5BE7). NFC는 canonical equivalence만 처리하므로 학술 텍스트의 의도된 표기를 건드리지 않는다. 의도적으로 끄려면 `--no-normalize` 사용. NFKC를 사용하지 않는 이유는 halfwidth/fullwidth 변환 등 부수 효과로 학술 텍스트(예: 한문 문장부호, 일본어 인용)에 의도치 않은 영향을 줄 수 있기 때문.
 
 ## When to use
@@ -63,23 +71,18 @@ metadata:
 - Claude Code 또는 멀티모달 LLM 접근 (PDF 시각 판독 fallback용 — 자동 매핑 100% 시 불필요)
 - 출력 디렉터리 쓰기 권한
 
-## Install (원클릭)
+## Install
 
-> **이미 이 스킬 폴더에 `reference/` 매핑 데이터(약 3.6MB)가 들어 있다면** — korean-humanities
-> 슈트 배포본이 그렇다 — 아래 원클릭 설치는 불필요하다. PDF 처리를 쓸 때
-> `pip install pymupdf`만 하면 된다.
+스킬 폴더에 `reference/` 매핑 데이터(약 3.6MB)가 이미 있으면(korean-humanities 슈트 배포본) `pip install pymupdf`만 하면 된다(HWPX/HWP는 `pip install python-hwpx` 추가).
 
-```powershell
-# Windows
-iwr -useb https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.ps1 | iex
-```
+매핑 데이터가 없으면 스킬 폴더에서 한 번 실행한다:
 
 ```bash
-# macOS/Linux/WSL
-curl -fsSL https://raw.githubusercontent.com/hw725/gugyeol-decode/master/install.sh | bash
+python setup.py              # PyMuPDF 확인(없으면 자동 설치) + 매핑 데이터 다운로드
+python setup.py --check      # 설치 상태만 확인
 ```
 
-자동 처리: clone → pip install (pymupdf + python-hwpx) → 매핑 데이터 다운로드.
+python-hwpx는 `setup.py`가 설치하지 않고 안내만 한다 — HWPX/HWP를 처리할 때 따로 설치한다.
 
 ## Inputs
 
@@ -114,7 +117,7 @@ font 이름이 mojibake(`*ÇÑ¾ç½Å¸íÁ¶`)로 나와도 패턴은 보존�
 
 ### 0. (1회 setup) 표준 매핑 캐시 구축 — **이 단계가 정확도의 핵심**
 
-원클릭 install이나 `python setup.py` 실행 시 **모두 자동 처리**된다. 아래는 내부적으로 어떤 자료를 받는지의 설명 (수동 fallback이 필요한 경우만 직접 사용).
+`python setup.py` 실행 시 **모두 자동 처리**된다. 아래는 내부적으로 어떤 자료를 받는지의 설명 (수동 fallback이 필요한 경우만 직접 사용).
 
 본 스킬은 다음 외부 자료에 의존한다 (자세한 출처·라이선스는 `ATTRIBUTION.md`):
 
@@ -144,7 +147,7 @@ python scripts/fetch_unihan_korean.py # K2~K6 한국 source 한자 10,919건
 1. `hypua_table.csv` — 한양 PUA 옛한글 (압도적 정확도, 시각 판독 대체)
 2. `aks_gukyul_pua.json` — 구결자 PUA → 음가 (한국학중앙연구원 표준)
 3. `aks_oldhan_pua.json` — 옛한글 **카테고리** (hypua 미수록 잔여분). label은 카테고리 대표 글자·범위이지 정확한 대응 문자가 아니므로 **본문 치환에 쓰지 않는다** — `decode_hwpx.py`는 이 항목을 판독 힌트로만 싣고 해당 PUA는 미매핑으로 보고한다(2026-09-15 Codex 교차검증 Important 2)
-4. `hapja_gugyeol.json` — 합자 구결자 (한국 한자 표준 + 학술 검증)
+4. `hapja_kugyeol.json` — 합자 구결자 (한국 한자 표준 + 학술 검증)
 5. `unihan_korean.json` — 후보 풀 (사용자 검증 후 hapja에 등록)
 6. 시각 판독 — 위 모두 못 잡는 경우만
 
@@ -186,8 +189,6 @@ python scripts/extract_pua.py <PDF경로> [--out <디렉터리>]
 
 **자동 작성 도구는 없다.** `mapping.json`은 2단계에서 뽑은 컨텍스트 PNG를 보고
 사용자·Claude가 직접 쓴다 — PUA 글자의 정확한 음가는 시각 판독이 필요하기 때문이다.
-(2026-09-15 정정: 여기 있던 `python -m gugyeol_decode.build_mapping`은 실재하지 않는
-모듈이었다. `gugyeol_decode` 패키지 자체가 없다.)
 
 ```json
 {

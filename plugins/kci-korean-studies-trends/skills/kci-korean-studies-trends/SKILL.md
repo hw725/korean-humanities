@@ -2,7 +2,7 @@
 name: kci-korean-studies-trends
 description: "KCI에서 연도×분야 코퍼스를 모아 주제 클러스터·대표 논문 후보·학술지 분포가 붙은 동향 보고서를 만든다. «KCI 동향 코퍼스»·«연도별 전공별 동향 보고서»처럼 학술지 전수조사가 필요할 때 쓴다(API 키 불필요)."
 metadata:
-  version: 2.1.2
+  version: 2.1.3
   category: academic-research
   suite: korean-humanities
   tier: portable
