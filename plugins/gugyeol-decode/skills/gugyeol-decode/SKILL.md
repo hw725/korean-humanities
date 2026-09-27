@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.4
+  version: 1.1.5
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -78,11 +78,11 @@ python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode val
 매핑 데이터가 없으면 스킬 폴더에서 한 번 실행한다:
 
 ```bash
-python setup.py              # PyMuPDF 확인(없으면 자동 설치) + 매핑 데이터 다운로드
+python setup.py              # PyMuPDF·python-hwpx 확인(없으면 자동 설치) + 매핑 데이터 다운로드
 python setup.py --check      # 설치 상태만 확인
 ```
 
-python-hwpx는 `setup.py`가 설치하지 않고 안내만 한다 — HWPX/HWP를 처리할 때 따로 설치한다.
+`setup.py`는 python-hwpx(HWPX/HWP 처리용, 선택)도 자동 설치를 시도한다 — 실패해도 PDF 처리는 계속되고 HWPX 입력 때 다시 시도하면 된다. 설치 대상은 `setup.py`를 **실행한 파이썬 환경**이므로, 시스템 파이썬을 깨끗하게 두려면 가상환경의 python으로 실행한다.
 
 ## Inputs
 

@@ -23,7 +23,7 @@ python setup.py
 1. `pymupdf` (필수) 확인 — 없으면 pip install
 2. hypua + AKS 매핑 데이터 다운로드 (5-10분)
 
-`python-hwpx`는 설치하지 않고 안내만 합니다 — HWPX/HWP를 처리할 때 따로 설치합니다.
+`setup.py`는 `python-hwpx`(HWPX/HWP 처리용, 선택)도 자동 설치를 시도합니다 — 실패해도 PDF 처리는 계속됩니다. 설치 대상은 `setup.py`를 **실행한 파이썬 환경**이므로, 시스템 파이썬을 깨끗하게 두려면 가상환경의 python으로 실행하세요.
 
 ## 사용 방법 (설치 후)
 
