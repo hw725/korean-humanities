@@ -17,7 +17,7 @@ kci_ingest.py - KCI 서지정보·초록 수집기 (corpus JSONL / 선택적 vau
   python scripts/kci_ingest.py --query "蒙求" --dry-run
 
 원칙:
-  - 기본값은 본문 PDF를 확보하지 않고 서지와 초록만 Layer 2 abstract-only로 기록한다.
+  - 기본값은 본문 PDF를 확보하지 않고 서지와 초록만 abstract-only로 기록한다(초록은 검증 layer가 아니다).
   - classify_and_route.py를 거치지 않는 독립 ingest 경로다.
   - .queue/kci-seen.jsonl로 dedupe, .queue/kci-pending.jsonl로 처리 로그를 남긴다.
   - User-Agent, robots.txt 확인, 요청 간 sleep을 적용한다.
@@ -933,12 +933,10 @@ def write_note(article: KCIArticle, inbox: Path) -> Path:
         f"publisher: {yaml_scalar(article.publisher)}",
         f"pdf_source_url: {yaml_scalar(article.pdf_url)}",
         f"pdf_source: {yaml_scalar(article.pdf_source)}",
-        "verification_layer: Layer 2",
         "verification_scope: abstract-only",
         "pdf_status: not-acquired",
         f"nfc_applied: {str(article.nfc_applied).lower()}",
         f"arrived: {dt.date.today().isoformat()}",
-        "status: pending-review",
         "tags:",
         "  - inbox-auto",
         "  - kci",
@@ -961,7 +959,7 @@ def write_note(article: KCIArticle, inbox: Path) -> Path:
     body = "\n".join(front)
     body += f"# {title}\n\n"
     body += (
-        "> KCI 서지와 초록만 적재한 Layer 2 보조 자료입니다. "
+        "> KCI 서지와 초록만 적재한 보조 자료입니다(abstract-only — 검증 layer가 아니다). "
         "본문 PDF 확보 전에는 본문 인용이나 논증 근거로 승격하지 않습니다.\n"
     )
     body += f"> KCI: <{article.url}>\n"
@@ -988,7 +986,7 @@ def write_note(article: KCIArticle, inbox: Path) -> Path:
         body += abstract_en + "\n"
     body += "\n## 검토 후 액션\n\n"
     body += "- [ ] PDF 원문 확보\n"
-    body += "- [ ] 원문 확인 후 `verification_layer`를 Layer 1로 승격할지 판단\n"
+    body += "- [ ] PDF 원문을 local ingest해 대조하면 그때 `verification_layer: Layer 1`로 적는다\n"
     body += "- [ ] 필요한 경우 `_논문index/`로 이동\n"
 
     note_path.write_text(body, encoding="utf-8")

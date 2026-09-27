@@ -672,9 +672,7 @@ def render_report(
         "source_db: KCI",
         f"corpus_window: {json.dumps(window_label, ensure_ascii=False)}",
         f"generated: {dt.date.today().isoformat()}",
-        "verification_layer: Layer 2",
         "verification_scope: abstract-only",
-        "status: pending-review",
         "---",
         "",
         f"# {title_year} KCI {scope_label} 동향 전수조사",
@@ -684,7 +682,7 @@ def render_report(
         f"- 대상 논문 수: {len(records)}",
         f"- 대상 학술지: 엑셀 기반 KCI 프로필 {profile_count}종",
         "- 근거 자료: KCI 서지정보, 초록, 키워드",
-        "- 본문 PDF 확인 전이므로 개별 논문 내용 판단은 Layer 2 abstract-only로 제한",
+        "- 본문 PDF 확인 전이므로 개별 논문 내용 판단은 초록 기준(abstract-only)으로 제한 — 초록은 검증 layer가 아니며 wiki 근거로 인용하지 않는다",
         "- 보고서의 주제어·대표 논문은 코퍼스 기반 후보이며, 본문 독해 전 확정 판단으로 쓰지 않음",
     ]
     if use_citations:

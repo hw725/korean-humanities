@@ -2,7 +2,7 @@
 name: kci-korean-studies-trends
 description: "KCI에서 연도×분야 코퍼스를 모아 주제 클러스터·대표 논문 후보·학술지 분포가 붙은 동향 보고서를 만든다. «KCI 동향 코퍼스»·«연도별 전공별 동향 보고서»처럼 학술지 전수조사가 필요할 때 쓴다(API 키 불필요)."
 metadata:
-  version: 2.1.3
+  version: 2.1.4
   category: academic-research
   suite: korean-humanities
   tier: portable
@@ -39,7 +39,7 @@ API 키 불필요 — 공개 검색 페이지를 수집한다. **robots 고지**
 ## Grounding Rules
 
 - 학술지·주제·논문·인용수·동향 주장을 지어내지 않는다 — 코퍼스에 없으면 없다.
-- KCI 메타데이터·초록·키워드는 Layer 2. 보고서는 `verification_scope: abstract-only`를 명시한다.
+- KCI 메타데이터·초록·키워드는 검증 layer가 아니다. 서지 사실(저자·연도·권호)의 확인에만 쓰고, 보고서·노트는 `verification_scope: abstract-only`만 명시한다(보류 상태 필드는 두지 않는다). 초록 산출물은 vault의 wiki 밖에 두고 wiki 근거로 인용하지 않는다.
 - 원문 PDF를 읽기 전에는 주제·대표 논문을 «후보»라고 부른다.
 - 논문 개별 언급에는 최소 제목·저자·학술지·연도·KCI ID를 붙인다.
 - 인용수는 발행 연도가 `citation-lag-years`(기본 2년) 이상 지난 논문에만 적용한다.
