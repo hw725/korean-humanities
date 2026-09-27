@@ -4,7 +4,7 @@ description: "영문 초록·논문 영역·투고용 영문 윤문과 영문 �
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.3.0
+  version: 1.3.1
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 9cecfef6ac683fa59d7d15d2e22f98fa71dacaf5 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
   suite: korean-humanities

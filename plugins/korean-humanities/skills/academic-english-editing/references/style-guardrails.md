@@ -10,9 +10,9 @@
 
 | 설정 | 값 | 기본 |
 |---|---|---|
-| 철자 변종 | British / American | **묻는다**. 목표 저널이 정해져 있으면 그 관행 |
-| 로마자 표기 | MR / RR | `ko-to-en.md` 참조. `academic-research-workflow`와 같은 값 |
-| 인칭 | `we` 허용 / 비인칭 | 분야 관행에 따름 |
+| 철자 변종 | British / American | 목표 저널이 정해져 있으면 그 관행, 없으면 **American**. 묻지 않고 확정값을 한 줄로 보고한다(`SKILL.md` 1단계) |
+| 로마자 표기 | MR / RR | 목표 저널 관행, 없으면 **MR**. `academic-research-workflow`와 같은 값(`ko-to-en.md` 참조) |
+| 인칭 | `we` 허용 / 비인칭 | 분야·저널 관행, 없으면 **비인칭(3인칭)** |
 
 한 원고 안에서 섞지 않는다.
 
