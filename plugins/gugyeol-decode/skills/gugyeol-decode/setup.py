@@ -3,23 +3,32 @@
 gugyeol-decode 1-step setup — 처음 사용자를 위한 모든 의존성·데이터를 한 번에 준비
 
 수행 작업:
-  1. PyMuPDF (PDF 처리 라이브러리) 설치 확인 → 없으면 pip install 안내
+  0. 가상환경 확보 — 시스템 파이썬으로 실행하면 스킬 폴더에 .venv를 만들고 그 python으로
+     자신을 다시 실행한다. 의존성을 시스템 파이썬에 설치하지 않기 위해서다. 이미 가상환경
+     안에서 실행했으면 그 환경을 쓴다.
+  1. PyMuPDF (PDF 처리 라이브러리) 설치 확인 → 없으면 가상환경에 pip install
   2. hypua 옛한글 매핑 다운로드 (kiwiyou/hypua, public domain)
   3. AKS 한국학중앙연구원 표준 구결자·옛한글 매핑 다운로드
   4. (선택) Unihan K source 한자 다운로드 — 합자 구결자 후보 풀
 
-사용:
-  python setup.py              # 전체 setup
+사용 (python 자리에는 아무 파이썬 3.9+ — Windows면 py):
+  python setup.py              # 전체 setup (.venv 생성 포함)
   python setup.py --skip-unihan  # 합자 구결 데이터 제외 (3.8MB → 0.6MB)
   python setup.py --check      # 설치 상태만 확인
+
+setup 뒤의 스크립트 실행은 .venv의 python으로 한다:
+  Windows      .venv\\Scripts\\python.exe scripts\\decode.py <파일>
+  macOS/Linux  .venv/bin/python scripts/decode.py <파일>
 """
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
 import urllib.request
+import venv
 from pathlib import Path
 
 # CJK 텍스트 계약 E3: Windows 콘솔 기본 cp949에서 한글·한자 출력이
@@ -37,6 +46,26 @@ HYPUA_PATH = REF / "hypua_table.csv"
 AKS_GUKYUL_PATH = REF / "aks_gukyul_pua.json"
 AKS_OLDHAN_PATH = REF / "aks_oldhan_pua.json"
 UNIHAN_KOREAN_PATH = REF / "unihan_korean.json"
+VENV = ROOT / ".venv"
+
+
+def venv_python(env: Path = VENV) -> Path:
+    """가상환경 안의 python 실행 파일 경로(OS별)."""
+    return env / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+
+
+def running_in_venv() -> bool:
+    """지금 인터프리터가 가상환경인가. 스킬 .venv든 사용자가 켜 둔 다른 venv든 같다."""
+    return sys.prefix != getattr(sys, "base_prefix", sys.prefix)
+
+
+def ensure_venv(env: Path = VENV) -> Path:
+    """스킬 .venv가 없으면 만든다(pip 포함). python 경로를 돌려준다."""
+    py = venv_python(env)
+    if not py.exists():
+        print(colored(f"  → 가상환경 생성: {env}", "cyan"), flush=True)
+        venv.EnvBuilder(with_pip=True).create(env)
+    return py
 
 
 def colored(text: str, color: str) -> str:
@@ -81,15 +110,16 @@ def print_status(status: dict[str, bool]) -> None:
 
 
 def _pip_install(package: str) -> bool:
-    """pip install — 실패 시 --user 재시도."""
-    for args in ([package], ["--user", package]):
-        try:
-            rc = subprocess.call([sys.executable, "-m", "pip", "install", *args])
-            if rc == 0:
-                return True
-        except Exception:
-            pass
-    return False
+    """지금 인터프리터(가상환경)에 pip install. --user 재시도는 하지 않는다 —
+    그것이 시스템 파이썬 사용자 영역으로 새어 나가는 경로였다."""
+    if not running_in_venv():
+        print(colored("  ✗ 가상환경 밖에서는 설치하지 않는다(시스템 파이썬 보호) — setup.py를 다시 실행하면 .venv로 옮겨 간다",
+                      "red"))
+        return False
+    try:
+        return subprocess.call([sys.executable, "-m", "pip", "install", package]) == 0
+    except Exception:
+        return False
 
 
 def step_pymupdf(auto: bool = True) -> bool:
@@ -198,13 +228,25 @@ def step_unihan() -> bool:
         return False
 
 
-def main() -> int:
+def run(cmd: list[str]) -> int:
+    """다시 실행용. 테스트가 바꿔 끼울 수 있게 따로 둔다."""
+    return subprocess.call(cmd)
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="gugyeol-decode 1-step setup")
     parser.add_argument("--check", action="store_true",
                         help="현재 설치 상태만 확인")
     parser.add_argument("--skip-unihan", action="store_true",
                         help="Unihan 한국 source 한자(합자 구결 후보 풀) 건너뛰기")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+
+    # 시스템 파이썬으로 실행됐으면 스킬 .venv로 옮겨 가 같은 인자로 다시 돈다.
+    # --check도 옮겨 간다 — 의존성은 .venv 쪽에 설치돼 있으므로 거기서 봐야 맞다.
+    if not running_in_venv():
+        py = ensure_venv()
+        print(colored(f"  → {py} 로 다시 실행", "cyan"), flush=True)  # 자식 출력보다 먼저 보이게
+        return run([str(py), str(Path(__file__).resolve()), *(sys.argv[1:] if argv is None else argv)])
 
     print(colored("=" * 60, "bold"))
     print(colored("gugyeol-decode setup", "bold"))
@@ -240,8 +282,8 @@ def main() -> int:
 
     print_status(check_status())
 
-    print(colored("\n다음 단계:", "bold"))
-    print(colored("  python scripts/decode.py <파일경로>     # PDF/HWPX/HWP 자동 분기",
+    print(colored("\n다음 단계 — 이 환경의 python으로 실행한다:", "bold"))
+    print(colored(f"  {sys.executable} {SCRIPTS / 'decode.py'} <파일경로>     # PDF/HWPX/HWP 자동 분기",
                   "cyan"))
     print(colored("\n또는 GETTING_STARTED.md를 읽어보세요.", "bold"))
     return 0

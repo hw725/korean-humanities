@@ -52,22 +52,23 @@
 
 ### 설치
 
-스킬 폴더에 `reference/` 매핑 데이터가 이미 들어 있으면(korean-humanities 슈트 배포본) `pip install pymupdf`만 하면 됩니다(HWPX/HWP는 `pip install python-hwpx` 추가).
-
-매핑 데이터가 없으면 스킬 폴더에서 한 번 실행합니다:
+스킬 폴더에서 한 번 실행합니다(아무 파이썬 3.9+로 — Windows면 `py setup.py`):
 
 ```bash
-python setup.py            # 의존성 확인 + 데이터 자동 처리
+python setup.py            # 가상환경 + 의존성 + 데이터 자동 처리
 ```
 
 자동 처리되는 것:
-1. `pymupdf` (필수) 확인 — 없으면 pip install, 실패 시 `--user` 자동 재시도
-2. **hypua 옛한글 매핑** (kiwiyou/hypua, public domain, 5660건) 다운로드
-3. **AKS 구결자 매핑** (한국학중앙연구원, 255건) 다운로드
-4. **AKS 옛한글 카테고리** (5299건) 다운로드
-5. **Unihan K source 한자** (합자 구결 후보 풀, 10,919건, 약 8MB) 다운로드
+1. **가상환경 `.venv`** — 스킬 폴더에 만들고 그 안에서 다시 실행합니다. **시스템 파이썬에는 아무것도 설치하지 않습니다.** 이미 켜 둔 가상환경 안에서 실행하면 그 환경을 씁니다
+2. `pymupdf`(필수)·`python-hwpx`(HWPX/HWP용, 선택) 설치 — python-hwpx가 실패해도 PDF 처리는 계속됩니다
+3. **hypua 옛한글 매핑** (kiwiyou/hypua, public domain, 5660건) 다운로드
+4. **AKS 구결자 매핑** (한국학중앙연구원, 255건) 다운로드
+5. **AKS 옛한글 카테고리** (5299건) 다운로드
+6. **Unihan K source 한자** (합자 구결 후보 풀, 10,919건, 약 8MB) 다운로드
 
-`setup.py`는 `python-hwpx`(HWPX/HWP 처리용, 선택)도 자동 설치를 시도합니다 — 실패해도 PDF 처리는 계속됩니다. 설치 대상은 `setup.py`를 **실행한 파이썬 환경**이므로, 시스템 파이썬을 깨끗하게 두려면 가상환경의 python으로 실행하세요.
+3~6은 `reference/`에 이미 있으면(korean-humanities 슈트 배포본) 건너뜁니다.
+
+**이 문서의 명령에서 `python scripts/...`의 `python`은 스킬 폴더 `.venv`의 python입니다** — Windows `.venv\Scripts\python.exe`, macOS/Linux `.venv/bin/python`. 시스템 python으로 스크립트를 돌리면 PyMuPDF를 찾지 못합니다.
 
 **소요 시간**: 약 5-10분 (대부분 AKS 옛한글 lookup). 한 번만 받아두면 끝.
 
@@ -331,9 +332,7 @@ U+EE88  →  ᄋᆞ  (= U+110B ᄋ + U+119E ᆞ)
 
 ### Q1. `ModuleNotFoundError: No module named 'fitz'`
 
-```bash
-pip install pymupdf
-```
+대개 스크립트를 `.venv`가 아닌 시스템 python으로 실행한 경우입니다. `.venv`의 python으로 다시 실행하세요. `.venv`에도 없으면 `python setup.py`를 다시 실행하면 됩니다(설치는 `.venv`에만 합니다).
 
 `fitz`가 PyMuPDF의 import 이름.
 
@@ -446,10 +445,9 @@ python scripts/extract_pua.py <PDF> --scan-hapja
 처음 사용 시:
 
 - [ ] Python 3.9+ 확인
-- [ ] `pip install pymupdf`
-- [ ] `python setup.py` (또는 `python setup.py --skip-unihan` 가벼운 버전)
+- [ ] `python setup.py` (또는 `python setup.py --skip-unihan` 가벼운 버전) — `.venv`를 만들고 의존성까지 설치
 - [ ] `python setup.py --check` 로 ✓ 모두 확인
-- [ ] **`python scripts/decode.py <PDF>`** ← 이것으로 끝입니다
+- [ ] **`.venv`의 python으로 `scripts/decode.py <PDF>`** ← 이것으로 끝입니다
 - [ ] `<PDF>.normalized.md` 검토
 
 질문·버그·기여는 git repo의 issue/PR로.

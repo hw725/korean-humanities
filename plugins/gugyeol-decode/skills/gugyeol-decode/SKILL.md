@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.5
+  version: 1.1.6
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -34,7 +34,7 @@ metadata:
 - **HWPX 경로**: python-hwpx로 텍스트 추출 → codepoint 단독 룩업(한컴 PUA 표준) → 본문 치환
 - **HWP 경로**: HWPX 자동 변환(hwpx 스킬 활용) → HWPX 흐름
 
-자동 감지 진입점은 `scripts/decode.py`다:
+자동 감지 진입점은 `scripts/decode.py`다(`python`은 스킬 폴더 `.venv`의 python — 아래 Install):
 
 ```bash
 python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode value|modern|both] [--keep-intermediate]
@@ -64,8 +64,8 @@ python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode val
 
 ## Prerequisites
 
-- **Python 3.9+** (pip install로 의존성 자동 처리)
-- 의존성은 `setup.py`가 자동 설치:
+- **Python 3.9+**
+- 의존성은 `setup.py`가 스킬 폴더의 `.venv`에 자동 설치한다(시스템 파이썬에는 설치하지 않는다):
   - `PyMuPDF` (필수, PDF 처리)
   - `python-hwpx` (선택, HWPX/HWP 처리)
 - Claude Code 또는 멀티모달 LLM 접근 (PDF 시각 판독 fallback용 — 자동 매핑 100% 시 불필요)
@@ -73,16 +73,18 @@ python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode val
 
 ## Install
 
-스킬 폴더에 `reference/` 매핑 데이터(약 3.6MB)가 이미 있으면(korean-humanities 슈트 배포본) `pip install pymupdf`만 하면 된다(HWPX/HWP는 `pip install python-hwpx` 추가).
-
-매핑 데이터가 없으면 스킬 폴더에서 한 번 실행한다:
+스킬 폴더에서 한 번 실행한다(아무 파이썬 3.9+로 — Windows면 `py setup.py`):
 
 ```bash
-python setup.py              # PyMuPDF·python-hwpx 확인(없으면 자동 설치) + 매핑 데이터 다운로드
-python setup.py --check      # 설치 상태만 확인
+python setup.py              # .venv 생성 → 그 안에 PyMuPDF·python-hwpx 설치 → 매핑 데이터 다운로드
+python setup.py --check      # 설치 상태만 확인(.venv 기준)
 ```
 
-`setup.py`는 python-hwpx(HWPX/HWP 처리용, 선택)도 자동 설치를 시도한다 — 실패해도 PDF 처리는 계속되고 HWPX 입력 때 다시 시도하면 된다. 설치 대상은 `setup.py`를 **실행한 파이썬 환경**이므로, 시스템 파이썬을 깨끗하게 두려면 가상환경의 python으로 실행한다.
+- 시스템 파이썬으로 실행하면 `setup.py`가 스킬 폴더에 `.venv`를 만들고 그 python으로 자신을 다시 실행한다. 이미 켜 둔 가상환경 안에서 실행하면 그 환경에 설치한다. 어느 쪽이든 시스템 파이썬에는 설치하지 않는다.
+- `reference/` 매핑 데이터(약 3.6MB)가 이미 있으면(korean-humanities 슈트 배포본) 다운로드는 건너뛰고 `.venv`와 의존성만 준비한다.
+- python-hwpx(HWPX/HWP 처리용, 선택)는 설치에 실패해도 PDF 처리는 계속된다 — HWPX 입력 때 `setup.py`를 다시 실행한다.
+
+**이 문서의 명령에서 `python`은 스킬 폴더 `.venv`의 python을 뜻한다** — Windows `.venv\Scripts\python.exe`, macOS/Linux `.venv/bin/python`. 시스템 python으로 스크립트를 돌리면 PyMuPDF를 찾지 못한다.
 
 ## Inputs
 
