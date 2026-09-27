@@ -20,6 +20,9 @@
   (Apache-2.0)의 nature-polishing에서 파생 — 파일별 파생 관계는 각 파일 머리말,
   원 라이선스는 `academic-english-editing` 스킬 폴더의 `LICENSE.upstream`에 보존
   (마켓플레이스 기준 전체 경로는 `plugins/korean-humanities/skills/academic-english-editing/LICENSE.upstream`).
+  `references/ai-tell-taxonomy.md`는 [matsuikentaro1/humanizer_academic](https://github.com/matsuikentaro1/humanizer_academic)
+  (MIT, Copyright (c) 2025 Kentaro Matsui, based on [blader/humanizer](https://github.com/blader/humanizer))의
+  패턴을 선별해 재서술한 것이다 — 저작권 고지는 그 파일 머리말.
 
 ## 개념·프레임 차용 (Academic Research Skills)
 

@@ -1,10 +1,10 @@
 ---
 name: academic-english-editing
-description: "영문 초록·논문 영역·투고용 영문 윤문 요청에 쓴다. 한국어 학술 원고를 영어 학술 산문으로 옮기며 논리 연결·문장 길이(10–30어)·hedging을 보정한다(비학술 영어는 stop-slop)."
+description: "영문 초록·논문 영역·투고용 영문 윤문과 영문 학술 원고의 AI티 제거에 쓴다. 한국어 학술 원고를 영어 학술 산문으로 옮기며 논리 연결·문장 길이(10–30어)·hedging을 보정한다(비학술 영어는 stop-slop)."
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.2.0
+  version: 1.3.0
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 9cecfef6ac683fa59d7d15d2e22f98fa71dacaf5 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
   suite: korean-humanities
@@ -24,11 +24,14 @@ metadata:
 
 2026-09-20(v1.2.0): upstream `9cecfef6`으로 pin을 올렸다 — 벤더링 3종은 upstream에서 무변경(no-op)이고, `.upstream.json` path_map 키를 upstream 실경로로 정정했다(신설 이후 접두 매치가 한 번도 성립하지 않았다). 신설 `nature-shared/core/discussion-argument-language.md`의 서법 사다리·한계 서술은 `style-guardrails.md` 「논증 강도 사다리」로 **재서술**했고, 게이트는 실험 설계 대신 전거·판본 근거로 치환했다.
 
+2026-09-28(v1.3.0): 이미 영어로 쓴 학술 원고의 AI티 제거가 비어 있었다. `stop-slop`은 학술 원고에서 hedging을 지운다. 이 공백을 [matsuikentaro1/humanizer_academic](https://github.com/matsuikentaro1/humanizer_academic)(MIT)의 패턴 가운데 인문학 원고에 맞는 것만 골라 `references/ai-tell-taxonomy.md`로 **재서술**해 메웠다. 의학 저자 1인의 문체 프로필과 hedge 쿠션 규칙은 들이지 않았다 — 목록과 이유는 그 파일 끝에 있다(`AUD-20260927-173649-2c1e4ecc`).
+
 ## 경계
 
 | 요청 | 담당 |
 |---|---|
 | 국문 원고를 영어로, 영문 초록 다듬기 | **이 스킬** |
+| 이미 영어로 쓴 학술 원고의 AI티 제거 | **이 스킬** — 1·3·4·5단계만 |
 | 논증 구조·연구사·사료비평·심사·투고 수정 판단 | `academic-research-workflow` |
 | 비학술 영어 산문의 AI티 제거 | `stop-slop` |
 | 한문 텍스트 생산·표점 적용·TEI | `hanmun-research-assistant` |
@@ -38,7 +41,7 @@ metadata:
 
 ## 절차
 
-참조 3종은 해당 단계에서만 연다 — 설정=`references/style-guardrails.md`, 논리 재구성=`references/ko-to-en.md`, 문장 규칙=`references/sentence-rules.md`.
+참조 4종은 해당 단계에서만 연다 — 설정=`references/style-guardrails.md`, 논리 재구성=`references/ko-to-en.md`, 문장 규칙=`references/sentence-rules.md`, AI티 점검=`references/ai-tell-taxonomy.md`. 입력이 이미 영어면 2단계를 건너뛴다.
 
 ### 1. 설정 확정 (첫 실행 1회)
 
@@ -54,7 +57,11 @@ metadata:
 
 `references/sentence-rules.md`를 읽고 적용한다. 10~30 단어 밴드는 **기계적 게이트**다. 위반 문장은 재구성하고, 겉만 다듬지 않는다.
 
-### 4. 가드레일 점검
+### 4. AI티 점검
+
+`references/ai-tell-taxonomy.md`를 읽고 적용한다. 번역해 만든 영문에도 적용한다 — 이 스킬의 출력도 AI가 쓴 글이다. 걷어낼 것만큼 **걷어내지 말 것**(근거 있는 전환어·논리 접속어·주장을 담은 단문)을 지킨다. em dash는 출력에 남기지 않는다.
+
+### 5. 가드레일 점검
 
 `references/style-guardrails.md`의 관사·숫자·과잉주장·논증 강도 사다리·무결성 절을 마지막에 훑는다. `must`·`cannot`·`demonstrates`가 남아 있으면 그 강도를 허락하는 전거를 댈 수 있는지 확인하고, 없으면 한 단계 내린다.
 
@@ -72,4 +79,5 @@ metadata:
 - **연대 환산을 지어내지 않는다.** 간지·연호를 서기로 옮길 때 확신이 없으면 `unverified`로 두고 사용자 확인으로 넘긴다.
 - **로마자 표기를 원고 안에서 섞지 않는다.** MR과 RR이 뒤섞인 원고는 심사에서 지적된다.
 - **영국식 철자는 기본값이 아니다.** upstream은 강제했지만 여기서는 설정으로 내렸다. 국내 학술지 영문 초록은 대개 미국식이다.
+- **AI티 제거가 hedging을 지우면 안 된다.** 점검표는 쌓인 hedge를 한 겹으로 줄일 뿐이고, 남길 강도는 논증 강도 사다리가 정한다. `stop-slop`을 학술 원고에 쓰지 않는 이유와 같다.
 - **hedging은 걷어내는 것이 아니라 맞추는 것이다.** 한국어의 중첩 hedging(`~것으로 보인다` + `~라고 할 수 있다`)은 하나로 줄이되, 증거가 약한 주장을 단정으로 바꾸지 않는다. 단계는 `style-guardrails.md`의 논증 강도 사다리(전거·판본 게이트)로 정한다.
