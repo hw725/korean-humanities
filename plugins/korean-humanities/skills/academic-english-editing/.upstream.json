@@ -10,8 +10,20 @@
   "_path_map_note": "키는 upstream 저장소 루트 기준 전체 경로다. 2026-09-01 신설본은 꼬리(language/en.md)만 적혀 접두 매치가 한 번도 성립하지 않았다(AUD-20260920-144844-888ca45d에서 정정). 벤더링 3종 밖의 upstream 파일은 전부 미지 경로로 떨어져 [중단]되므로, 그 밖의 upstream 변경은 dry-run 미지 목록을 사람이 읽고 채택 여부를 정한다 — 이 스킬은 체리픽 스킬이라 그것이 의도된 동작이다.",
   "never_adopt": [
     "LICENSE",
-    "README.md"
+    "README.md",
+    ".github/",
+    "README_EN.md",
+    "assets/",
+    "scripts/",
+    "skills/nature-academic-search/",
+    "skills/nature-citation/",
+    "skills/nature-downloader/",
+    "skills/nature-figure/",
+    "skills/nature-paper-to-patent/",
+    "skills/nature-paper-trans/",
+    "skills/nature-reviewer/"
   ],
+  "_never_adopt_note": "2026-10-06 추가: 벤더링 대상은 nature-polishing 안의 세 파일뿐이라, 형제 스킬·저장소 문서는 범위 밖이다. 등록하지 않으면 매주 「미지 경로」로 잡혀 판정 job이 열린다(주간 트리아지가 상류 head마다 새 job을 만들도록 바뀐 뒤로는 비용이 든다). 새 형제 스킬이 상류에 생기면 미지 경로로 다시 잡혀 한 번 심사된다 — 그건 의도한 신호다.",
   "always_manual": [
     "skills/academic-english-editing/SKILL.md",
     "skills/academic-english-editing/references/ko-to-en.md",
