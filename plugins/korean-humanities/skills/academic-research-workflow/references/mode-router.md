@@ -34,11 +34,11 @@
 
 선행연구는 검색 도구가 돌려준 결과에서만 들인다. 기억에서 떠올린 서지는 `unverified`로 둔다(핵심 원칙 12-a). 아래 A~E를 차례로 거치되, 자동 경로가 없는 단계는 수동·브라우저로 강등하고, 건너뛴 단계는 생략 사유를 한 줄 남긴다.
 
-- **A. 권위 개관**: 한국민족문화대백과사전 항목, 한국고전종합DB의 문집 해제 등을 먼저 읽고 그 참고문헌을 seed로 삼는다.
-- **B. 색인 검색**: KCI → RISS → DBpia. 대량 동향 조사가 필요하면 `kci-korean-studies-trends`로 넘긴다. RISS·DBpia의 자동 접근 경로는 확인 필요 — 없으면 수동 또는 `paper-harvest`로 강등한다.
+- **A. 권위 개관**: 한국민족문화대백과사전 항목, 한국고전종합DB의 문집 해제 등을 먼저 읽고 그 참고문헌을 seed로 삼는다. 백과사전은 공식 OpenAPI가 있다(등록 후 이메일로 키 발급, `X-API-Key` 헤더). 한국고전종합DB의 `openapi/search`는 키 없이 서지 메타데이터를 돌려주지만 공식 안내·이용 조건을 찾지 못했으므로 보조 경로로만 쓴다.
+- **B. 색인 검색**: KCI → RISS → DBpia. 대량 동향 조사가 필요하면 `kci-korean-studies-trends`로 넘긴다. 자동 경로는 이렇다(2026-10-06 확인): KCI 논문정보 API는 공공데이터포털에서 자동승인되고 출력에 DOI·UCI가 있다. RISS 검색 API는 비영리 기관(대학)에만 열려 있어 개인은 수동 검색으로 강등한다. DBpia OpenAPI는 회원 키 신청 뒤 운영자 심사(최대 7영업일)를 거치고 1일 2,500회 한도다 — 키가 없으면 수동 또는 `paper-harvest`로 강등한다.
 - **C. 인용 연쇄**: seed의 KCI ID로 `kci-citation-network`를 돌린다. 키가 없으면 「C 생략: 키 없음, 보유 후보 N건」으로 적는다.
-- **D. 서평 보강**: 단행본은 학술지 서평(KCI·RISS에서 「서평」 검색)으로 초록·논지를 보강한다.
-- **E. 실재 검증**: KCI ID는 KCI 상세 페이지(`paper-harvest`의 서지 추출)로, DOI는 CrossRef로 해소하고, 제목 일치는 `hanmun-research-assistant/scripts/cjk_title_match.py`로 판정한다. 결과는 1차 사료와 같은 `resolved` / `unresolved` / `fabrication-suspected`로 적는다.
+- **D. 서평 보강**: 단행본은 학술지 서평으로 초록·논지를 보강한다. NDPR 같은 국내 학술 서평 전용 DB는 찾지 못했고 KCI 반출 필드에도 「서평」 문헌유형이 없으므로, KCI·RISS에서 「서평」을 키워드로 검색한다.
+- **E. 실재 검증**: KCI ID(`ART…`)는 KCI 상세 페이지(`ciSereArtiView.kci?sereArticleSearchBean.artiId=<ID>`, `paper-harvest`의 서지 추출)로, DOI는 CrossRef로 해소하고, 제목 일치는 `hanmun-research-assistant/scripts/cjk_title_match.py`로 판정한다. 결과는 1차 사료와 같은 `resolved` / `unresolved` / `fabrication-suspected`로 적는다.
 
 필드 규칙: 해소처에 없는 권호·면수는 비워 둔다(기억으로 채우지 않는다). 초록을 끝내 못 찾은 항목은 `INCOMPLETE`로 남겨 인용은 하되 내용 서술의 근거로 쓰지 않는다. 생략·실패는 `NOTABLE_GAPS`로 모아 해석 계보도 끝에 붙인다. 완료 여부는 단계별 성공이 아니라 「A~E를 실행했거나 생략 사유를 남겼는가」로 본다. PRISMA식 전수 선별은 §8의 일이다.
 
