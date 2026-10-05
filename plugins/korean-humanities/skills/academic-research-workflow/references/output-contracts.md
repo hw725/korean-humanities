@@ -50,7 +50,7 @@
 | `claim_text` | 검토 대상 문장·주장 |
 | `claim_type` | `원문인용`, `국역`, `해석`, `연대/干支`, `표점해석`, `사료-사건시점`, `사실`, `인용` |
 | `source_text_provenance` | `원문` / `국역` / `기계국역` (기계국역이면 필수 기록) |
-| `source_existence` | `resolved` / `unresolved` / `fabrication-suspected` — 인용 전거가 실재·해소되는가: 실록 기사(왕대+干支+기사 ID) 해소, 文集 卷次·篇名 실재를 로컬 코퍼스·한국고전종합DB·실록 DB에 대조 (오인용과 별개, DOI 아님) |
+| `source_existence` | `resolved` / `unresolved` / `fabrication-suspected` — 인용 전거가 실재·해소되는가: 실록 기사(왕대+干支+기사 ID) 해소, 文集 卷次·篇名 실재를 로컬 코퍼스·한국고전종합DB·실록 DB에 대조 (오인용과 별개). 2차 문헌(선행연구)은 KCI ID·DOI를 KCI 상세 페이지·CrossRef로 해소한다(`mode-router.md` §2-a E) |
 | `locator` | 전거 위치 앵커: `kind`(실록기사/권면(엽)/조목/직접인용/단락/none) + `value`. `none`이면 `anchorless` 결함 |
 | `alignment` | 실재와 별개의 정합 판정: `뒷받침` / `불일치` / `모호` / `원문확인불가`. `불일치`→`contradicted`, `모호`→강도 완화 |
 | `sub_claims` | (복합 주장만) 逐句·표점 단위 하위주장 목록과 각 `alignment`. 주장-수준은 약자 합성(아래 분해 원칙). 전거 1개·단일 명제면 생략 |
