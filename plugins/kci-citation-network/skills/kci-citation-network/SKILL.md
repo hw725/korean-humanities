@@ -3,7 +3,7 @@ name: kci-citation-network
 description: "키워드 하나로 KCI 참고문헌 OpenAPI에서 인용망(nodes/edges JSONL)을 수집하고 선택적으로 Obsidian 노트로 렌더한다. «인용망 수집»·«citation graph»처럼 한국 인문학 논문의 인용 관계가 필요할 때 쓴다(data.go.kr 무료 키 필요)."
 metadata:
   author: custom
-  version: 1.4.2
+  version: 1.4.3
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -103,4 +103,4 @@ Obsidian Graph View → filter `path:"인용망/..."` to see the citation networ
 
 ## Related
 
-- Suite: `hanmun-research-assistant` (front door) → `academic-research-workflow` (연구사·심사). Local-tier: `kci-korean-studies-trends` (동향 보고 — 로컬 코퍼스 필요).
+- Suite: `hanmun-research-assistant` (front door) → `academic-research-workflow` (연구사·심사). 같은 슈트의 portable·share 스킬: `kci-korean-studies-trends` (연도×분야 동향 보고 — 2026-08-26 portable 승격, 단독 공유본 있음).

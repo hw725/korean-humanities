@@ -3,7 +3,7 @@ name: academic-research-workflow
 description: 한문학·전근대 한국사 연구 산출물의 라우터 — 연구사 리뷰, 사료비평·교감 논증, 논증 기획·집필, 인문학 peer review·논문 심사·투고 수정, 인용 충실성·원고 수치·원고-데이터 정합 검증. Trigger: 연구사 정리, 논문 심사, 투고 수정, 인용 검증, 원고 수치 대조. 텍스트 산출·OCR·표점 적용·지식관리·도구 심사는 hanmun-research-assistant.
 metadata:
   author: custom
-  version: 2.7.1
+  version: 2.7.3
   category: academic-research
   upstream_reference: Imbad0202/academic-research-skills-codex
   suite: korean-humanities
@@ -13,14 +13,14 @@ metadata:
 
 # Academic Research Workflow (Humanities-First)
 
-이 스킬은 CJK 고전문학·역사학 연구의 **산출물 생산과 평가**를 라우팅하는 인문학 우선 오케스트레이터다. 한문 텍스트를 만들거나 고치는 일(OCR 교정, 표점 적용, TEI 주석, 디지털화)은 `hanmun-research-assistant`/`hanmun-philology`가 맡고, 이 스킬은 그 사료를 **평가·교감하여 논증·논문으로 만드는 일**을 맡는다. 일반 인문학(텍스트 기반 해석 연구)에도 적용되지만 기본은 CJK 고전·사학이다.
+이 스킬은 CJK 고전문학·역사학 연구의 **산출물 생산과 평가**를 라우팅하는 인문학 우선 오케스트레이터다. 한문 텍스트를 만들거나 고치는 일(OCR 교정, 표점 적용, TEI 주석, 디지털화)은 `hanmun-research-assistant`의 `hanmun-philology` 모드(별도 스킬 아님)가 맡고, 이 스킬은 그 사료를 **평가·교감하여 논증·논문으로 만드는 일**을 맡는다. 일반 인문학(텍스트 기반 해석 연구)에도 적용되지만 기본은 CJK 고전·사학이다.
 
 ## 경계: HRA ↔ ARW (산출물 vs 환경, D1 표점 분담)
 
 - **산출물(이 스킬)**: 연구사, 사료비평·교감 평가, 해석 논증, 심사, 인용·원문 충실성 검증.
 - **환경(HRA)**: AI 비서 구축·운영·커스터마이징, 한문 텍스트 생산/수정, source-grounded Q&A, 새 도구 채택.
-- **표점/句讀 분담(D1)**: 어떻게 끊을지 **판단하고 근거를 제시**하는 일은 ARW(사료비평). 그 판단을 디지털 텍스트에 **적용**하는 일은 `hanmun-philology`.
-- 한 문장: “한문 텍스트를 만들거나 고치는 일 = hanmun-philology. 그 텍스트를 사료로 평가·교감하여 논증에 쓰는 일 = ARW 사료비평.”
+- **표점/句讀 분담(D1)**: 어떻게 끊을지 **판단하고 근거를 제시**하는 일은 ARW(사료비평). 그 판단을 디지털 텍스트에 **적용**하는 일은 HRA의 `hanmun-philology` 모드.
+- 한 문장: “한문 텍스트를 만들거나 고치는 일 = HRA `hanmun-philology` 모드. 그 텍스트를 사료로 평가·교감하여 논증에 쓰는 일 = ARW 사료비평.”
 - **문헌·집필 vs 비서 구축**: 연구사·논증·초고·심사 등 산출물 자체를 만드는 일은 ARW, 그 작업을 자동 수행할 literature/writing 비서를 구축·운영하는 일은 `hanmun-research-assistant`. ‘논문 비교·정리해 줘’ → ARW, ‘문헌 비서 만들어 줘’ → HRA.
 
 ## 핵심 원칙
@@ -87,14 +87,13 @@ metadata:
 
 | 필요한 일 | 함께 쓸 스킬 |
 |---|---|
-| 한문 원문 생산·OCR 교정·표점 적용·TEI 주석 | `hanmun-research-assistant` → `hanmun-philology` (환경) |
+| 한문 원문 생산·OCR 교정·표점 적용·TEI 주석 | `hanmun-research-assistant`의 `hanmun-philology` 모드 (환경) |
 | 연구 프로젝트 폴더·원자료 보존·진행 일지·투고 동결(submission-freeze) | `research-file-management` |
 | JSONL 로그, 선별·제외 이유 기록 | `observability-logging` |
 | KCI 한국학 동향·대표 논문 후보 | `kci-korean-studies-trends` |
 | 분석 코드·통계 로직 검증 (DH) | `cross-validation` |
-| 모델·도구 비용 선택 | `model-selection` |
 | HWP/HWPX 논문·보고서 작성·변환 | `hwp`, `hwpx` |
-| Obsidian 문헌 노트·볼트 작업 | `obsidian-cli` |
+| Obsidian 문헌 노트·볼트 작업 | `knowledge-memory-workflow` |
 | facts/takes 분리, thread event, 검색 평가 | `knowledge-memory-workflow` |
 
 ### 4단계: 체크포인트
@@ -128,6 +127,6 @@ metadata:
 - 표점·독법을 말없이 선택하고 경쟁 독법을 숨기기
 - 기계 국역을 원문 검증 없이 인용하기
 - 통계·재현성·Risk-of-Bias 기준으로 인문학 논문을 평가하기
-- 한문 텍스트 생산·표점 적용을 이 스킬에서 직접 수행하기 (→ `hanmun-philology`)
+- 한문 텍스트 생산·표점 적용을 이 스킬에서 직접 수행하기 (→ `hanmun-research-assistant`의 `hanmun-philology` 모드)
 - 데이터 정제 후 재분석한 절의 체크리스트만 갱신하고 ‘원고 반영 완료’로 종결하기 (→ 전수 대조)
 - 계량 수치를 점추정(χ²·p)만으로 보고하기 (→ `quantitative-humanities.md` 최소선)

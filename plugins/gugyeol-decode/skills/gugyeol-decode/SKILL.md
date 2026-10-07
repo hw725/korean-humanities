@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.6
+  version: 1.1.7
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -59,7 +59,7 @@ python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode val
 ## When NOT to use
 
 - 일반 영문/현대 한글 PDF — 표준 Unicode면 충분
-- 스캔 이미지 OCR이 필요한 경우 — 본 스킬은 텍스트 레이어가 있는 PDF 대상. OCR은 별도 도구 (Naver Clova, Tesseract+옛한글 모델)
+- 스캔 이미지 OCR이 필요한 경우 — 본 스킬은 텍스트 레이어가 있는 PDF 대상. 고전 텍스트 OCR 정본은 classical-text-browser(ctb)의 NDL古典籍OCR Full 엔진(`ctb ocr <PDF|폴더> --engine ndlkotenocr-full --execute`, GPU 별도 환경 `.venv-gpu`)이다. 이 엔진은 한글(토·옛한글)을 인식하지 못하므로 한글이 섞인 지면은 결과를 따로 확인하고, 텍스트 레이어에 PUA·(cid:N)가 남으면 이 스킬로 돌아온다
 - 漢文 자체의 異體字 변별 — 본 스킬은 한국 PUA에 한정
 
 ## Prerequisites
@@ -233,7 +233,8 @@ PDF를 다시 추출하면서 매핑 테이블에 따라 PUA 글자를 옛한글
 
 - `reference/구결자.md` — 한국 古典 구결자 표준 form 표
 - `reference/옛한글.md` — 옛한글 자모·결합 규칙·Unicode 매핑
-- `reference/구결자.md`, `reference/옛한글.md`, `ATTRIBUTION.md` — 최식2011 작업 근거와 학술 인용
+- `reference/verified_mappings.json` — 작업하며 검증한 (font, codepoint) → 표준 Unicode 매핑 누적 캐시(hypua·AKS 자동 매핑으로 안 풀리는 폰트별 경우). 같은 폰트 PDF가 다시 나오면 먼저 대조한다
+- `ATTRIBUTION.md` — 최식2011 작업 근거와 학술 인용(위 두 `.md` 표의 출처)
 
 ## Guardrails
 

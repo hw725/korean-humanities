@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.2
+  version: 0.9.4
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -129,12 +129,12 @@ py -3 tools/check_cjk_text_contract.py skills/<skill>/scripts
 
 | User need | Primary mode | Partner skills |
 |---|---|---|
-| One assistant for CJK research | `assistant-build` | `knowledge-memory-workflow`, `research-file-management`, `obsidian-cli` |
-| Compare or adopt a new AI research tool | `tool-adoption-audit` | `url-triage`, `source-command-audit-config`, `model-selection` |
-| Literature review or paper plan | `literature-and-writing` | `academic-research-workflow`, `kci-korean-studies-trends`, `cross-validation` |
+| One assistant for CJK research | `assistant-build` | `knowledge-memory-workflow`, `research-file-management` |
+| Compare or adopt a new AI research tool | `tool-adoption-audit` | `url-triage`, `source-command-audit-config` |
+| Literature review or paper plan | delegate -> `academic-research-workflow` (`literature-and-writing`: 연구사·논문 기획은 ARW 산출물) | `kci-korean-studies-trends`, `cross-validation` |
 | Citation or claim verification audit | delegate -> `academic-research-workflow` (`source-fidelity-audit` / 사료 충실성 감사) | `cross-validation`, `knowledge-memory-workflow` |
-| Source-grounded Q&A over PDFs or vault notes | `source-grounded-qa` | vector index + graph 재랭킹 over vault 링크/MOC/태그 (graph-augmented retrieval), `knowledge-memory-workflow`, `obsidian-cli` |
-| Classical text annotation, hanja, hanmun, old Hangul, gugyeol | `hanmun-philology` | `gugyeol-decode`, `hwp`, `hwpx`, `obsidian-cli` |
+| Source-grounded Q&A over PDFs or vault notes | `source-grounded-qa` | vector index + graph 재랭킹 over vault 링크/MOC/태그 (graph-augmented retrieval), `knowledge-memory-workflow` |
+| Classical text annotation, hanja, hanmun, old Hangul, gugyeol | `hanmun-philology` | `gugyeol-decode`, `hwp`, `hwpx`, 스캔본 고전 OCR은 classical-text-browser(ctb)의 NDL古典籍OCR Full |
 | Tool portfolio refresh | `benchmark-refresh` | `source-command-audit-config`, `observability-logging` |
 
 > **graph 재랭킹은 사람이 만든 링크 기반 (CJK-safe).** `source-grounded-qa`의 graph 신호(centrality/activation)는 사용자가 직접 작성한 vault 링크·MOC·태그(Shadow Graph)에서만 나온다. 한문 텍스트에 엔티티 추출(NER)을 하지 않으므로 약한 hanmun NER이 retrieval을 저하시키지 않는다. microsoft식 entity-GraphRAG(엔티티·커뮤니티 추출 인덱싱)는 도입하지 않는다 — graph는 추가 비용 없이 얻는 사용자 작성 링크만 사용한다.
@@ -155,7 +155,7 @@ The default Claude Code harness is built for coding (Thariq, “A harness for ev
   - State lives in the filesystem: a layered directory convention plus git, the vault, and JSONL logs as the single source of truth. Do not pull raw data into context.
   - Compute runs as code: heavy steps (CollateX alignment, Scrapling intake, aggregation) run in subprocesses, not in model context. Solve non-coding tasks with code too.
   - Decompose with subagent fan-out: parallel per witness, document, or source. Before any expensive step, run one independent critique (`cross-validation`, `design-review`) to kill dead ends early (AutoScientists pattern).
-  - Persist across sessions: shard, checkpoint, and resume. Within a live session, iterate to the completion goal with `/goal` or `/loop`; both stop when the session or PC closes. Work that must survive a closed session goes to cloud `/schedule` (or an OS scheduled task), resuming from the checkpoint. A passing happy path is not verification — see `cc-workflow`’s primitive selection table and deterministic gates.
+  - Persist across sessions: shard, checkpoint, and resume. Within a live session, iterate to the completion goal with `/goal` or `/loop`; both stop when the session or PC closes. Work that must survive a closed session goes to cloud `/schedule` (or an OS scheduled task), resuming from the checkpoint. A passing happy path is not verification — completion needs a deterministic check (test, checker, full-coverage verify), not a reassuring summary.
 - Log the harness choice as an `event` so the next run can reuse or improve it.
 
 ## Imported Tool Patterns
