@@ -18,7 +18,7 @@
       "id": "C-001",
       "text": "(사람 말 한 문장으로) 예: 테스트가 모두 통과한다",
       "judge": "deterministic",
-      "check": {"argv": ["py", "-3", "-m", "pytest", "-q"], "timeout": 900},
+      "check": {"argv": ["{python}", "-m", "pytest", "-q"], "timeout": 900},
       "status": "active"
     }
   ]

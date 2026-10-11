@@ -12,6 +12,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 import time
 from datetime import datetime
 from pathlib import Path
@@ -31,6 +32,15 @@ MISSING_MODULE_RX = re.compile(r"No module named '?([\w.]+)'?")
 FATAL_MARK = "HARNESS::FATAL"
 WARN_MARK = "HARNESS::WARN"
 ID_RX = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}")
+# 초안의 조건 문장 머리 — 채우지 않은 채로 verify 가 통과하면 «무엇을 확인했는지»가 비어 있다(수강생 시험 b-4)
+PLACEHOLDER_TEXT = "(사람 말 한 문장으로)"
+# argv 안의 이 낱말은 verify 를 돌리는 파이썬으로 바꾼다 — 계약을 다른 OS 로 옮겨도 돈다(수강생 시험 b-6)
+PY_TOKEN = "{python}"
+
+
+def python_argv() -> list[str]:
+    """이 OS 에서 파이썬 3 을 부르는 명령 — Windows 는 py 런처, macOS·Linux 는 python3(py 가 없다, 수강생 시험 b-6)."""
+    return ["py", "-3"] if os.name == "nt" else ["python3"]
 
 
 def _kill_tree(p: subprocess.Popen) -> None:
@@ -105,8 +115,11 @@ def validate(c: dict) -> list[str]:
             errs.append(f"{cid}: status 는 active·retired 중 하나입니다(지금 {st!r})")
         elif st == "active":
             live += 1
-        if not str(x.get("text") or "").strip():
+        text = str(x.get("text") or "").strip()
+        if not text:
             errs.append(f"{cid}: text(사람 말 한 문장)가 없습니다")
+        elif text.startswith(PLACEHOLDER_TEXT):
+            errs.append(f"{cid}: text 가 아직 초안의 자리 표시입니다 — «끝났다»를 사람 말 한 문장으로 바꾸세요")
         j, chk = x.get("judge"), x.get("check")
         if j not in JUDGES:
             errs.append(f"{cid}: judge 는 deterministic·visual·human 중 하나입니다")
@@ -211,7 +224,7 @@ def run_condition(x: dict, root: Path, vd: Path) -> dict:
     fail = ""
     started = time.time()
     if chk.get("argv") or chk.get("cmd"):
-        argv = [a.replace("{scratch}", str(scratch)) for a in chk["argv"]] if chk.get("argv") else \
+        argv = [sys.executable if a == PY_TOKEN else a.replace("{scratch}", str(scratch)) for a in chk["argv"]] if chk.get("argv") else \
             chk["cmd"].replace("{scratch}", str(scratch))
         env = dict(os.environ, HARNESS_SCRATCH=str(scratch), PYTHONUTF8="1")
         t0 = time.time()
@@ -241,7 +254,7 @@ def run_condition(x: dict, root: Path, vd: Path) -> dict:
             fail = f"종료 코드 {rc}"
             miss = MISSING_MODULE_RX.search(out)
             if miss:  # 수강생 PC 에서 가장 흔한 실패 — 검사가 아니라 준비물 문제임을 밝힌다
-                fail += f" — 모듈 {miss.group(1)} 이 설치돼 있지 않습니다(설치는 사용자에게 먼저 묻는다)"
+                fail += f" — {miss.group(1)} 모듈이 설치돼 있지 않습니다(설치는 사용자에게 먼저 묻는다)"
         elif f:
             fail = f"치명 표지 {f}건"
         elif chk.get("expect_text") and chk["expect_text"] not in out:
@@ -301,12 +314,22 @@ def verify(cpath: Path) -> tuple[dict, Path]:
     }
     # 사람 판정 대기는 «통과»가 아니다(리뷰 ③ R-2) — 대기가 남은 영수증은 ok 가 아니다
     receipt["ok"] = not problems and not receipt["failed"] and not receipt["human_pending"]
+    # 계약 오류로 돌리지 못한 활성 조건 — 요약이 «실패 0건»만 보여 성공처럼 읽히지 않게(수강생 시험 c-2)
+    conds = c.get("conditions") if isinstance(c.get("conditions"), list) else []
+    receipt["not_run"] = 0 if results else sum(1 for x in conds if isinstance(x, dict) and x.get("status", "active") == "active")
+    receipt["seal"] = seal(receipt)
     rp = vd / "receipt.json"
     rp.write_text(json.dumps(receipt, ensure_ascii=False, indent=2), encoding="utf-8")
     return receipt, rp
 
 
-def table(c: dict, receipt: dict | None) -> list[str]:
+def seal(r: dict) -> str:
+    """영수증 봉인 — 봉인 칸을 뺀 내용의 지문. 손으로 고친 영수증을 알아본다(변경 탐지이지 위조 방지는 아니다, 수강생 시험 c-1)."""
+    return digest({k: v for k, v in r.items() if k != "seal"})
+
+
+def table(c: dict, receipt: dict | None, stale: bool = False) -> list[str]:
+    """조건 표. stale 이면 지난 결과를 «낡음» 표시와 함께 보인다 — 전부 «미실행»으로 지우면 지난 결과를 잃는다(수강생 시험 d-2)."""
     by = {r["id"]: r for r in (receipt or {}).get("results", [])}
     out = ["| 조건 | 사람 말 | 판정자 | 결과 |", "|---|---|---|---|"]
     for x in c.get("conditions") or []:
@@ -314,11 +337,19 @@ def table(c: dict, receipt: dict | None) -> list[str]:
             continue
         r = by.get(x.get("id"))
         res = "미실행" if not r else (r.get("reason") if r.get("ok") is None else ("통과" if r["ok"] else "실패 — " + r.get("reason", "")))
+        if r and stale:
+            res += " (낡음 — 다시 verify)"
         out.append(f"| {x.get('id')} | {x.get('text', '')} | {x.get('judge')} | {res} |")
     return out
 
 
 def cli_command(sub: str) -> str:
-    """훅 메시지에 찍을 정확한 명령 — 수강생은 플러그인 설치 경로를 모른다."""
-    here = Path(__file__).resolve().parent
-    return f'sh "{(here / "run.sh").as_posix()}" harness.py {sub}'
+    """훅 메시지에 찍을 정확한 명령 — 수강생은 플러그인 설치 경로를 모른다. sh 가 아니라 파이썬으로 부른다 — 사용자가 PowerShell 에
+    붙여 넣으면 «sh 를 찾을 수 없다»로 시작조차 못 했다(수강생 시험 a-1). 정슬래시 경로는 PowerShell·Git Bash 둘 다 받는다."""
+    harness = (Path(__file__).resolve().parent / "harness.py").as_posix()
+    return f'{" ".join(python_argv())} "{harness}" {sub}'
+
+
+def unlock_command(root: Path) -> str:
+    """사용자가 직접 칠 잠금 풀기 명령 — 사용자의 PowerShell 작업 폴더는 프로젝트가 아닐 수 있어 --root 를 붙인다."""
+    return cli_command(f'--root "{Path(root).as_posix()}" unlock')

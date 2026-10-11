@@ -47,6 +47,7 @@ INLINE = re.compile(r"`[^`\n]*`|«[^»\n]*»|\"[^\"\n]*\"|“[^”\n]*”")
 MAX_BLOCKS = 3
 RECEIPT_RX = re.compile(re.escape(lc.RECEIPT_MARK) + r"(.+?receipt\.json)")
 VERIFY_CMD_RX = re.compile(r"harness\.py[\"']?\s+(?:--root\s+\S+\s+)?verify\b")
+ROOT_RX = re.compile(r"--root\s+(\"[^\"]+\"|'[^']+'|\S+)")
 CD_RX = re.compile(r"^(?:cd|Set-Location|pushd)\s+(\"[^\"]+\"|'[^']+'|\S+)\s*$", re.I)
 
 
@@ -142,8 +143,15 @@ def scan(recs: list[dict], cwd: Path):
             if isinstance(cmd, str):
                 out = _text(c.get("content"))
                 if runs_verify(cmd):  # 영수증은 verify 를 «실행한» 명령의 결과에 찍힌 것만(Codex §16-21 리뷰 #5, 리뷰 ⑤ p4 R-1)
-                    for p in RECEIPT_RX.findall(out):
+                    found = RECEIPT_RX.findall(out)
+                    for p in found:
                         receipts.append((i, p.strip()))
+                    if not found:
+                        # 출력을 잘라 읽으면(| tail·출력 압축기) 영수증 줄이 없다 — 그 계약의 디스크 영수증으로 대신한다(수강생 시험 c-1)
+                        vcp = verify_contract(cmd, cwd)
+                        rp = disk_receipt(vcp) if vcp else None
+                        if rp:
+                            receipts.append((i, rp))
                 for cp in shell_edit_contracts(cmd, cwd):
                     if cp is None:
                         loose_edit = True
@@ -155,16 +163,59 @@ def scan(recs: list[dict], cwd: Path):
 ECHO_WORDS = {"echo", "printf", "write-host", "write-output", "cat", "type", "print"}
 
 
+def _runs_verify_seg(s: str) -> bool:
+    if not VERIFY_CMD_RX.search(s):
+        return False
+    first = re.split(r"\s+", s, maxsplit=1)[0].strip("\"'").lower()
+    return re.split(r"[/\\]", first)[-1] not in ECHO_WORDS
+
+
 def runs_verify(cmd: str) -> bool:
     """명령이 harness.py verify 를 «실행»하는가 — 그 낱말을 출력(echo 등)하기만 하는 구간은 아니다(리뷰 ⑤ p4 R-1)."""
+    return any(_runs_verify_seg(seg.strip()) for seg in re.split(r"&&|\|\||[;\n|]", cmd))
+
+
+def verify_contract(cmd: str, cwd: Path) -> Path | None:
+    """verify 를 실행한 구간이 겨눈 계약 — `--root` 가 있으면 그 폴더, 없으면 `cd` 를 따라간 작업 폴더에서 찾는다."""
+    base = Path(cwd)
     for seg in re.split(r"&&|\|\||[;\n|]", cmd):
         s = seg.strip()
-        if not VERIFY_CMD_RX.search(s):
+        m = CD_RX.match(s)
+        if m:
+            t = Path(m.group(1).strip("\"'"))
+            base = t if t.is_absolute() else base / t
+        elif _runs_verify_seg(s):
+            r = ROOT_RX.search(s)
+            if r:
+                t = Path(r.group(1).strip("\"'"))
+                base = t if t.is_absolute() else base / t
+            return lc.find_contract(base)
+    return None
+
+
+def disk_receipt(cp: Path) -> str | None:
+    """이 계약의 영수증 가운데 봉인이 맞고(손대지 않음) 지금 계약 해시·소스 지문과 같은 가장 새 것의 경로(수강생 시험 c-1).
+
+    전체판 harness_stop._shared_receipt 와 같은 생각이다 — 판정 기준은 «무엇을 검증했나»(계약·소스)다. 수강생판에는 원장이 없어
+    봉인(lite_common.seal)으로 손 편집을 알아보고, 보관소(.harness/lite) 쓰기는 PreToolUse 가 막는다(위조 방지는 아니다).
+    영수증 «뒤» 편집은 이 경로와 상관없이 막힌다 — 대신하는 영수증의 위치는 verify 를 돌린 그 자리다."""
+    try:
+        c = lc.load(cp)
+    except (OSError, ValueError):
+        return None
+    want_c, want_fp = lc.contract_hash(c), None
+    for rp in sorted((Path(cp).parent / ".harness" / "lite").glob("*/receipt.json"), reverse=True):
+        try:
+            r = lc.load(rp)
+        except (OSError, ValueError):
             continue
-        first = re.split(r"\s+", s, maxsplit=1)[0].strip("\"'").lower() if s else ""
-        if re.split(r"[/\\]", first)[-1] not in ECHO_WORDS:
-            return True
-    return False
+        if not isinstance(r, dict) or r.get("seal") != lc.seal(r) or r.get("contract_hash") != want_c:
+            continue
+        if want_fp is None:
+            want_fp = lc.source_fp(Path(cp).parent, c.get("watch") or [])["digest"]
+        if (r.get("source_fp") or {}).get("digest") == want_fp:
+            return str(rp)
+    return None
 
 
 def shell_edit_contracts(cmd: str, cwd: Path) -> list[Path | None]:
@@ -200,6 +251,8 @@ def _ack_file(data: dict) -> Path:
 
 
 def problems(cp: Path, edit_at: int, receipts, reads, text: str, acked: set[str]) -> tuple[list[str], str | None]:
+    # 계약 경로는 비교용으로 소문자(normcase)가 되어 온다 — 메시지에는 실제 대소문자로 보인다(수강생 시험 c-3)
+    cp = Path(os.path.realpath(cp))
     root = cp.parent
     mine = [(i, p) for i, p in receipts if i > edit_at and lc.find_contract(Path(p).parent) and
             _norm(lc.find_contract(Path(p).parent)) == _norm(cp)]

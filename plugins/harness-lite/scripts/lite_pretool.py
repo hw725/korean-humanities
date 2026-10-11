@@ -5,7 +5,10 @@
 git 이력으로 되돌릴 수 있어 막지 않는다(-f 는 저장 안 된 변경을 버리므로 원본이면 막는다). 다만 git 이 작업 트리의 원본을
 덮어쓰는 명령(restore·checkout -- <경로>·checkout -f·switch -f|--discard-changes·reset --hard·stash·checkout-index -f·
 read-tree --reset -u)은 원본을 겨누거나, 저장소 전체를 겨누는데 그 저장소에 원본이 있으면 막는다(저장 안 된 변경이 사라진다).
-git 앞 전역 옵션(--no-pager·--work-tree=…·-C …)은 건너뛰고 하위 명령을 본다.
+git 앞 전역 옵션(--no-pager·--work-tree=…·-C …)은 건너뛰고 하위 명령을 본다. 저장소가 아닌 폴더에서는 git 이 스스로
+거부하므로 막지 않는다.
+원본 잠금 풀기(harness.py unlock)는 사용자만 한다 — AI 가 부르면 막고 사용자가 칠 명령을 알려 준다. 영수증 보관소
+(.harness/lite)는 도구로 고치지 않는다(Stop 훅이 디스크의 영수증을 증거로 쓴다).
 이름 기준 종료는 사용자가 열어 둔 같은 프로그램까지 닫으므로 막는다. PowerShell 호출 연산자 «&» 뒤도 명령 자리다.
 heredoc 본문과 커밋 메시지 속 낱말은 명령이 아니다.
 한계: 로컬 훅은 보안 장치가 아니다 — 실수를 막는 장치다. 문자열을 조립하면 빠져나갈 수 있다.
@@ -314,11 +317,11 @@ def git_sub(args: list[str], cwd: Path) -> tuple[Path, str, list[str]]:
     return (base, rest[0].lower(), rest[1:]) if rest else (base, "", [])
 
 
-def _repo_root(start: Path) -> Path:
+def _repo_root(start: Path) -> Path | None:
     for d in [start, *start.parents]:
         if (d / ".git").exists():
             return d
-    return start
+    return None
 
 
 def git_overwrites(seg: str, cwd: Path) -> str | None:
@@ -333,6 +336,13 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
         return None
     base, sub, opts = git_sub(args, cwd)
     if not sub:
+        return None
+    # 저장소가 아니면 git 이 «not a git repository»로 거부한다 — 덮어쓸 작업 트리가 없으니 막지 않는다. 종전에는 저장소가 없는
+    # 폴더에서도 «저장 안 된 변경이 사라진다»고 막아 이유가 맞지 않았다(수강생 시험 c-4). --git-dir·GIT_DIR 로 저장소를 따로
+    # 가리키면 저장소가 있는 것으로 보고 그대로 판정한다
+    explicit = "--git-dir" in seg or "GIT_DIR" in seg or "GIT_WORK_TREE" in seg
+    repo = _repo_root(base.resolve())
+    if repo is None and not explicit:
         return None
     if "--" in opts:
         k = opts.index("--")
@@ -389,7 +399,7 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
     else:
         return None
     if whole:
-        repo = _repo_root(base.resolve())
+        repo = repo or base.resolve()
         return str(repo) if holds_protected(str(repo), cwd) or is_protected(str(repo), cwd) else None
     for p in paths:
         if is_protected(str(_abs(p, base)), cwd) or holds_protected(str(_abs(p, base)), cwd):
@@ -411,6 +421,8 @@ def main() -> int:
         if fp and is_protected(fp, cwd):
             return deny(f"[harness-lite] {fp} 는 원본(읽기만 할 자료)입니다 — 고친 결과는 다른 폴더에 쓰세요. "
                         "원본을 바꿔야 하면 사용자가 직접 하거나, 계약의 protect 를 사용자와 함께 고치세요.")
+        if fp and in_receipts(fp, cwd):
+            return deny(RECEIPT_MSG.format(fp))
         return 0
     if name not in ("Bash", "PowerShell"):
         return 0
@@ -440,6 +452,12 @@ def main() -> int:
         if g:
             return deny(f"[harness-lite] git 명령이 원본(읽기만 할 자료)을 덮어쓸 수 있습니다({g}) — 원본의 저장 안 된 변경이 "
                         "사라집니다. 원본이 아닌 경로만 지정하거나, 사용자가 직접 하세요.")
+        call = harness_call(word, args)
+        if call and call[0] == "unlock":
+            # 원본 잠금은 사람이 푼다 — AI 가 풀면 잠금이 아무것도 막지 못한다(수강생 시험 b-3)
+            root = _abs(call[2], here) if call[2] else here.resolve()
+            return deny("[harness-lite] 원본 잠금을 푸는 것(unlock)은 사용자만 합니다 — AI 는 풀지 않습니다. 사용자에게 왜 풀어야 하는지 "
+                        "말하고, PowerShell(macOS·Linux 는 터미널)에 직접 붙여 넣어 달라고 하세요: " + lc.unlock_command(root))
         for t in trash_targets(word, args):
             # 공식 휴지통 명령도 원본은 옮기지 않는다 — Move-Item 은 막으면서 trash 로는 원본을 옮기던 모순(리뷰 ⑤ p4 R-3)
             if is_protected(t, here) or holds_protected(t, here):
@@ -451,20 +469,40 @@ def main() -> int:
         for t in targets:
             if t and is_protected(t, here):
                 return deny(f"[harness-lite] {t} 는 원본(읽기만 할 자료)입니다 — 셸로도 바꾸지 않습니다. 결과는 다른 폴더에 쓰세요.")
+            if t and in_receipts(t, here):
+                return deny(RECEIPT_MSG.format(t))
     return 0
+
+
+RECEIPT_MSG = ("[harness-lite] {} 는 영수증 보관소(.harness/lite)입니다 — 영수증은 harness.py verify 만 씁니다. "
+               "결과를 바꾸려면 고친 뒤 verify 를 다시 돌리세요.")
+
+
+def in_receipts(path: str, cwd: Path) -> bool:
+    """영수증 보관소(.harness/lite) 안인가 — Stop 훅이 디스크의 영수증을 증거로 쓰므로 도구로 고치지 못하게 한다(수강생 시험 c-1)."""
+    return "/.harness/lite/" in _abs(path, cwd).as_posix().lower() + "/"
+
+
+def harness_call(word: str, args: list[str]) -> tuple[str, list[str], str | None] | None:
+    """`… harness.py [--root R] <하위 명령> …` 이면 (하위 명령 소문자, 그 뒤 인수, --root 값). 아니면 None
+    (sh run.sh harness.py … · py "…/harness.py" … 모두)."""
+    seq = [word, *args]
+    for i, t in enumerate(seq):
+        if re.split(r"[/\\]", t)[-1].lower() == "harness.py":
+            rest, root = seq[i + 1:], None
+            while rest and rest[0].startswith("-"):  # --root 같은 전역 옵션
+                if rest[0] == "--root" and len(rest) > 1:
+                    root, rest = rest[1], rest[2:]
+                else:
+                    rest = rest[1:]
+            return (rest[0].lower(), rest[1:], root) if rest else ("", [], root)
+    return None
 
 
 def trash_targets(word: str, args: list[str]) -> list[str]:
     """`… harness.py trash <경로> …` 의 경로들(sh run.sh harness.py trash · py harness.py trash 모두)."""
-    seq = [word, *args]
-    for i, t in enumerate(seq):
-        if re.split(r"[/\\]", t)[-1].lower() == "harness.py":
-            rest = seq[i + 1:]
-            while rest and rest[0].startswith("-"):  # --root 같은 전역 옵션
-                rest = rest[2:] if rest[0] == "--root" and len(rest) > 1 else rest[1:]
-            if rest and rest[0].lower() == "trash":
-                return [x for x in rest[1:] if not x.startswith("-")]
-    return []
+    call = harness_call(word, args)
+    return [x for x in call[1] if not x.startswith("-")] if call and call[0] == "trash" else []
 
 
 if __name__ == "__main__":
