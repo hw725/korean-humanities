@@ -1,6 +1,6 @@
 # korean-humanities — 한국학 인문학 연구 플러그인 모음
 
-한국학 연구를 위한 Claude Code 플러그인 **4종**입니다. 저자의 전공이 전근대 한국
+한국학 연구를 위한 Claude Code 플러그인 **4종**과, 바이브 코딩 강의 수강생용 확인 장치 **harness-lite** 하나를 담았습니다. 저자의 전공이 전근대 한국
 한문학이라 그쪽에 초점이 맞춰져 있고, 저자의 식견이 닿지 못한 분야(국어학·한국사·
 민속학 등 한국학의 더 넓은 영역)는 충분히 포괄하지 못했습니다. 그래서 처음부터
 **각자 커스텀해서 쓰도록** 설계했습니다 — 설정 지점은 각 절에 명시돼 있고, 분야
@@ -16,6 +16,7 @@
 /plugin install gugyeol-decode           # 깨진 구결·옛한글 복원 도구
 /plugin install kci-citation-network     # KCI 인용망 수집기 (무료 API 키 필요)
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
+/plugin install harness-lite             # 수강생판 확인 장치 — «완료»를 영수증으로 확인 (Python 3.8+)
 ```
 
 다른 설치 방법(Claude Code 수동, **Codex CLI 등 다른 도구**, 웹 LLM, AI 없이
@@ -30,6 +31,10 @@
 | `gugyeol-decode` | PDF·HWPX의 깨진 구결자·옛한글을 표준 유니코드로 복원 | 매핑 테이블은 동봉. PDF 입력은 `pip install pymupdf`, HWPX 입력은 `pip install python-hwpx` |
 | `kci-citation-network` | 키워드만으로 KCI 인용망 수집 (선택: Obsidian 렌더) | 무료 data.go.kr API 키 |
 | `kci-korean-studies-trends` | 연도·분야만으로 KCI 동향 코퍼스·보고서 | 없음 (키 불필요) |
+
+**harness-lite**(연구 플러그인이 아니라 강의용 확인 장치): 원본 쓰기·영구 삭제·이름 기준 프로세스 종료를 막고,
+AI의 «완료» 보고를 완료 조건 계약(`harness.contract.json`)의 영수증으로 확인합니다. 준비물은 Python 3.8 이상이고,
+안내는 플러그인 폴더의 `README.md`에 있습니다.
 
 각 플러그인의 행동 보증·사용법(값 넣는 지점·명령)·알려진 한계는
 [docs/USAGE.md](docs/USAGE.md)에 있습니다.

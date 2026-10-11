@@ -1,0 +1,25 @@
+{
+  "v": "lite-1",
+  "intent": {
+    "purpose": {"text": "", "source": "blank", "hint": "무엇을 왜 만드나 — 한두 문장"},
+    "scope": {"text": "", "source": "blank", "hint": "어디까지 하고 무엇은 하지 않나(폴더·자료)"},
+    "evidence": {"text": "", "source": "blank", "hint": "판단의 근거가 되는 자료·지침·예시"},
+    "screen": {"text": "", "source": "blank", "hint": "화면이 있으면 어떻게 보여야 하나(예시는 형식만 따르고 내용은 베끼지 않는다)"},
+    "data": {"text": "", "source": "blank", "hint": "만들 파일·데이터의 모양(열 이름·형식)"},
+    "original": {"text": "", "source": "blank", "hint": "읽기만 해야 하는 원본 — 아래 protect 에도 적는다(계약 폴더 기준 상대 글롭, 폴더 밖이면 절대 경로 글롭)"},
+    "verification": {"text": "", "source": "blank", "hint": "끝났다고 할 기준 — 아래 conditions 로 내려간다"},
+    "publish": {"text": "", "source": "blank", "hint": "밖으로 내보내는 것(공유본·배포)과 내보내기 전 확인"},
+    "cost": {"text": "", "source": "blank", "hint": "바깥 AI 호출·대량 실행은 하기 전에 건수와 비용을 보고"}
+  },
+  "watch": ["**/*.py", "**/*.js", "**/*.ts", "**/*.html", "**/*.css", "**/*.md"],
+  "protect": ["원본/**"],
+  "conditions": [
+    {
+      "id": "C-001",
+      "text": "(사람 말 한 문장으로) 예: 테스트가 모두 통과한다",
+      "judge": "deterministic",
+      "check": {"argv": ["py", "-3", "-m", "pytest", "-q"], "timeout": 900},
+      "status": "active"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ Claude Code 마켓플레이스 설치가 가장 간단합니다:
 /plugin install gugyeol-decode           # 깨진 구결·옛한글 복원 도구
 /plugin install kci-citation-network     # KCI 인용망 수집기 (무료 API 키 필요)
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
+/plugin install harness-lite             # 수강생판 확인 장치 (Python 3.8+, 훅이라 Claude Code 전용)
 ```
 
 ## Claude Code가 아니어도 쓸 수 있습니다

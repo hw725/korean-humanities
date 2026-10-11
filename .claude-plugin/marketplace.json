@@ -1,6 +1,6 @@
 {
     "name":  "korean-humanities",
-    "description":  "Korean humanities research plugins for Claude Code - pick what you need: research methods (korean-humanities), gugyeol/old-Hangul recovery (gugyeol-decode), KCI citation networks (kci-citation-network), KCI Korean-studies trend corpora (kci-korean-studies-trends).",
+    "description":  "Korean humanities research plugins for Claude Code - pick what you need: research methods (korean-humanities), gugyeol/old-Hangul recovery (gugyeol-decode), KCI citation networks (kci-citation-network), KCI Korean-studies trend corpora (kci-korean-studies-trends), and a completion-check harness for vibe-coding students (harness-lite).",
     "owner":  {
                   "name":  "hw725"
               },
@@ -24,6 +24,11 @@
                         "name":  "kci-korean-studies-trends",
                         "source":  "./plugins/kci-korean-studies-trends",
                         "description":  "Build your own year x field KCI corpus (no API key; rate-limited collection with a user-editable journal profile - see the robots notice in SKILL.md) and generate hallucination-resistant Korean-studies trend reports - topic clusters, representative-paper candidates, journal breakdowns. Stdlib-only, no LLM calls."
+                    },
+                    {
+                        "name":  "harness-lite",
+                        "source":  "./plugins/harness-lite",
+                        "description":  "Student edition of the completion harness - blocks writes to originals, permanent deletes and kill-by-name, and checks every \u0027done\u0027 claim against a fresh verify receipt of the project\u0027s completion-condition contract (harness.contract.json). Needs Python 3.8+."
                     }
                 ]
 }
