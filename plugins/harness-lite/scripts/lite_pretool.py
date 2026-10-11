@@ -400,10 +400,12 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
 def main() -> int:
     try:
         data = json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
+        data = data if isinstance(data, dict) else {}  # 객체가 아닌 JSON 에 Traceback 으로 죽지 않게
     except json.JSONDecodeError:
         return 0
-    name, ti = data.get("tool_name"), data.get("tool_input") or {}
-    cwd = Path(data.get("cwd") or os.getcwd())
+    name = data.get("tool_name")
+    ti = data.get("tool_input") if isinstance(data.get("tool_input"), dict) else {}  # 객체가 아닌 입력에 죽지 않게
+    cwd = Path(data.get("cwd") if isinstance(data.get("cwd"), str) and data.get("cwd") else os.getcwd())
     if name in EDIT_TOOLS:
         fp = ti.get("file_path") or ti.get("notebook_path")
         if fp and is_protected(fp, cwd):

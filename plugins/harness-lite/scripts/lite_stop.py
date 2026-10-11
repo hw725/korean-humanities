@@ -36,7 +36,7 @@ SHELL_WRITE_RX = re.compile(r"(?<![<>=-])>{1,2}(?!&)|\bsed\s+-i|\btee\b|Set-Cont
                             r"|\bgit(?:\s+-[CcP](?:\s+\S+)?|\s+--[\w-]+(?:=\S+|\s+[^-\s]\S*)?)*\s+(apply|checkout|checkout-index|restore|reset|"
                             r"stash|rm|switch|clean|read-tree|am|cherry-pick|merge|rebase|pull|revert)\b", re.I)
 # 완료 주장 판정 — 전체판(harness_stop.py)과 같은 정규식(시험이 같은지 본다)
-CLAIM_RX = re.compile(r"(완료(했|됐|되었|입니다|합니다|하였)|작업\s*완료|끝났|끝냈|마쳤|마무리했|다 만들었|모두 처리했|"
+CLAIM_RX = re.compile(r"((?<!미)완료(했|됐|되었|입니다|합니다|하였)|작업\s*완료|끝났|끝냈|마쳤|마무리했|다 만들었|모두 처리했|"
                       r"전부 처리했|처리를 마|산출(을|이)?\s*(끝|마)|\bdone\b|\bfinished\b)", re.I)
 NOT_CLAIM = re.compile(r"(완료|끝|마치|마무리)\w{0,4}\s*(않|못)|아직\s*\w{0,3}\s*(완료|끝|마치|마무리)"
                        r"|(완료|끝|마치|마무리)\w{0,3}\s*(전에|예정|하려면|하면|후에|하겠|할\s*것)")
@@ -81,14 +81,16 @@ def bump_blocks(f: Path, reason: str, retry: bool) -> int:
 
 
 def records(path: str | None) -> list[dict]:
-    if not path or not Path(path).exists():
+    if not isinstance(path, str) or not path or not Path(path).exists():
         return []
     out = []
     for ln in Path(path).read_text(encoding="utf-8", errors="replace").splitlines():
         try:
-            out.append(json.loads(ln))
+            rec = json.loads(ln)
         except json.JSONDecodeError:
             continue
+        if isinstance(rec, dict):  # 객체가 아닌 줄은 기록이 아니다(입력 모양 표)
+            out.append(rec)
     return out
 
 
@@ -265,11 +267,12 @@ def problems(cp: Path, edit_at: int, receipts, reads, text: str, acked: set[str]
 def main() -> int:
     try:
         data = json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
+        data = data if isinstance(data, dict) else {}  # 객체가 아닌 JSON 에 Traceback 으로 죽지 않게
     except json.JSONDecodeError:
         return 0
     retry = bool(data.get("stop_hook_active"))
     recs = records(data.get("transcript_path"))
-    cwd = Path(data.get("cwd") or os.getcwd())
+    cwd = Path(data.get("cwd") if isinstance(data.get("cwd"), str) and data.get("cwd") else os.getcwd())
     last_edit, receipts, reads, loose, last = scan(recs, cwd)
     # 명령 해석으로 못 잡은 편집(파이썬 한 줄 쓰기 등)도 놓치지 않게, 이 세션에서 verify 한 계약은 지문으로 다시 본다 — 마지막
     # 영수증 뒤 소스 지문이 바뀌었으면 «영수증 뒤 편집»이다(리뷰 ⑤ p4 R-2)

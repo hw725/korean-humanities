@@ -127,10 +127,6 @@ def validate(c: dict) -> list[str]:
     return errs
 
 
-def _skip(rel_parts: tuple[str, ...]) -> bool:
-    return any(p in SKIP_DIRS for p in rel_parts[:-1])
-
-
 def matches(rel: str, pats: list[str]) -> bool:
     rel = rel.replace("\\", "/")
     if os.name == "nt":  # Windows 파일 시스템은 대소문자를 가리지 않는다(Codex §16-21 리뷰 #9)

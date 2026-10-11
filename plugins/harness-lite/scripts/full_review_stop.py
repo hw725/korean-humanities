@@ -22,7 +22,7 @@ for _stream in (sys.stdout, sys.stderr):  # CJK 계약 E3 — 한국어 Windows 
 ACK_DIR = Path(os.environ.get("FULL_REVIEW_ACK_DIR") or Path.home() / ".claude" / "harness" / "full_review_ack")
 MAX_BLOCKS = 3
 # «완료»가 요구사항·조건을 서술하는 꼴(완료 보고 전, 완료라고 쓰지 마라 …)이면 주장이 아니다.
-_DONE_VERB = r"(완료(?!\s*(보고|전|라고|시\b|조건|하려|되면|여부|를\s*(말|선언|보고))|\S*\s*(금지|못))|끝났|마쳤|마무리했|다 봤|확인했)"
+_DONE_VERB = r"((?<!미)완료(?!\s*(보고|전|라고|시\b|조건|하려|되면|여부|를\s*(말|선언|보고))|\S*\s*(금지|못))|끝났|마쳤|마무리했|다 봤|확인했)"
 DONE = re.compile(r"전수[^\n.。]{0,40}?" + _DONE_VERB + r"|(완료했|끝났|마쳤)[^\n.。]{0,40}전수")
 COUNT = re.compile(r"\d[\d,]*\s*/\s*(전체\s*)?\d[\d,]*")
 # 개수 쌍 — «확인 x / 전체 y» 또는 «x/y». 단위(개·건·행·쪽·편·권·장)를 붙여도 된다
@@ -91,15 +91,16 @@ def last_text(data):
     if msg:
         return msg
     p = data.get("transcript_path")
-    if not p or not Path(p).exists():
+    if not isinstance(p, str) or not p or not Path(p).exists():
         return ""
     for line in reversed(Path(p).read_text(encoding="utf-8", errors="replace").splitlines()):
         try:
             rec = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if rec.get("type") == "assistant":
-            content = rec.get("message", {}).get("content", [])
+        if isinstance(rec, dict) and rec.get("type") == "assistant":  # 객체가 아닌 줄은 건너뛴다(입력 모양 표)
+            msg = rec.get("message") if isinstance(rec.get("message"), dict) else {}
+            content = msg.get("content") if isinstance(msg.get("content"), list) else []
             texts = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
             if texts:
                 return "\n".join(texts)
@@ -109,6 +110,7 @@ def last_text(data):
 def main():
     try:
         data = json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
+        data = data if isinstance(data, dict) else {}  # 객체가 아닌 JSON 에 Traceback 으로 죽지 않게
     except json.JSONDecodeError:
         return
     text = last_text(data)

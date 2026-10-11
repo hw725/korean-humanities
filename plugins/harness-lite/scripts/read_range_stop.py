@@ -74,14 +74,16 @@ def norm(p: str) -> str:
 
 
 def records(path: str | None) -> list[dict]:
-    if not path or not Path(path).exists():
+    if not isinstance(path, str) or not path or not Path(path).exists():
         return []
     out = []
     for ln in Path(path).read_text(encoding="utf-8", errors="replace").splitlines():
         try:
-            out.append(json.loads(ln))
+            rec = json.loads(ln)
         except json.JSONDecodeError:
             continue
+        if isinstance(rec, dict):  # 객체가 아닌 줄은 기록이 아니다(입력 모양 표)
+            out.append(rec)
     return out
 
 
@@ -221,6 +223,7 @@ def _spans(nums: set[int]) -> list[tuple[int, int]]:
 def main() -> int:
     try:
         data = json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
+        data = data if isinstance(data, dict) else {}  # 객체가 아닌 JSON 에 Traceback 으로 죽지 않게
     except json.JSONDecodeError:
         return 0
     retry = bool(data.get("stop_hook_active"))
