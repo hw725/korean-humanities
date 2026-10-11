@@ -3,7 +3,8 @@
   sh <플러그인>/scripts/run.sh harness.py init      # 프로젝트 폴더에 harness.contract.json 초안
   sh <플러그인>/scripts/run.sh harness.py verify    # 조건을 전부 돌리고 영수증을 남긴다
   sh <플러그인>/scripts/run.sh harness.py status    # 조건 표와 마지막 영수증
-  sh <플러그인>/scripts/run.sh harness.py trash <경로> …   # 영구 삭제 대신 휴지통으로
+  sh <플러그인>/scripts/run.sh harness.py trash <경로> …   # 영구 삭제 대신 휴지통으로(원본은 거부)
+  sh <플러그인>/scripts/run.sh harness.py lock      # 원본을 OS 읽기 전용으로(명령으로 우회 불가) · unlock 은 사용자가
 """
 from __future__ import annotations
 
@@ -133,9 +134,10 @@ def cmd_verify(a) -> int:
 
 
 def send_to_trash(p: Path) -> str | None:
-    """휴지통으로 보낸다. 실패하면 사유."""
-    p = Path(p).resolve()
-    if not p.exists():
+    """휴지통으로 보낸다. 실패하면 사유. 경로는 절대 경로로만 바꾸고 링크를 따라가지 않는다 — resolve 는 심볼릭 링크 대신 그
+    대상(원본)을 보냈다(리뷰 ⑤ p4 R-11)."""
+    p = Path(os.path.abspath(p))
+    if not p.exists() and not p.is_symlink():
         return "없는 경로"
     if os.name == "nt":
         ps = ("Add-Type -AssemblyName Microsoft.VisualBasic; $p = $env:HARNESS_TRASH; "
@@ -145,8 +147,11 @@ def send_to_trash(p: Path) -> str | None:
                            capture_output=True)
         return None if r.returncode == 0 and not p.exists() else (r.stderr.decode("utf-8", "replace").strip() or "실패")
     if sys.platform == "darwin":
-        script = f'tell application "Finder" to delete POSIX file "{p.as_posix()}"'
-        r = subprocess.run(["osascript", "-e", script], capture_output=True)
+        # 경로는 스크립트 문자열에 끼우지 않고 인수(argv)로 넘긴다 — 큰따옴표가 든 경로가 문자열을 닫고 명령을 덧붙이지
+        # 못하게(전수 S-20261011-175508-48d241 F2)
+        r = subprocess.run(["osascript", "-e", "on run argv", "-e",
+                            'tell application "Finder" to delete POSIX file (item 1 of argv)', "-e", "end run",
+                            p.as_posix()], capture_output=True)
         return None if r.returncode == 0 else r.stderr.decode("utf-8", "replace").strip() or "실패"
     if shutil.which("gio"):
         r = subprocess.run(["gio", "trash", str(p)], capture_output=True)
@@ -155,15 +160,48 @@ def send_to_trash(p: Path) -> str | None:
 
 
 def cmd_trash(a) -> int:
+    import lite_pretool as lp
+    base = Path(a.root).resolve()
     bad = 0
     for s in a.paths:
-        why = send_to_trash(Path(s))
+        if lp.is_protected(s, base) or lp.holds_protected(s, base):
+            # 공식 휴지통 명령도 원본은 옮기지 않는다(리뷰 ⑤ p4 R-3)
+            bad += 1
+            print(f"  ✗ {s}: 원본(읽기만 할 자료)이거나 원본을 품은 폴더입니다 — 휴지통으로 보내지 않습니다")
+            continue
+        why = send_to_trash(Path(s) if Path(s).is_absolute() else base / s)
         if why:
             bad += 1
             print(f"  ✗ {s}: {why}")
         else:
             print(f"  ✓ 휴지통으로 보냄: {s}")
     return 1 if bad else 0
+
+
+def _protected_files(root: Path) -> list[Path]:
+    import lite_pretool as lp
+    cp = root / lc.CONTRACT
+    pats = list(lp.DEFAULT_PROTECT) + (lp._protect_of(cp) if cp.is_file() else [])
+    out = []
+    for dp, dns, fns in os.walk(root):
+        dns[:] = [d for d in dns if d not in (".git", ".harness", "node_modules", ".venv", "venv", "__pycache__")]
+        for fn in fns:
+            rel = (Path(dp) / fn).relative_to(root).as_posix()
+            if lc.matches(rel, pats):
+                out.append(Path(dp) / fn)
+    return out
+
+
+def cmd_lock(a) -> int:
+    """원본(protect·기본 원본/·primary_data/)을 OS 읽기 전용으로 건다 — 명령을 어떻게 쓰든 쓰기가 실패한다. 훅의 명령 해석은
+    미리 알려 주는 안내이고, 이것이 실제로 막는 장치다(2026-10-11 구조 전환). 푸는 것은 `unlock`(사용자가 직접)."""
+    import stat
+    root = Path(a.root).resolve()
+    files = _protected_files(root)
+    for f in files:
+        os.chmod(f, stat.S_IREAD if a.cmd == "lock" else stat.S_IREAD | stat.S_IWRITE)
+    print(f"[harness-lite] 원본 {len(files)}개를 {'읽기 전용으로 걸었' if a.cmd == 'lock' else '쓰기 가능으로 풀었'}습니다.")
+    return 0
 
 
 def main(argv=None) -> int:
@@ -175,8 +213,11 @@ def main(argv=None) -> int:
     sp.add_parser("verify", help="조건 전부 실행 → 영수증")
     t = sp.add_parser("trash", help="영구 삭제 대신 휴지통으로")
     t.add_argument("paths", nargs="+")
+    sp.add_parser("lock", help="원본을 OS 읽기 전용으로 건다(명령으로 우회할 수 없게)")
+    sp.add_parser("unlock", help="원본의 읽기 전용을 푼다(사용자가 직접)")
     a = ap.parse_args(argv)
-    return {"init": cmd_init, "status": cmd_status, "verify": cmd_verify, "trash": cmd_trash}[a.cmd](a)
+    return {"init": cmd_init, "status": cmd_status, "verify": cmd_verify, "trash": cmd_trash,
+            "lock": cmd_lock, "unlock": cmd_lock}[a.cmd](a)
 
 
 if __name__ == "__main__":

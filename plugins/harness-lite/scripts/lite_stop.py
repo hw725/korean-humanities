@@ -3,10 +3,12 @@
 응답이 완료를 말하고, 이번 세션이 계약 폴더 안을 고쳤으면 아래가 모두 맞아야 통과한다.
   1) 마지막 편집 뒤에 `harness.py verify` 가 만든 영수증이 있다(이 세션 transcript 에 찍힌 것)
   2) 영수증 뒤로 계약과 소스(watch)가 바뀌지 않았다
-  3) 실패가 있으면 응답에 «실패 N건»과 조건 ID, 사람 판정 대기가 있으면 «사람 판정 대기 N건», 경고가 있으면 «경고 N건»
+  3) 실패나 사람 판정 대기가 남아 있지 않다 — 남아 있으면 «완료» 주장은 막고, «완료하지 못했다»·«미완료» 보고만 통과한다
+     (리뷰 ③ R-2: 건수 문구만 적으면 실패를 두고 «완료»가 통과했다). 경고가 있으면 응답에 «경고 N건»
   4) 캡처가 있으면 영수증 뒤에 전부 Read 로 열었다
 계약이 없는 폴더를 고치고 완료를 말하면 세션에 한 번 계약 만들기를 권한다(막는 것은 그 한 번뿐).
-한 번 막힌 뒤의 재응답(stop_hook_active)은 막지 않는다 — 끝없이 막히지 않게.
+한 번 막힌 뒤의 재응답(stop_hook_active)도 같은 미충족이면 다시 막는다. 끝없이 막히지 않게 같은 사유로 세 번 막힌 뒤에만
+통과시키고, 그때는 사용자에게 보이는 systemMessage 로 «검증 없이 완료 주장»과 사유를 남긴다(리뷰 ③ R-1, 전체판 v2 와 같다).
 """
 from __future__ import annotations
 
@@ -27,28 +29,55 @@ for _stream in (sys.stdout, sys.stderr):  # CJK 계약 E3
         pass
 ACK_DIR = Path(os.environ.get("HARNESS_LITE_ACK_DIR") or Path.home() / ".claude" / "harness-lite" / "ack")
 EDIT_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
+# git 은 하위 명령 앞 전역 옵션(--no-pager·-P·-C 경로…)을 건너뛰고 본다. 작업 트리를 바꾸는 하위 명령은 모두 편집이다
+# — rm·switch·clean 이 빠져 «git rm -f»로 계약 폴더를 바꾸고 verify 없이 «완료»가 통과했다(전수 S-20261011-175508-48d241 F3)
 SHELL_WRITE_RX = re.compile(r"(?<![<>=-])>{1,2}(?!&)|\bsed\s+-i|\btee\b|Set-Content|Add-Content|Out-File|Copy-Item|Move-Item"
-                            r"|New-Item|\b(mv|cp|touch|patch)\b|git\s+(apply|checkout|restore|reset|stash)", re.I)
+                            r"|New-Item|\b(mv|cp|touch|patch)\b"
+                            r"|\bgit(?:\s+-[CcP](?:\s+\S+)?|\s+--[\w-]+(?:=\S+|\s+[^-\s]\S*)?)*\s+(apply|checkout|checkout-index|restore|reset|"
+                            r"stash|rm|switch|clean|read-tree|am|cherry-pick|merge|rebase|pull|revert)\b", re.I)
 # 완료 주장 판정 — 전체판(harness_stop.py)과 같은 정규식(시험이 같은지 본다)
 CLAIM_RX = re.compile(r"(완료(했|됐|되었|입니다|합니다|하였)|작업\s*완료|끝났|끝냈|마쳤|마무리했|다 만들었|모두 처리했|"
                       r"전부 처리했|처리를 마|산출(을|이)?\s*(끝|마)|\bdone\b|\bfinished\b)", re.I)
 NOT_CLAIM = re.compile(r"(완료|끝|마치|마무리)\w{0,4}\s*(않|못)|아직\s*\w{0,3}\s*(완료|끝|마치|마무리)"
                        r"|(완료|끝|마치|마무리)\w{0,3}\s*(전에|예정|하려면|하면|후에|하겠|할\s*것)")
+# 절 나누기 — 한 문장 안의 미완료 표현이 다른 절의 완료 주장까지 지우지 않게(리뷰 ③ R-14). 전체판과 같은 정규식
+CLAUSE_RX = re.compile(r"[,，、;；]|(?<=지만)\s|(?<=는데)\s|(?<=며)\s")
 FENCE = re.compile(r"```.*?```", re.S)
 INLINE = re.compile(r"`[^`\n]*`|«[^»\n]*»|\"[^\"\n]*\"|“[^”\n]*”")
+MAX_BLOCKS = 3
 RECEIPT_RX = re.compile(re.escape(lc.RECEIPT_MARK) + r"(.+?receipt\.json)")
 VERIFY_CMD_RX = re.compile(r"harness\.py[\"']?\s+(?:--root\s+\S+\s+)?verify\b")
 CD_RX = re.compile(r"^(?:cd|Set-Location|pushd)\s+(\"[^\"]+\"|'[^']+'|\S+)\s*$", re.I)
 
 
 def prose(text: str) -> str:
+    """표 칸의 완료 주장도 주장이다 — 표 행은 남기고 칸 구분(|)만 지운다(리뷰 ⑤ p2 R-2, 전체판과 같다)."""
     text = FENCE.sub("", text)
-    lines = [ln for ln in text.splitlines() if not ln.lstrip().startswith(("|", ">"))]
+    lines = [ln.replace("|", " ") for ln in text.splitlines() if not ln.lstrip().startswith(">")]
     return INLINE.sub("", "\n".join(lines))
 
 
 def claims_done(text: str) -> bool:
-    return any(CLAIM_RX.search(s) and not NOT_CLAIM.search(s) for s in re.split(r"(?<=[.!?。])\s+|\n", prose(text)))
+    return any(CLAIM_RX.search(c) and not NOT_CLAIM.search(c)
+               for s in re.split(r"(?<=[.!?。])\s+|\n", prose(text)) for c in CLAUSE_RX.split(s))
+
+
+def bump_blocks(f: Path, reason: str, retry: bool) -> int:
+    """같은 사유로 막힌 횟수(세션 파일 f 안에 사유별로). 새 응답(재응답이 아님)이면 1부터 다시 센다 — 전체판 _bump_blocks 와 같다."""
+    key = hashlib.sha256(reason.encode("utf-8")).hexdigest()[:16]
+    try:
+        st = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        st = {}
+    cnt = st.get("reasons") if isinstance(st, dict) and isinstance(st.get("reasons"), dict) else {}
+    n = int(cnt.get(key) or 0) + 1 if retry else 1
+    cnt = {**cnt, key: n} if retry else {key: n}
+    try:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(json.dumps({"reasons": cnt}), encoding="utf-8")
+    except OSError:
+        pass
+    return n
 
 
 def records(path: str | None) -> list[dict]:
@@ -110,7 +139,7 @@ def scan(recs: list[dict], cwd: Path):
             cmd = inp.get("command") if name in ("Bash", "PowerShell") else None
             if isinstance(cmd, str):
                 out = _text(c.get("content"))
-                if VERIFY_CMD_RX.search(cmd):  # 영수증은 verify 를 부른 명령의 결과에 찍힌 것만(Codex §16-21 리뷰 #5)
+                if runs_verify(cmd):  # 영수증은 verify 를 «실행한» 명령의 결과에 찍힌 것만(Codex §16-21 리뷰 #5, 리뷰 ⑤ p4 R-1)
                     for p in RECEIPT_RX.findall(out):
                         receipts.append((i, p.strip()))
                 for cp in shell_edit_contracts(cmd, cwd):
@@ -119,6 +148,21 @@ def scan(recs: list[dict], cwd: Path):
                     else:
                         last_edit[_norm(cp)] = i
     return last_edit, receipts, reads, loose_edit, last_text
+
+
+ECHO_WORDS = {"echo", "printf", "write-host", "write-output", "cat", "type", "print"}
+
+
+def runs_verify(cmd: str) -> bool:
+    """명령이 harness.py verify 를 «실행»하는가 — 그 낱말을 출력(echo 등)하기만 하는 구간은 아니다(리뷰 ⑤ p4 R-1)."""
+    for seg in re.split(r"&&|\|\||[;\n|]", cmd):
+        s = seg.strip()
+        if not VERIFY_CMD_RX.search(s):
+            continue
+        first = re.split(r"\s+", s, maxsplit=1)[0].strip("\"'").lower() if s else ""
+        if re.split(r"[/\\]", first)[-1] not in ECHO_WORDS:
+            return True
+    return False
 
 
 def shell_edit_contracts(cmd: str, cwd: Path) -> list[Path | None]:
@@ -133,7 +177,8 @@ def shell_edit_contracts(cmd: str, cwd: Path) -> list[Path | None]:
             t = Path(m.group(1).strip("\"'"))
             base = (t if t.is_absolute() else base / t)
             continue
-        if not SHELL_WRITE_RX.search(s) or VERIFY_CMD_RX.search(s):
+        # verify 를 실행만 하는 구간은 편집이 아니지만, verify 낱말이 들었다고 쓰기 구간을 빼지는 않는다(리뷰 ⑤ p4 R-2)
+        if not SHELL_WRITE_RX.search(s):
             continue
         hits = []
         for tok in re.findall(r"\"([^\"]+)\"|'([^']+)'|(\S+)", s):
@@ -169,6 +214,11 @@ def problems(cp: Path, edit_at: int, receipts, reads, text: str, acked: set[str]
     home = (root / ".harness" / "lite").resolve()
     if r.get("v") != lc.LITE_V or _norm(r.get("root", "")) != _norm(root) or Path(rp).resolve().parent.parent != home:
         return [f"영수증 {rp} 는 이 프로젝트({root})의 verify 가 남긴 것이 아닙니다 — 다시 verify 하세요"], None
+    # 영수증이 지금 계약의 활성 조건 «전부»의 결과를 담았는가 — 결과가 빠진 영수증은 증거가 아니다(리뷰 ⑤ p4 R-1)
+    want = {x.get("id") for x in c.get("conditions") or [] if isinstance(x, dict) and x.get("status", "active") == "active"}
+    got = {x.get("id") for x in r.get("results") or [] if isinstance(x, dict)}
+    if want != got:
+        bad.append(f"영수증 {rp} 에 활성 조건 결과가 다 있지 않습니다(빠짐 {sorted(want - got)}) — 다시 verify 하세요")
     if r.get("contract_hash") != lc.contract_hash(c):
         bad.append("영수증 뒤 계약이 바뀌었습니다 — 다시 verify 하세요")
     elif r.get("source_fp", {}).get("digest") != lc.source_fp(root, c.get("watch") or [])["digest"]:
@@ -195,14 +245,17 @@ def problems(cp: Path, edit_at: int, receipts, reads, text: str, acked: set[str]
     if unread:
         bad.append(f"캡처 {len(unread)}장을 열어 보지 않았습니다(완료 전에 Read 로 전부 여세요): {unread[:3]}")
     key = hashlib.sha256(Path(rp).read_bytes()).hexdigest()[:16]
+    # 실패·사람 판정 대기가 남은 채로는 «완료»가 아니다 — 건수를 적어도, ack 가 있어도 막는다(리뷰 ③ R-2).
+    # 고치지 못한 것을 정직하게 보고하는 응답(«완료하지 못했다»·«미완료»)은 완료 주장이 아니라 여기 오지 않는다
+    failed = r.get("failed") or []
+    if failed:
+        bad.append(f"완료 조건 실패 {len(failed)}건({', '.join(failed)})을 두고 완료를 주장합니다 — 고친 뒤 다시 verify 하거나, "
+                   f"고치지 못했으면 «완료하지 못했다»고 «실패 {len(failed)}건»·조건 ID와 함께 보고하세요.")
+    hp = int(r.get("human_pending") or 0)
+    if hp:
+        bad.append(f"사람 판정 대기 {hp}건이 남아 완료가 아닙니다 — 사람이 판정한 뒤 다시 verify 하거나, "
+                   f"«미완료 — 사람 판정 대기 {hp}건»으로 보고하세요.")
     if key not in acked:
-        failed = r.get("failed") or []
-        if failed and not (re.search(rf"실패\s*{len(failed)}\s*건", text) and all(f in text for f in failed)):
-            bad.append(f"완료 조건 실패 {len(failed)}건({', '.join(failed)})입니다 — 고치거나, 고치지 못했으면 «완료하지 못했다»와 "
-                       f"«실패 {len(failed)}건»·조건 ID를 적으세요.")
-        hp = int(r.get("human_pending") or 0)
-        if hp and not re.search(rf"사람\s*판정\s*대기\s*{hp}\s*건", text):
-            bad.append(f"사람 판정 대기 {hp}건입니다 — 응답에 «사람 판정 대기 {hp}건»을 적으세요(통과로 세지 않습니다).")
         w = int(r.get("warnings") or 0)
         if w and not re.search(rf"경고\s*{w}\s*건", text):
             bad.append(f"경고 {w}건입니다 — 응답에 «경고 {w}건»과 내용을 적으세요.")
@@ -214,11 +267,24 @@ def main() -> int:
         data = json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
     except json.JSONDecodeError:
         return 0
-    if data.get("stop_hook_active"):
-        return 0
+    retry = bool(data.get("stop_hook_active"))
     recs = records(data.get("transcript_path"))
     cwd = Path(data.get("cwd") or os.getcwd())
     last_edit, receipts, reads, loose, last = scan(recs, cwd)
+    # 명령 해석으로 못 잡은 편집(파이썬 한 줄 쓰기 등)도 놓치지 않게, 이 세션에서 verify 한 계약은 지문으로 다시 본다 — 마지막
+    # 영수증 뒤 소스 지문이 바뀌었으면 «영수증 뒤 편집»이다(리뷰 ⑤ p4 R-2)
+    for at, rp in receipts:
+        cp = lc.find_contract(Path(rp).parent)
+        if not cp or _norm(cp) in last_edit:
+            continue
+        mine = [(i, p) for i, p in receipts if lc.find_contract(Path(p).parent) and _norm(lc.find_contract(Path(p).parent)) == _norm(cp)]
+        i_last, p_last = max(mine)
+        try:
+            r_last, c_now = lc.load(Path(p_last)), lc.load(cp)
+            if r_last.get("source_fp", {}).get("digest") != lc.source_fp(cp.parent, c_now.get("watch") or [])["digest"]:
+                last_edit[_norm(cp)] = len(recs)
+        except (OSError, ValueError):
+            last_edit[_norm(cp)] = len(recs)
     text = data.get("last_assistant_message") or last
     if not text or not claims_done(text):
         return 0
@@ -246,8 +312,13 @@ def main() -> int:
     except OSError:
         pass
     if bad:
-        sys.stdout.buffer.write(json.dumps({"decision": "block", "reason": "[harness-lite] 완료 확인이 끝나지 않았습니다:\n- "
-                                            + "\n- ".join(bad)}, ensure_ascii=False).encode("utf-8"))
+        n = bump_blocks(af.with_name(af.stem + ".blocks.json"), "\n".join(bad), retry)
+        if n > MAX_BLOCKS:  # 끝없이 막지 않는다 — 대신 사용자 눈에 보이게 남긴다(리뷰 ③ R-1)
+            out = {"systemMessage": f"[harness-lite] 같은 사유로 {MAX_BLOCKS}번 막혔습니다 — 검증 없이 완료 주장 — 사유:\n- "
+                                    + "\n- ".join(bad)}
+        else:
+            out = {"decision": "block", "reason": "[harness-lite] 완료 확인이 끝나지 않았습니다:\n- " + "\n- ".join(bad)}
+        sys.stdout.buffer.write(json.dumps(out, ensure_ascii=False).encode("utf-8"))
     return 0
 
 

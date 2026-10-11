@@ -1,6 +1,6 @@
 {
     "name":  "harness-lite",
-    "version":  "0.1.0",
+    "version":  "0.2.0",
     "description":  "Student edition of the completion harness - blocks writes to originals, permanent deletes and kill-by-name, and checks every \u0027done\u0027 claim against a fresh verify receipt of the project\u0027s completion-condition contract (harness.contract.json). Needs Python 3.8+.",
     "author":  {
                    "name":  "hw725"
