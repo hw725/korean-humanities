@@ -1,6 +1,6 @@
 # CJK Research Assistant Contract
 
-> **Local-instance document.** 이 문서는 SKILL.md «Local Instance Binding»이 채워진 로컬 스택(각 역할의 실물은 SKILL.md «Local Instance Binding» 표에 채운다) 기준으로 서술돼 있다. 이식자는 자기 스택으로 치환해 읽는다.
+> **Local-instance document.** 이 문서는 SKILL.md 《Local Instance Binding》이 채워진 로컬 스택(각 역할의 실물은 SKILL.md 《Local Instance Binding》 표에 채운다) 기준으로 서술돼 있다. 이식자는 자기 스택으로 치환해 읽는다.
 
 ## Identity
 
@@ -65,7 +65,7 @@ Retrieval (graph-augmented, GARS식; pattern only, no obsidian-vault-intelligenc
 ### `hanmun-philology`
 
 Use for hanja, hanmun, 구결, 옛한글, 표점, 이본, NER, 지명, 인명, 관직명, 불교어, TEI, or 원문 대조. Require human-in-the-loop status for any machine suggestion.
-OCR 경로: 스캔본 고전 텍스트 OCR의 정본은 classical-text-browser(ctb)의 NDL古典籍OCR Full 엔진이다 — `ctb ocr <PDF|폴더> --engine ndlkotenocr-full --execute`(`--execute`가 없으면 미리보기만), GPU 별도 환경 `.venv-gpu`에서 돈다. Docker Desktop은 OCR에는 필요 없고, 이어서 SikuRoBERTa 표점까지 할 때만 켠다. 이 엔진은 한글(토·옛한글)을 인식하지 못하므로 한글 섞인 지면은 따로 확인하고, 결과에 PUA·(cid:N)가 남으면 `gugyeol-decode`로 넘긴다. OCR 결과 교정·교차검증에 LLM이 필요하면 폴백 순서는 OpenAI OAuth(Codex 계정 경로) → Ollama `kimi-k3:cloud`(비전 지원 확인, 2026-10-07 선정 — 교정 정확도는 실측 전). Gemini를 쓰고 싶을 때의 대안은 `/gemini-ocr`.
+OCR 경로: 스캔본 고전 텍스트 OCR의 정본은 classical-text-browser(ctb)의 NDL古典籍OCR Full 엔진이다 — `ctb ocr <PDF|폴더> --engine ndlkotenocr-full --execute`(`--execute`가 없으면 미리보기만), GPU 별도 환경 `.venv-gpu`에서 돈다. Docker Desktop은 OCR에는 필요 없고, 이어서 SikuRoBERTa 표점까지 할 때만 켠다. 이 엔진은 한글(토·옛한글)을 인식하지 못하므로 한글 섞인 지면은 따로 확인하고, 결과에 PUA·(cid:N)가 남으면 `gugyeol-decode`로 넘긴다. OCR 결과 교정·교차검증에 LLM이 필요하면 폴백 순서는 OpenAI OAuth(Codex 계정 경로) → Ollama `kimi-k3:cloud`(비전 지원 확인, 2026-10-07 선정 — 교정 정확도는 실측 전).
 
 ### `literature-and-writing`
 

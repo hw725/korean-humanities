@@ -28,8 +28,8 @@ COUNT = re.compile(r"\d[\d,]*\s*/\s*(전체\s*)?\d[\d,]*")
 # 개수 쌍 — «확인 x / 전체 y» 또는 «x/y». 단위(개·건·행·쪽·편·권·장)를 붙여도 된다
 PAIR = re.compile(r"(확인\s*)?(\d[\d,]*)\s*(?:개|건|행|쪽|편|권|장)?\s*/\s*(전체\s*)?(\d[\d,]*)")
 FENCE = re.compile(r"```.*?```", re.S)
-INLINE = re.compile(r"`[^`\n]*`|«[^»\n]*»|\"[^\"\n]*\"|“[^”\n]*”")
-RULE = "harness-lite README «전수 규칙»"
+INLINE = re.compile(r"`[^`\n]*`|[«《][^»》\n]*[»》]|\"[^\"\n]*\"|“[^”\n]*”")
+RULE = "harness-lite README 《전수 규칙》"
 
 
 def base(text: str) -> str:

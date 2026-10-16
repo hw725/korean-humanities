@@ -163,7 +163,7 @@ def convert_hwp_to_hwpx(hwp_path: Path) -> Path:
     import subprocess
     out_path = hwp_path.with_suffix(".hwpx")
     rc = subprocess.call([sys.executable, str(converter),
-                          str(hwp_path), "--out", str(out_path)])
+                          str(hwp_path), "--output", str(out_path)])
     if rc != 0 or not out_path.exists():
         print(f"ERROR: HWP→HWPX 변환 실패 (exit {rc})", file=sys.stderr)
         sys.exit(1)

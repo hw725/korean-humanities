@@ -9,11 +9,11 @@ git 앞 전역 옵션(--no-pager·--work-tree=…·-C …)은 건너뛰고 하�
 거부하므로 막지 않는다.
 원본 잠금 풀기(harness.py unlock)는 사용자만 한다 — AI 가 부르면 막고 사용자가 칠 명령을 알려 준다. 영수증 보관소
 (.harness/lite)는 도구로 고치지 않는다(Stop 훅이 디스크의 영수증을 증거로 쓴다).
-이름 기준 종료는 사용자가 열어 둔 같은 프로그램까지 닫으므로 막는다. PowerShell 호출 연산자 «&» 뒤도 명령 자리다.
+이름 기준 종료는 사용자가 열어 둔 같은 프로그램까지 닫으므로 막는다. PowerShell 호출 연산자 《&》 뒤도 명령 자리다.
 heredoc 본문과 커밋 메시지 속 낱말은 명령이 아니다.
 한계: 로컬 훅은 보안 장치가 아니다 — 실수를 막는 장치다. 문자열을 조립하면 빠져나갈 수 있다.
 """
-# run-harness: allow-kill-patterns  (이 파일은 금지 명령을 «찾는» 정규식을 담는다)
+# run-harness: allow-kill-patterns  (이 파일은 금지 명령을 《찾는》 정규식을 담는다)
 from __future__ import annotations
 
 import json
@@ -33,11 +33,11 @@ for _stream in (sys.stdout, sys.stderr):  # CJK 계약 E3
 # 어느 깊이의 원본/·primary_data/ 든 지킨다(계약 폴더 바로 아래만이 아니라 — 2026-10-11 교차 확인 #2)
 DEFAULT_PROTECT = ["원본/**", "**/원본/**", "primary_data/**", "**/primary_data/**"]
 EDIT_TOOLS = {"Write", "Edit", "MultiEdit", "NotebookEdit"}
-# 지우는 명령은 «명령 자리»(구간의 첫 낱말, sudo·xargs 뒤 포함)에 올 때만 — 검색어·도움말·파이썬 코드 속 낱말은 명령이 아니다
+# 지우는 명령은 《명령 자리》(구간의 첫 낱말, sudo·xargs 뒤 포함)에 올 때만 — 검색어·도움말·파이썬 코드 속 낱말은 명령이 아니다
 DELETE_CMDS = {"rm", "rmdir", "unlink", "shred", "del", "erase", "rd", "ri", "remove-item"}
 FIND_DELETE_RX = re.compile(r"\bfind\b[^\n]*\s(?:-delete\b|-exec\s+rm\b)", re.I)
 DRIVE_RX = re.compile(r"^/([a-zA-Z])(/|$)")
-# 끄기·쓰기·옮기기·복사도 «명령 자리»로 가린다 — echo 'pkill node'·Get-Help Stop-Process 는 명령이 아니다(Codex §16-21 리뷰 #11)
+# 끄기·쓰기·옮기기·복사도 《명령 자리》로 가린다 — echo 'pkill node'·Get-Help Stop-Process 는 명령이 아니다(Codex §16-21 리뷰 #11)
 WRITE_CMDS = {"tee", "set-content", "add-content", "out-file", "clear-content", "truncate", "touch", "sc", "ac"}
 MOVE_CMDS = {"mv", "move-item", "rename-item", "move", "ren", "mi", "rni"}
 COPY_CMDS = {"cp", "copy-item", "copy", "xcopy", "robocopy", "cpi"}
@@ -47,7 +47,7 @@ SKIP_OPT_VALUE = {"sudo": ("-u", "-g", "-h", "-p", "-C", "-D", "-r", "-t", "-U",
                   "xargs": ("-I", "-n", "-P", "-L", "-s", "-d", "-E", "-a")}
 ASSIGN_RX = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=.*")
 CD_WORDS = {"cd", "pushd", "set-location", "sl", "chdir"}
-HOLDS_CAP = 20000  # 폴더 안 원본 탐색 상한 — 넘으면 «있을 수 있다»로 보고 막는다(깊이로 자르지 않는다)
+HOLDS_CAP = 20000  # 폴더 안 원본 탐색 상한 — 넘으면 《있을 수 있다》로 보고 막는다(깊이로 자르지 않는다)
 PS_KILL_PIPE_RX = re.compile(r"(?:^|[;\n&(])\s*(?:Get-Process|gps|ps)\b[^\n;]*\|\s*(?:Stop-Process|spps|kill)\b", re.I)
 HEREDOC_RX = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_][\w-]*)\1")
 INTERPRETER_RX = re.compile(r"(?:^|[\s/\\(])(?:py|python[\d.]*|sh|bash|zsh|node|deno|perl|ruby|php|pwsh|powershell|cmd)(?:\.exe)?(?=\s|$)", re.I)
@@ -93,9 +93,9 @@ def strip_messages(seg: str) -> str:
 
 
 def split_segments(cmd: str) -> list[str]:
-    """; && || | & 줄바꿈으로 구간을 나누되 따옴표 안은 나누지 않는다(«py -c "a=1; del a"»는 한 구간).
-    홑 & 도 경계다 — bash 의 백그라운드(«sleep 1 & rm x»)와 PowerShell 호출 연산자(«& Stop-Process …»)
-    뒤가 다음 명령 자리다(리뷰 ③ R-9). 리다이렉트의 &(«2>&1»·«&>»)는 경계가 아니다."""
+    """; && || | & 줄바꿈으로 구간을 나누되 따옴표 안은 나누지 않는다(《py -c "a=1; del a"》는 한 구간).
+    홑 & 도 경계다 — bash 의 백그라운드(《sleep 1 & rm x》)와 PowerShell 호출 연산자(《& Stop-Process …》)
+    뒤가 다음 명령 자리다(리뷰 ③ R-9). 리다이렉트의 &(《2>&1》·《&>》)는 경계가 아니다."""
     out, cur, q, i = [], [], None, 0
     while i < len(cmd):
         ch = cmd[i]
@@ -126,9 +126,9 @@ def tokens(seg: str) -> list[str]:
 def command(seg: str) -> tuple[str, list[str]]:
     """(명령 낱말 소문자·경로 뗀 것, 인수들). sudo·xargs·env 같은 앞잡이와 그 옵션은 건너뛴다. 리다이렉트는 인수가 아니다."""
     toks = tokens(seg)
-    if toks and toks[0].startswith("&"):  # PowerShell 호출 연산자(«&'C:\x.exe'»처럼 붙여 쓴 꼴 포함, 리뷰 ③ R-9)
+    if toks and toks[0].startswith("&"):  # PowerShell 호출 연산자(《&'C:\x.exe'》처럼 붙여 쓴 꼴 포함, 리뷰 ③ R-9)
         toks = ([toks[0][1:]] if toks[0][1:] else []) + toks[1:]
-    # 앞잡이(sudo·env …)와 그 옵션·옵션 값, 환경 변수 할당(FLAG=1)을 건너뛴다 — «sudo -u root rm»·«env FLAG=1 rm»의 실제 명령을
+    # 앞잡이(sudo·env …)와 그 옵션·옵션 값, 환경 변수 할당(FLAG=1)을 건너뛴다 — 《sudo -u root rm》·《env FLAG=1 rm》의 실제 명령을
     # 옵션 값·할당으로 읽던 것(리뷰 ⑤ p4 R-4)
     while toks:
         if ASSIGN_RX.fullmatch(toks[0]):
@@ -150,7 +150,7 @@ def command(seg: str) -> tuple[str, list[str]]:
         if skip:
             skip = False
             continue
-        if re.match(r"^\d?>{1,2}", t):  # «> 파일»이면 다음 낱말도 리다이렉트 대상이지 인수가 아니다
+        if re.match(r"^\d?>{1,2}", t):  # 《> 파일》이면 다음 낱말도 리다이렉트 대상이지 인수가 아니다
             skip = bool(re.fullmatch(r"\d?>{1,2}&?", t))
             continue
         args.append(t)
@@ -159,13 +159,13 @@ def command(seg: str) -> tuple[str, list[str]]:
 
 def deletes(seg: str) -> bool:
     """구간이 영구 삭제인가 — 명령 자리가 지우는 명령이거나 find -delete·git clean -f. git rm 은 명령 자리가 git 이라 해당 없다
-    (낱말 «git rm»이 인수에 있다고 면제하지 않는다 — Codex §16-21 리뷰 #10)."""
+    (낱말 《git rm》이 인수에 있다고 면제하지 않는다 — Codex §16-21 리뷰 #10)."""
     word, args = command(seg)
     if word in DELETE_CMDS:
         return True
     if word == "git":
         # 하위 명령은 전역 옵션(--no-pager·-P·--git-dir …)을 건너뛰고 읽는다 — 종전 정규식은 -C 만 건너뛰어
-        # «git --no-pager clean -fd»가 통과했다(전수 S-20261011-175508-48d241 F1)
+        # 《git --no-pager clean -fd》가 통과했다(전수 S-20261011-175508-48d241 F1)
         _, sub, opts = git_sub(args, Path("."))
         flags = [o for o in opts if o.startswith("-")]
         forced = any(f == "--force" or (not f.startswith("--") and "f" in f[1:]) for f in flags)
@@ -236,7 +236,7 @@ def _abs(path: str, cwd: Path) -> Path:
 
 
 def _abs_match(p: Path, pats: list[str]) -> bool:
-    """절대 경로로 적은 protect(«D:/연구/원본/**» — 계약 폴더 밖 원본)를 맞춘다(교차 확인 #2)."""
+    """절대 경로로 적은 protect(《D:/연구/원본/**》 — 계약 폴더 밖 원본)를 맞춘다(교차 확인 #2)."""
     import fnmatch
     s = p.as_posix()
     for pat in pats:
@@ -280,7 +280,7 @@ def is_protected(path: str, cwd: Path) -> bool:
 
 def holds_protected(path: str, cwd: Path) -> bool:
     """폴더를 옮기면 그 안의 원본도 옮겨진다 — 폴더 안에 원본이 있는가(Codex §16-21 리뷰 #7). 깊이로 자르지 않는다 — 깊이 6에서
-    끊고 «없음»으로 보던 것은 깊은 곳의 원본을 폴더째 옮기게 했다(리뷰 ⑤ p4 R-6). 너무 커서 다 보지 못하면 «있을 수 있다»(막는 쪽)."""
+    끊고 《없음》으로 보던 것은 깊은 곳의 원본을 폴더째 옮기게 했다(리뷰 ⑤ p4 R-6). 너무 커서 다 보지 못하면 《있을 수 있다》(막는 쪽)."""
     p = _abs(path, cwd)
     if not p.is_dir():
         return False
@@ -329,16 +329,16 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
     본다: restore(--staged 만이면 작업 트리를 건드리지 않음)·checkout -- <경로>·checkout -f·reset --hard|--merge|--keep·
     stash(인자 없음·push·save, 경로를 주면 그 경로)·clean·switch -f|--discard-changes·rm -f(--cached 아님)·
     checkout-index -f·read-tree --reset -u. 저장소 전체가 대상이면 그 저장소 안에 원본이 있을 때만 막는다.
-    하위 명령 앞 전역 옵션(--no-pager·-P·--work-tree[=]…·--git-dir[=]…·-C·-c)은 건너뛴다 — 종전에는 «git --no-pager
-    checkout -- 원본»이 하위 명령을 «--no-pager»로 읽어 통과했다."""
+    하위 명령 앞 전역 옵션(--no-pager·-P·--work-tree[=]…·--git-dir[=]…·-C·-c)은 건너뛴다 — 종전에는 《git --no-pager
+    checkout -- 원본》이 하위 명령을 《--no-pager》로 읽어 통과했다."""
     word, args = command(seg)
     if word != "git":
         return None
     base, sub, opts = git_sub(args, cwd)
     if not sub:
         return None
-    # 저장소가 아니면 git 이 «not a git repository»로 거부한다 — 덮어쓸 작업 트리가 없으니 막지 않는다. 종전에는 저장소가 없는
-    # 폴더에서도 «저장 안 된 변경이 사라진다»고 막아 이유가 맞지 않았다(수강생 시험 c-4). --git-dir·GIT_DIR 로 저장소를 따로
+    # 저장소가 아니면 git 이 《not a git repository》로 거부한다 — 덮어쓸 작업 트리가 없으니 막지 않는다. 종전에는 저장소가 없는
+    # 폴더에서도 《저장 안 된 변경이 사라진다》고 막아 이유가 맞지 않았다(수강생 시험 c-4). --git-dir·GIT_DIR 로 저장소를 따로
     # 가리키면 저장소가 있는 것으로 보고 그대로 판정한다
     explicit = "--git-dir" in seg or "GIT_DIR" in seg or "GIT_WORK_TREE" in seg
     repo = _repo_root(base.resolve())
@@ -360,7 +360,7 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
         else:
             if any(f in ("-f", "--force") for f in flags):
                 whole = True
-            # «git checkout <경로>»도 덮어쓴다 — 있는 경로 인수만 경로로 본다(가지 이름은 아니다)
+            # 《git checkout <경로>》도 덮어쓴다 — 있는 경로 인수만 경로로 본다(가지 이름은 아니다)
             paths = [p for p in paths if p == "." or _abs(p, base).exists()]
             whole = whole or "." in paths
             if not whole and not paths:
@@ -375,7 +375,7 @@ def git_overwrites(seg: str, cwd: Path) -> str | None:
         act = words[0].lower() if words else ""
         if act in GIT_READ_STASH:
             return None
-        if "--" not in opts:  # «stash push <경로>…»만 경로, «stash save <메시지>»·인자 없음은 저장소 전체
+        if "--" not in opts:  # 《stash push <경로>…》만 경로, 《stash save <메시지>》·인자 없음은 저장소 전체
             paths = words[1:] if act == "push" else []
         whole = not paths
     elif sub == "clean":
@@ -439,7 +439,7 @@ def main() -> int:
         seg = strip_messages(seg)
         word, args = command(seg)
         if word in CD_WORDS:
-            # 구간 사이의 작업 폴더 변경을 따라간다 — «cd ../B && git reset --hard»를 처음 폴더 기준으로 보던 것(리뷰 ⑤ p4 R-5)
+            # 구간 사이의 작업 폴더 변경을 따라간다 — 《cd ../B && git reset --hard》를 처음 폴더 기준으로 보던 것(리뷰 ⑤ p4 R-5)
             dest = next((x for x in args if not x.startswith("-")), None)
             if dest:
                 here = _abs(dest, here)

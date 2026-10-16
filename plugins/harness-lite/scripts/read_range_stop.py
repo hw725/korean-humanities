@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""읽은 범위 Stop 훅 — 잘리거나 가려진 Read 를 복구하지 않고 답하면 «읽은 범위»를 밝히게 한다. 설계: DESIGN-harness-v2 §5-2
+"""읽은 범위 Stop 훅 — 잘리거나 가려진 Read 를 복구하지 않고 답하면 《읽은 범위》를 밝히게 한다. 설계: DESIGN-harness-v2 §5-2
 
 이번 턴(마지막 사용자 프롬프트 뒤)의 Read 에서 아래 둘을 찾는다.
-  - Read 토큰 상한 잘림: transcript 의 `read_truncation_notice` 첨부(«PARTIAL view — <경로>: showing lines a-b of N»)
-  - winnow 플러그인 숨김: Read 결과 속 «[winnow] Lines a-b (… lines) hidden … key <키>»
-빠진 행이 «이번 턴»의 다른 정상 Read 로 돌아왔거나, 이번 턴에 같은 키의 winnow_recall 이 «실제로 돌려준» 행이면 복구로 본다
+  - Read 토큰 상한 잘림: transcript 의 `read_truncation_notice` 첨부(《PARTIAL view — <경로>: showing lines a-b of N》)
+  - winnow 플러그인 숨김: Read 결과 속 《[winnow] Lines a-b (… lines) hidden … key <키>》
+빠진 행이 《이번 턴》의 다른 정상 Read 로 돌아왔거나, 이번 턴에 같은 키의 winnow_recall 이 《실제로 돌려준》 행이면 복구로 본다
 (리뷰 ③ R-6·R-7 — 요청한 범위가 아니라 돌아온 행만, 옛 턴의 Read 는 파일이 바뀌었을 수 있어 세지 않는다).
 recall 결과는 실측 형식(2026-10-11 이 PC transcript 6건) `{"result":"winnow recall <키> (Read: <경로>)\\n<본문>"}` 이고 본문에
-행 번호가 없다 — 머리 줄 뒤 본문 줄 수만큼 start 부터 센다. 본문에 «행번호\\t»·«행번호→»가 있으면 그 번호를 쓴다.
-복구되지 않은 구간이 있는데 응답이 «읽은 범위»와 행 범위 숫자(예: 1-120)를 함께 밝히지 않으면 막는다. 밝힌 구간은
+행 번호가 없다 — 머리 줄 뒤 본문 줄 수만큼 start 부터 센다. 본문에 《행번호\\t》·《행번호→》가 있으면 그 번호를 쓴다.
+복구되지 않은 구간이 있는데 응답이 《읽은 범위》와 행 범위 숫자(예: 1-120)를 함께 밝히지 않으면 막는다. 밝힌 구간은
 (경로, 구간) 단위로 기억해 다시 묻지 않는다(리뷰 ③ R-8). 재응답(stop_hook_active)도 같은 미충족이면 막고, 같은 사유로
-세 번 막힌 뒤에만 systemMessage 로 «검증 없이 완료 주장»과 사유를 남기고 통과시킨다(리뷰 ③ R-1).
+세 번 막힌 뒤에만 systemMessage 로 《검증 없이 완료 주장》과 사유를 남기고 통과시킨다(리뷰 ③ R-1).
 일부러 offset·limit 을 준 Read 는 보지 않는다 — 부분 읽기를 스스로 고른 것이라 매번 막으면 마찰만 커진다.
 한계: Grep 만 보고 답한 경우, 읽었지만 건너뛴 경우는 못 잡는다. 하네스 모듈에 의존하지 않는다(수강생판에 그대로 들어간다).
 """
@@ -30,12 +30,12 @@ for _stream in (sys.stdout, sys.stderr):
         pass
 
 ACK_DIR = Path(os.environ.get("READ_RANGE_ACK_DIR") or Path.home() / ".claude" / "harness" / "read_ack")
-# Read 결과의 행 번호. transcript 에는 «12\t내용»으로, 화면에는 «    12→내용»으로 남는다. winnow 표지 줄은 행이 아니다.
+# Read 결과의 행 번호. transcript 에는 《12\t내용》으로, 화면에는 《    12→내용》으로 남는다. winnow 표지 줄은 행이 아니다.
 LINE_RX = re.compile(r"^\s*(\d+)(?:→|\t)(?!\[winnow\] )", re.M)
 PARTIAL_RX = re.compile(r"PARTIAL view — (.+?): showing lines (\d+)-(\d+) of (\d+) total")
 WINNOW_RX = re.compile(r"\[winnow\] Lines (\d+)-(\d+) \(\d+ lines\) hidden(?:.|\n){0,600}?cached as key ([0-9a-f]+)")
 STATED_RX = re.compile(r"읽은\s*범위")
-# 고지 = «읽은 범위»와 행 범위 숫자(1-120, 1～120, 1~120, 1–120)가 한 줄 안에 가까이(80자) 있을 것
+# 고지 = 《읽은 범위》와 행 범위 숫자(1-120, 1～120, 1~120, 1–120)가 한 줄 안에 가까이(80자) 있을 것
 RANGE = r"\d+\s*[-～~–]\s*\d+"
 STATED_RANGE_RX = re.compile(rf"읽은\s*범위[^\n]{{0,80}}?{RANGE}|{RANGE}[^\n]{{0,80}}?읽은\s*범위")
 RECALL_MISS_RX = re.compile(r"no (?:cached|such)|not found|unknown key|expired|error", re.I)
@@ -58,7 +58,7 @@ def turn_key(recs: list[dict]) -> str:
 
 
 def stated_for(text: str, paths: list[str]) -> bool:
-    """«읽은 범위»와 행 범위 숫자를 밝혔는가. 코드 블록 속 문구는 고지가 아니고, 빠진 파일이 둘 이상이면 파일마다 이름을 적어야 한다
+    """《읽은 범위》와 행 범위 숫자를 밝혔는가. 코드 블록 속 문구는 고지가 아니고, 빠진 파일이 둘 이상이면 파일마다 이름을 적어야 한다
     — 한 줄 고지가 모든 파일의 누락을 면제하던 것(리뷰 ⑤ p2 R-7)."""
     t = FENCE.sub("", text or "")
     if not STATED_RANGE_RX.search(t):
@@ -104,14 +104,14 @@ def _is_prompt(r: dict) -> bool:
         return False
     c = (r.get("message") or {}).get("content") if isinstance(r.get("message"), dict) else None
     if isinstance(c, str):
-        return not c.startswith("<")  # 명령 출력·시스템 알림(«<command-…», «<task-notification…»)은 프롬프트가 아니다
+        return not c.startswith("<")  # 명령 출력·시스템 알림(《<command-…》, 《<task-notification…》)은 프롬프트가 아니다
     return isinstance(c, list) and any(isinstance(x, dict) and x.get("type") == "text" for x in c) \
         and not any(isinstance(x, dict) and x.get("type") == "tool_result" for x in c)
 
 
 def recalled_lines(text: str, start, end) -> set[int]:
-    """winnow_recall 결과가 «실제로» 돌려준 행(리뷰 ③ R-6). 행 번호가 있으면 그것을, 없으면 실측 머리 줄
-    «winnow recall <키> (…)» 뒤 본문 줄 수만큼 start 부터 센다(end 를 넘지 않게). 머리 줄도 행 번호도 없으면 빈 집합."""
+    """winnow_recall 결과가 《실제로》 돌려준 행(리뷰 ③ R-6). 행 번호가 있으면 그것을, 없으면 실측 머리 줄
+    《winnow recall <키> (…)》 뒤 본문 줄 수만큼 start 부터 센다(end 를 넘지 않게). 머리 줄도 행 번호도 없으면 빈 집합."""
     t = text or ""
     s = t.strip()
     if s.startswith("{"):
@@ -267,8 +267,8 @@ def main() -> int:
         sys.stdout.buffer.write(json.dumps({"systemMessage": msg}, ensure_ascii=False).encode("utf-8"))
         return 0
     reason = ("[read-range] 이번 턴에 끝까지 오지 않은 Read 가 있습니다(Read 토큰 상한 잘림·winnow 숨김):\n- " + "\n- ".join(lines)
-              + "\n나머지를 offset 으로 이어 읽거나 winnow_recall 로 되살리세요. 읽지 않고 답하려면 응답에 «읽은 범위»와 실제로 읽은 "
-              "행 범위(예: «읽은 범위: 1-264행»)를 밝히세요.")
+              + "\n나머지를 offset 으로 이어 읽거나 winnow_recall 로 되살리세요. 읽지 않고 답하려면 응답에 《읽은 범위》와 실제로 읽은 "
+              "행 범위(예: 《읽은 범위: 1-264행》)를 밝히세요.")
     sys.stdout.buffer.write(json.dumps({"decision": "block", "reason": reason}, ensure_ascii=False).encode("utf-8"))
     return 0
 

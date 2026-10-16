@@ -43,7 +43,7 @@ NOT_CLAIM = re.compile(r"(완료|끝|마치|마무리)\w{0,4}\s*(않|못)|아직
 # 절 나누기 — 한 문장 안의 미완료 표현이 다른 절의 완료 주장까지 지우지 않게(리뷰 ③ R-14). 전체판과 같은 정규식
 CLAUSE_RX = re.compile(r"[,，、;；]|(?<=지만)\s|(?<=는데)\s|(?<=며)\s")
 FENCE = re.compile(r"```.*?```", re.S)
-INLINE = re.compile(r"`[^`\n]*`|«[^»\n]*»|\"[^\"\n]*\"|“[^”\n]*”")
+INLINE = re.compile(r"`[^`\n]*`|[«《][^»》\n]*[»》]|\"[^\"\n]*\"|“[^”\n]*”")
 MAX_BLOCKS = 3
 RECEIPT_RX = re.compile(re.escape(lc.RECEIPT_MARK) + r"(.+?receipt\.json)")
 VERIFY_CMD_RX = re.compile(r"harness\.py[\"']?\s+(?:--root\s+\S+\s+)?verify\b")
@@ -313,7 +313,7 @@ def problems(cp: Path, edit_at: int, receipts, reads, text: str, acked: set[str]
     if key not in acked:
         w = int(r.get("warnings") or 0)
         if w and not re.search(rf"경고\s*{w}\s*건", text):
-            bad.append(f"경고 {w}건입니다 — 응답에 «경고 {w}건»과 내용을 적으세요.")
+            bad.append(f"경고 {w}건입니다 — 응답에 《경고 {w}건》과 내용을 적으세요.")
     return bad, key
 
 

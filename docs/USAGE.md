@@ -101,6 +101,6 @@ PR로 기여해 주시면 프로파일에 반영하겠습니다.
 - 외부 연결은 전부 사용자 소유입니다: Obsidian은 명시적 `--vault` 인자로만, LLM API
   호출은 어떤 스크립트에도 없습니다.
 - 산출물 폰트 기본값(세리프 Noto Serif CJK KR / 산세리프 Pretendard GOV Variable /
-  고정폭 Sarasa Fixed K)은 `hanmun-research-assistant` SKILL.md의 «폰트 정책» 표가
+  고정폭 Sarasa Fixed K)은 `hanmun-research-assistant` SKILL.md의 《폰트 정책》 표가
   정의하며, 그 표를 고치면 전체가 따릅니다.
 - 언어: 스킬 지침은 한국어·영어 혼용입니다. 대상 사용자가 한국학 연구자이기 때문입니다.

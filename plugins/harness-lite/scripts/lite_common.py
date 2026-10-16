@@ -32,7 +32,7 @@ MISSING_MODULE_RX = re.compile(r"No module named '?([\w.]+)'?")
 FATAL_MARK = "HARNESS::FATAL"
 WARN_MARK = "HARNESS::WARN"
 ID_RX = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}")
-# 초안의 조건 문장 머리 — 채우지 않은 채로 verify 가 통과하면 «무엇을 확인했는지»가 비어 있다(수강생 시험 b-4)
+# 초안의 조건 문장 머리 — 채우지 않은 채로 verify 가 통과하면 《무엇을 확인했는지》가 비어 있다(수강생 시험 b-4)
 PLACEHOLDER_TEXT = "(사람 말 한 문장으로)"
 # argv 안의 이 낱말은 verify 를 돌리는 파이썬으로 바꾼다 — 계약을 다른 OS 로 옮겨도 돈다(수강생 시험 b-6)
 PY_TOKEN = "{python}"
@@ -94,7 +94,7 @@ def validate(c: dict) -> list[str]:
         errs.append("protect 는 읽기만 할 원본 경로 글롭 목록이어야 합니다(예: \"원본/**\")")
     conds = c.get("conditions")
     if not isinstance(conds, list) or not conds:
-        return errs + ["conditions 가 비었습니다 — «끝났다»를 확인할 조건을 하나 이상 적으세요"]
+        return errs + ["conditions 가 비었습니다 — 《끝났다》를 확인할 조건을 하나 이상 적으세요"]
     seen = set()
     live = 0
     for i, x in enumerate(conds):
@@ -109,7 +109,7 @@ def validate(c: dict) -> list[str]:
         if cid in seen:
             errs.append(f"조건 ID {cid} 가 중복입니다")
         seen.add(cid)
-        # 모르는 status 는 조용히 «실행 안 함»이 되지 않게 형식 오류로 본다(리뷰 ③ R-3)
+        # 모르는 status 는 조용히 《실행 안 함》이 되지 않게 형식 오류로 본다(리뷰 ③ R-3)
         st = x.get("status", "active")
         if st not in STATUSES:
             errs.append(f"{cid}: status 는 active·retired 중 하나입니다(지금 {st!r})")
@@ -119,7 +119,7 @@ def validate(c: dict) -> list[str]:
         if not text:
             errs.append(f"{cid}: text(사람 말 한 문장)가 없습니다")
         elif text.startswith(PLACEHOLDER_TEXT):
-            errs.append(f"{cid}: text 가 아직 초안의 자리 표시입니다 — «끝났다»를 사람 말 한 문장으로 바꾸세요")
+            errs.append(f"{cid}: text 가 아직 초안의 자리 표시입니다 — 《끝났다》를 사람 말 한 문장으로 바꾸세요")
         j, chk = x.get("judge"), x.get("check")
         if j not in JUDGES:
             errs.append(f"{cid}: judge 는 deterministic·visual·human 중 하나입니다")
@@ -135,8 +135,8 @@ def validate(c: dict) -> list[str]:
         if "argv" in chk and not (isinstance(chk["argv"], list) and chk["argv"] and all(isinstance(a, str) for a in chk["argv"])):
             errs.append(f"{cid}: argv 는 문자열 목록이어야 합니다")
     if not live:
-        # 조건을 전부 retired 로 두면 아무것도 돌리지 않은 영수증이 «통과»가 된다(리뷰 ③ R-3)
-        errs.append("활성(active) 조건이 하나도 없습니다 — «끝났다»를 확인할 조건을 하나 이상 active 로 두세요")
+        # 조건을 전부 retired 로 두면 아무것도 돌리지 않은 영수증이 《통과》가 된다(리뷰 ③ R-3)
+        errs.append("활성(active) 조건이 하나도 없습니다 — 《끝났다》를 확인할 조건을 하나 이상 active 로 두세요")
     return errs
 
 
@@ -149,7 +149,7 @@ def matches(rel: str, pats: list[str]) -> bool:
             return True
         if p.endswith("/**") and (rel == p[:-3] or rel.startswith(p[:-2]) or fnmatch.fnmatch(rel, p[:-3])
                                   or (p.startswith("**/") and fnmatch.fnmatch(rel, p[3:-3]))):
-            return True  # «폴더/**»는 그 폴더 자신도 가리킨다(폴더째 옮기기 판정 — Codex §16-21 리뷰 #7)
+            return True  # 《폴더/**》는 그 폴더 자신도 가리킨다(폴더째 옮기기 판정 — Codex §16-21 리뷰 #7)
     return False
 
 
@@ -258,7 +258,7 @@ def run_condition(x: dict, root: Path, vd: Path) -> dict:
         elif f:
             fail = f"치명 표지 {f}건"
         elif chk.get("expect_text") and chk["expect_text"] not in out:
-            fail = f"출력에 «{chk['expect_text']}» 가 없습니다"
+            fail = f"출력에 《{chk['expect_text']}》 가 없습니다"
     if judge == "visual":
         caps = []
         for g in chk.get("captures") or []:
@@ -291,7 +291,7 @@ def verify(cpath: Path) -> tuple[dict, Path]:
     fp1 = source_fp(root, watch) if not errs else fp0
     problems = list(errs)
     if not errs and not fp0["n"]:
-        # 지문 대상이 0개면 영수증 뒤 무엇을 바꿔도 «같다»가 된다(리뷰 ⑤ p4 R-9)
+        # 지문 대상이 0개면 영수증 뒤 무엇을 바꿔도 《같다》가 된다(리뷰 ⑤ p4 R-9)
         problems.append("watch 에 걸리는 파일이 하나도 없습니다 — 소스 지문이 비어 영수증이 아무것도 증명하지 못합니다. watch 를 고치세요")
     if fp1["digest"] != fp0["digest"]:
         problems.append("검사 중에 소스가 바뀌었습니다 — 검사는 소스를 고치지 말고 결과를 {scratch} 로 보내세요")
@@ -312,9 +312,9 @@ def verify(cpath: Path) -> tuple[dict, Path]:
         "captures": [cap for r in results for cap in r.get("captures", [])],
         "intent_blank": blanks, "problems": problems,
     }
-    # 사람 판정 대기는 «통과»가 아니다(리뷰 ③ R-2) — 대기가 남은 영수증은 ok 가 아니다
+    # 사람 판정 대기는 《통과》가 아니다(리뷰 ③ R-2) — 대기가 남은 영수증은 ok 가 아니다
     receipt["ok"] = not problems and not receipt["failed"] and not receipt["human_pending"]
-    # 계약 오류로 돌리지 못한 활성 조건 — 요약이 «실패 0건»만 보여 성공처럼 읽히지 않게(수강생 시험 c-2)
+    # 계약 오류로 돌리지 못한 활성 조건 — 요약이 《실패 0건》만 보여 성공처럼 읽히지 않게(수강생 시험 c-2)
     conds = c.get("conditions") if isinstance(c.get("conditions"), list) else []
     receipt["not_run"] = 0 if results else sum(1 for x in conds if isinstance(x, dict) and x.get("status", "active") == "active")
     receipt["seal"] = seal(receipt)
@@ -329,7 +329,7 @@ def seal(r: dict) -> str:
 
 
 def table(c: dict, receipt: dict | None, stale: bool = False) -> list[str]:
-    """조건 표. stale 이면 지난 결과를 «낡음» 표시와 함께 보인다 — 전부 «미실행»으로 지우면 지난 결과를 잃는다(수강생 시험 d-2)."""
+    """조건 표. stale 이면 지난 결과를 《낡음》 표시와 함께 보인다 — 전부 《미실행》으로 지우면 지난 결과를 잃는다(수강생 시험 d-2)."""
     by = {r["id"]: r for r in (receipt or {}).get("results", [])}
     out = ["| 조건 | 사람 말 | 판정자 | 결과 |", "|---|---|---|---|"]
     for x in c.get("conditions") or []:
@@ -345,7 +345,7 @@ def table(c: dict, receipt: dict | None, stale: bool = False) -> list[str]:
 
 def cli_command(sub: str) -> str:
     """훅 메시지에 찍을 정확한 명령 — 수강생은 플러그인 설치 경로를 모른다. sh 가 아니라 파이썬으로 부른다 — 사용자가 PowerShell 에
-    붙여 넣으면 «sh 를 찾을 수 없다»로 시작조차 못 했다(수강생 시험 a-1). 정슬래시 경로는 PowerShell·Git Bash 둘 다 받는다."""
+    붙여 넣으면 《sh 를 찾을 수 없다》로 시작조차 못 했다(수강생 시험 a-1). 정슬래시 경로는 PowerShell·Git Bash 둘 다 받는다."""
     harness = (Path(__file__).resolve().parent / "harness.py").as_posix()
     return f'{" ".join(python_argv())} "{harness}" {sub}'
 

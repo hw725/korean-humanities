@@ -64,16 +64,16 @@ def cmd_init(a) -> int:
         cond["check"]["argv"] = argv = [*lc.python_argv(), *argv[1:]]
     cp.write_text(json.dumps(c, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"[harness-lite] 계약 초안을 만들었습니다: {cp}")
-    print("다음 아홉 칸을 사용자에게 물어 채우세요(모르는 칸은 비워 두고, 비운 칸은 영수증에 «빈 칸»으로 남습니다):")
+    print("다음 아홉 칸을 사용자에게 물어 채우세요(모르는 칸은 비워 두고, 비운 칸은 영수증에 《빈 칸》으로 남습니다):")
     for k in lc.INTENT_KEYS:
         print(f"  - {lc.INTENT_LABELS[k]}: {c['intent'][k].get('hint', '')}")
-    print("조건(conditions)은 «사람 말 한 문장 + 확인 명령 하나»입니다. 채운 뒤 사용자에게 표를 보여 주고 확인을 받으세요:")
+    print("조건(conditions)은 《사람 말 한 문장 + 확인 명령 하나》입니다. 채운 뒤 사용자에게 표를 보여 주고 확인을 받으세요:")
     print("  " + lc.cli_command("status"))
     if not chk:
-        print(f"테스트 명령을 찾지 못했습니다 — C-001 은 pytest 를 돌리는 초안입니다. text 의 자리 표시(«{lc.PLACEHOLDER_TEXT} …»)를 "
+        print(f"테스트 명령을 찾지 못했습니다 — C-001 은 pytest 를 돌리는 초안입니다. text 의 자리 표시(《{lc.PLACEHOLDER_TEXT} …》)를 "
               "사람 말 한 문장으로 바꾸고 check 를 이 프로젝트에 맞추세요(자리 표시가 남으면 verify 가 거부합니다).")
     if "pytest" in argv:
-        # 테스트 폴더를 못 찾아 초안 그대로 둔 때도 본다 — 종전에는 찾았을 때만 봐서 verify 에서야 «모듈 없음»이 났다(수강생 시험 b-4)
+        # 테스트 폴더를 못 찾아 초안 그대로 둔 때도 본다 — 종전에는 찾았을 때만 봐서 verify 에서야 《모듈 없음》이 났다(수강생 시험 b-4)
         pre = argv[:argv.index("-m")]
         try:
             missing = subprocess.run([*pre, "-c", "import pytest"], capture_output=True).returncode != 0
@@ -81,7 +81,7 @@ def cmd_init(a) -> int:
             print(f"주의: 파이썬을 실행하지 못했습니다({' '.join(pre)}: {e}) — C-001 의 check 를 이 PC 의 파이썬 명령으로 고치세요.")
         else:
             if missing:
-                print("주의: 이 파이썬에 pytest 가 없습니다 — verify 가 «pytest 모듈이 설치돼 있지 않습니다»로 실패합니다. "
+                print("주의: 이 파이썬에 pytest 가 없습니다 — verify 가 《pytest 모듈이 설치돼 있지 않습니다》로 실패합니다. "
                       f"설치(`{' '.join(pre)} -m pip install pytest`)는 사용자에게 먼저 물어보세요.")
     return 0
 
@@ -137,7 +137,7 @@ def cmd_verify(a) -> int:
         print(f"  ✗ {p}")
     if r["intent_blank"]:
         print(f"  · 빈 칸 {len(r['intent_blank'])}개: {', '.join(r['intent_blank'])}")
-    # 계약 오류로 조건을 못 돌렸을 때 «실패 0건»만 보이면 성공처럼 읽힌다 — 판정·문제·미실행을 함께 적는다(수강생 시험 c-2)
+    # 계약 오류로 조건을 못 돌렸을 때 《실패 0건》만 보이면 성공처럼 읽힌다 — 판정·문제·미실행을 함께 적는다(수강생 시험 c-2)
     print(f"[harness-lite] {'통과' if r['ok'] else '완료 아님'} — "
           f"실패 {len(r['failed'])}건{(' (' + ', '.join(r['failed']) + ')') if r['failed'] else ''} · "
           f"문제 {len(r['problems'])}건 · 미실행 {r['not_run']}건 · "
@@ -195,7 +195,7 @@ def cmd_trash(a) -> int:
 
 
 def _protected_paths(root: Path) -> tuple[list[Path], list[Path]]:
-    """(원본 파일, 원본 폴더). 폴더는 «원본/**»처럼 폴더째 지킨 것과 그 아래 폴더."""
+    """(원본 파일, 원본 폴더). 폴더는 《원본/**》처럼 폴더째 지킨 것과 그 아래 폴더."""
     import lite_pretool as lp
     cp = root / lc.CONTRACT
     pats = list(lp.DEFAULT_PROTECT) + (lp._protect_of(cp) if cp.is_file() else [])
@@ -214,7 +214,7 @@ def cmd_lock(a) -> int:
     미리 알려 주는 안내이고, 이것이 실제로 막는 장치다(2026-10-11 구조 전환). 다만 읽기 전용을 푸는 명령(attrib·chmod·
     Remove-Item -Force)은 막지 못하고, Windows 에서는 원본 폴더에 새 파일을 만드는 것도 막지 못한다(수강생 시험 b-2).
     잠근 것은 원래 권한과 함께 기록해 두고, `unlock`(사용자가 직접)은 그 기록만 되돌린다 — 처음부터 읽기 전용이던 파일까지
-    «풀었다»고 세던 것(수강생 시험 b-2)."""
+    《풀었다》고 세던 것(수강생 시험 b-2)."""
     import stat
     root = Path(a.root).resolve()
     rp = root / LOCK_REC

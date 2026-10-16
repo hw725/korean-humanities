@@ -4,9 +4,9 @@ description: "영문 초록·논문 영역·투고용 영문 윤문과 영문 �
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.3.1
+  version: 1.3.2
   category: academic-research
-  upstream_reference: Yuan1z0825/nature-skills @ 9cecfef6ac683fa59d7d15d2e22f98fa71dacaf5 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
+  upstream_reference: Yuan1z0825/nature-skills @ 6827ae57b62b201acd06b401619050411c0d82f6 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
   suite: korean-humanities
   tier: portable
   share: korean-humanities
@@ -21,6 +21,8 @@ metadata:
 `nature-polishing`(Apache-2.0)에서 **언어·문체 규칙만** 체리픽했다. 도입하지 않은 것: Nature/Nature Communications/NMI 저널 포맷, Results-Discussion 분리 규율, 통계 보고 규칙, LaTeX 조판, 그래픽 초록. 이들은 STEM 실증 논문 전제라 CJK 인문학 원고(KCI·HWP 제출)와 맞지 않는다.
 
 라이선스 원문은 `LICENSE.upstream`, 파일별 파생 관계는 각 `references/*.md` 머리말에 있다.
+
+2026-10-16(v1.3.2): upstream `6827ae57`으로 pin을 올렸다 — 벤더링 3종과 재서술 원본은 무변경(no-op). 그 사이 생긴 형제 스킬 5종(image2ppt·paper-xray·response·social-science·shared)은 `.upstream.json` never_adopt로 막고, nature-shared는 재서술 원본 하나만 남겨 바뀌면 다시 보도록 했다.
 
 2026-09-20(v1.2.0): upstream `9cecfef6`으로 pin을 올렸다 — 벤더링 3종은 upstream에서 무변경(no-op)이고, `.upstream.json` path_map 키를 upstream 실경로로 정정했다(신설 이후 접두 매치가 한 번도 성립하지 않았다). 신설 `nature-shared/core/discussion-argument-language.md`의 서법 사다리·한계 서술은 `style-guardrails.md` 「논증 강도 사다리」로 **재서술**했고, 게이트는 실험 설계 대신 전거·판본 근거로 치환했다.
 

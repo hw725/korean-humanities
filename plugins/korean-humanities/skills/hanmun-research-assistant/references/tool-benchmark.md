@@ -1,6 +1,6 @@
 # Academic AI Assistant Tool Benchmark
 
-> **Local-instance document.** 이 문서는 SKILL.md «Local Instance Binding»이 채워진 로컬 스택(각 역할의 실물은 SKILL.md «Local Instance Binding» 표에 채운다) 기준으로 서술돼 있다. 이식자는 자기 스택으로 치환해 읽는다.
+> **Local-instance document.** 이 문서는 SKILL.md 《Local Instance Binding》이 채워진 로컬 스택(각 역할의 실물은 SKILL.md 《Local Instance Binding》 표에 채운다) 기준으로 서술돼 있다. 이식자는 자기 스택으로 치환해 읽는다.
 
 ## Use
 

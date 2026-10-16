@@ -49,7 +49,7 @@ cp -r korean-humanities/plugins/gugyeol-decode/skills/gugyeol-decode ~/.codex/sk
 
 방법론 3종(연구 워크플로·비서 라우터·영문 라이팅)은 실행 코드가 없는 **프롬프트
 문서**라서 어떤 LLM에든 쓸 수 있습니다. `plugins/korean-humanities/skills/<스킬>/SKILL.md`
-본문을 대화에 붙여 넣고 «이 지침대로 ○○해 주세요»라고 요청하면 됩니다.
+본문을 대화에 붙여 넣고 《이 지침대로 ○○해 주세요》라고 요청하면 됩니다.
 `references/` 폴더의 세부 문서는 해당 작업에 필요한 것만 이어서 붙입니다.
 
 ## AI 도구 없이 — 터미널만으로
@@ -64,7 +64,7 @@ Python 3만 있으면 되고(표준 라이브러리 사용), 추가로 필요한
 | `olefile` | academic-research-workflow의 `verify_manuscript_numbers.py`가 **HWP(바이너리) 원고**를 읽을 때. 없으면 그 자리에서 중단합니다(HWPX·DOCX·MD 입력에는 필요 없습니다) |
 | `regex` | korean-humanities 동봉 헬퍼 `hanmun-research-assistant/scripts/cjk_title_match.py`(유니코드 프로퍼티 매칭) |
 
-`tools/` 2종은 준비물이 없습니다. 실행 명령은 아래 각 플러그인 절의 «사용법»
+`tools/` 2종은 준비물이 없습니다. 실행 명령은 아래 각 플러그인 절의 《사용법》
 코드 블록을 그대로 쓰되, Windows는 `py -3`, macOS/Linux는 `python3`을 사용합니다.
 
 ## 알아 둘 것 — 선택 단위

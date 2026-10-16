@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.4
+  version: 0.9.5
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -12,7 +12,7 @@ metadata:
 
 # Hanmun Research Assistant
 
-> 범위는 한문학(한국의 전근대 한문 기록 문학)이다. 아래 «CJK Text Handling Contract»의
+> 범위는 한문학(한국의 전근대 한문 기록 문학)이다. 아래 《CJK Text Handling Contract》의
 > CJK는 학문 범위가 아니라 **문자 층위**(유니코드 CJK Unified Ideographs·확장 평면)를
 > 가리킨다.
 
@@ -23,7 +23,7 @@ Use this skill as the single router for the user research assistant. It does not
 ## Operating Contract
 
 - Treat the assistant as a research workflow, not a generic chatbot.
-- Prefer local evidence first — your **vault**, **corpus pipeline**, **vector index**, and **reference manager** — then authoritative external databases. (이 문서는 네 가지를 역할 이름으로 부른다; 실제 설치물 대응은 맨 아래 «Local Instance Binding» 절이 정의한다.)
+- Prefer local evidence first — your **vault**, **corpus pipeline**, **vector index**, and **reference manager** — then authoritative external databases. (이 문서는 네 가지를 역할 이름으로 부른다; 실제 설치물 대응은 맨 아래 《Local Instance Binding》 절이 정의한다.)
 - Keep source facts, scholarly claims, user decisions, and agent events separate.
 - Never convert OCR, translation, NER, or RAG output into a fact without source status and verification scope.
 - Use JSONL for work logs, retrieval evaluation, screening decisions, and tool adoption decisions.
@@ -73,7 +73,7 @@ Use this skill as the single router for the user research assistant. It does not
 6. **사용자에게 건네는 명령은 PowerShell 문법으로 적는다.** §4가 환경을 고정한다면
    이것은 **명령을 건네는 쪽**의 규약이다. 한국어 Windows 사용자는 대개 PowerShell에서
    실행하며(Claude Code 데스크톱 앱의 Run 단추도 PowerShell이다), 거기서는
-   `cmd < file`이 «`<` 연산자는 나중에 사용하도록 예약되어 있습니다»로 **시작조차 못 한다**.
+   `cmd < file`이 《`<` 연산자는 나중에 사용하도록 예약되어 있습니다》로 **시작조차 못 한다**.
    파일을 stdin으로 넘길 때는 `Get-Content <파일> -Raw | <명령>`. 같은 이유로
    `&&`·`||`(5.1에 없음), `2>&1`(네이티브 exe에서 `$?`를 거짓으로 만든다),
    `rm -rf`·`which`·`head`·`touch`·`mkdir -p`도 그대로 주지 않는다.

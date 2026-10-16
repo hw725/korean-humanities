@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """korean-humanities 슈트의 CJK 텍스트 처리 계약 기계 검사기.
 
-계약 (정본: skills/hanmun-research-assistant/SKILL.md «CJK Text Handling Contract»):
+계약 (정본: skills/hanmun-research-assistant/SKILL.md 《CJK Text Handling Contract》):
   E1  builtins.open() 텍스트 모드 호출에 encoding= 명시 의무.
       Windows에서 미명시 기본값은 locale(cp949)이라 한자·옛한글이 조용히 깨진다.
   E2  Path.read_text()/write_text()에 encoding= 명시 의무 (같은 이유).

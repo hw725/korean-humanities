@@ -1,6 +1,6 @@
 ---
 name: kci-citation-network
-description: "키워드 하나로 KCI 참고문헌 OpenAPI에서 인용망(nodes/edges JSONL)을 수집하고 선택적으로 Obsidian 노트로 렌더한다. «인용망 수집»·«citation graph»처럼 한국 인문학 논문의 인용 관계가 필요할 때 쓴다(data.go.kr 무료 키 필요)."
+description: "키워드 하나로 KCI 참고문헌 OpenAPI에서 인용망(nodes/edges JSONL)을 수집하고 선택적으로 Obsidian 노트로 렌더한다. 《인용망 수집》·《citation graph》처럼 한국 인문학 논문의 인용 관계가 필요할 때 쓴다(data.go.kr 무료 키 필요)."
 metadata:
   author: custom
   version: 1.4.3

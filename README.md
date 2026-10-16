@@ -16,7 +16,7 @@
 /plugin install gugyeol-decode           # 깨진 구결·옛한글 복원 도구
 /plugin install kci-citation-network     # KCI 인용망 수집기 (무료 API 키 필요)
 /plugin install kci-korean-studies-trends # KCI 동향 코퍼스·보고서 (키 불필요)
-/plugin install harness-lite             # 수강생판 확인 장치 — «완료»를 영수증으로 확인 (Python 3.8+)
+/plugin install harness-lite             # 수강생판 확인 장치 — 《완료》를 영수증으로 확인 (Python 3.8+)
 ```
 
 다른 설치 방법(Claude Code 수동, **Codex CLI 등 다른 도구**, 웹 LLM, AI 없이
@@ -33,7 +33,7 @@
 | `kci-korean-studies-trends` | 연도·분야만으로 KCI 동향 코퍼스·보고서 | 없음 (키 불필요) |
 
 **harness-lite**(연구 플러그인이 아니라 강의용 확인 장치): 원본 쓰기·영구 삭제·이름 기준 프로세스 종료를 막고,
-AI의 «완료» 보고를 완료 조건 계약(`harness.contract.json`)의 영수증으로 확인합니다. 준비물은 Python 3.8 이상이고,
+AI의 《완료》 보고를 완료 조건 계약(`harness.contract.json`)의 영수증으로 확인합니다. 준비물은 Python 3.8 이상이고,
 안내는 플러그인 폴더의 `README.md`에 있습니다.
 
 각 플러그인의 행동 보증·사용법(값 넣는 지점·명령)·알려진 한계는
