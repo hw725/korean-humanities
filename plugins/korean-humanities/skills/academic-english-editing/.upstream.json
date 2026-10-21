@@ -1,8 +1,8 @@
 {
   "_comment": "벤더링 분기 계약. 2026-09-01 월례 감사에서 신설. 이 스킬은 upstream 전면 도입이 아니라 references 3종을 개명·재배치해 만든 신설 스킬이다 — path_map이 1:1이 아니므로 동기화는 항상 수동 검토를 거친다. 판단 근거 정본은 docs/UPSTREAM-INTAKE.md 해당 행이고, 파일별 파생 관계는 각 references 머리말에 있다.",
   "upstream_repo": "Yuan1z0825/nature-skills",
-  "pinned_commit": "6827ae57b62b201acd06b401619050411c0d82f6",
-  "_pinned_note": "2026-10-16 9cecfef6 → 6827ae57(73커밋): 벤더링 3종의 상류 파일은 바뀌지 않아 로컬 변경 없이 pin만 옮겼다. 그 사이 상류에 새로 생긴 형제 스킬 5종(nature-image2ppt·nature-paper-xray·nature-response·nature-shared·nature-social-science)은 never_adopt에 더했다 — image2ppt는 pptx 계열, paper-xray·response는 academic-research-workflow(심사·투고 수정)와 겹치고, social-science는 직무 밖이다. nature-shared는 통째로 막지 않고 파일 단위로 올렸다 — `core/discussion-argument-language.md`는 2026-09-20에 `style-guardrails.md` 《논증 강도 사다리》로 재서술한 원본이라, 바뀌면 미지 경로로 잡혀 사람이 다시 보도록 일부러 남겼다(이번 구간에는 무변경, nature-shared에서 바뀐 것은 scripts·tests 2파일).",
+  "pinned_commit": "df6db0b19530e26ac8f7c2a23254541c228fda43",
+  "_pinned_note": "2026-10-21 6827ae57 → df6db0b1(35커밋): 벤더링 3종과 감시용 nature-shared/core/discussion-argument-language.md 모두 바뀌지 않아 로컬 변경 없이 pin만 옮겼다. 미지 경로 6개는 6827ae57 에도 있던 형제 스킬 3종(nature-paper-card·nature-paper2ppt·nature-proposal-writer)의 스크립트·시험이라 never_adopt 에 더했다 — 그 구간에 파일이 바뀌지 않아 그동안 잡히지 않았을 뿐이다. 아직 바뀐 적 없는 형제 스킬은 미리 넣지 않는다(_never_adopt_note 의 의도한 신호). LICENSE blob 261eeb9e 그대로(Apache-2.0). ── 이전 기록: 2026-10-16 9cecfef6 → 6827ae57(73커밋): 벤더링 3종의 상류 파일은 바뀌지 않아 로컬 변경 없이 pin만 옮겼다. 그 사이 상류에 새로 생긴 형제 스킬 5종(nature-image2ppt·nature-paper-xray·nature-response·nature-shared·nature-social-science)은 never_adopt에 더했다 — image2ppt는 pptx 계열, paper-xray·response는 academic-research-workflow(심사·투고 수정)와 겹치고, social-science는 직무 밖이다. nature-shared는 통째로 막지 않고 파일 단위로 올렸다 — `core/discussion-argument-language.md`는 2026-09-20에 `style-guardrails.md` 《논증 강도 사다리》로 재서술한 원본이라, 바뀌면 미지 경로로 잡혀 사람이 다시 보도록 일부러 남겼다(이번 구간에는 무변경, nature-shared에서 바뀐 것은 scripts·tests 2파일).",
   "path_map": {
     "skills/nature-polishing/static/fragments/language/en.md": "skills/academic-english-editing/references/sentence-rules.md",
     "skills/nature-polishing/static/fragments/language/zh-to-en.md": "skills/academic-english-editing/references/ko-to-en.md",
@@ -44,7 +44,10 @@
     "skills/nature-shared/core/reader-workflow.md",
     "skills/nature-shared/core/research-compliance.md",
     "skills/nature-shared/core/terminology-ledger.md",
-    "skills/nature-social-science/"
+    "skills/nature-social-science/",
+    "skills/nature-paper-card/",
+    "skills/nature-paper2ppt/",
+    "skills/nature-proposal-writer/"
   ],
   "_never_adopt_note": "2026-10-06 추가: 벤더링 대상은 nature-polishing 안의 세 파일뿐이라, 형제 스킬·저장소 문서는 범위 밖이다. 등록하지 않으면 매주 「미지 경로」로 잡혀 판정 job이 열린다(주간 트리아지가 상류 head마다 새 job을 만들도록 바뀐 뒤로는 비용이 든다). 새 형제 스킬이 상류에 생기면 미지 경로로 다시 잡혀 한 번 심사된다 — 그건 의도한 신호다.",
   "always_manual": [
