@@ -3,7 +3,7 @@ name: harness-lite
 description: 완료 조건 계약(harness.contract.json)을 만들고 확인하는 수강생판 하네스 안내. 사용자가 《완료 조건 만들어 줘》·《계약 만들어 줘》·《검증 장치》·《하네스》를 말하거나, harness-lite 훅이 《verify 하세요》·《계약 만들기》를 알렸을 때 쓴다.
 metadata:
   author: hw725
-  version: 0.2.3
+  version: 0.2.4
   category: verification
 ---
 

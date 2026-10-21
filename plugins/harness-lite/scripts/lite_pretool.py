@@ -243,8 +243,12 @@ def _abs_match(p: Path, pats: list[str]) -> bool:
         q = pat.replace("\\", "/")
         if os.name == "nt":
             q = DRIVE_RX.sub(lambda m: m.group(1).upper() + ":/", q)
-        if not (Path(q.split("*")[0] or "x").is_absolute()):
+        head = q.split("*")[0]
+        if not (Path(head or "x").is_absolute()):
             continue
+        # 쓰려는 경로는 resolve 로 긴 이름이 된다 — protect 를 8.3 짧은 이름으로 적었으면 원본을 못 알아봤다(2026-10-20 CI).
+        # resolve 는 없는 꼬리를 그대로 두고 있는 조상만 편다(아직 만들지 않은 원본 폴더도 맞춘다)
+        q = Path(head).resolve().as_posix() + ("/" if head.endswith("/") else "") + q[len(head):]
         a, b = (s.lower(), q.lower()) if os.name == "nt" else (s, q)
         if fnmatch.fnmatch(a, b) or (b.endswith("/**") and (a == b[:-3] or a.startswith(b[:-2]))):
             return True
