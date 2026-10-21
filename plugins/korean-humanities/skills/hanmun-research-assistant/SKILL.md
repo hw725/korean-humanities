@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.5
+  version: 0.9.6
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -97,6 +97,15 @@ HTML·artifact·다이어그램·문서 산출물의 폰트는 아래 역할 표
 - 한계(신뢰도 보통): 위 폰트들의 옛한글 첫가끝 조합·한자 확장 B+ 커버리지는 완전하지 않을
   수 있다. 옛한글 표시가 필요한 산출물은 렌더 확인 후 필요 시 옛한글 지원 폰트를 해당
   산출물에만 예외 지정하고, 예외 사실을 산출물에 기록한다.
+- **화면 렌더링 점검**(UI·HTML 산출물을 확인할 때). 시각 위계·접근성 같은 일반 디자인 감사는
+  쓰고 있는 디자인 리뷰 도구에 맡기고, 아래 다섯은 CJK 고유 항목이라 여기서 본다.
+  대표 한글·한자·이체자와 혼합 문장이 보이는 캡처로 확인하고, 글꼴이 환경에 없으면 실제 fallback 연쇄와
+  재현 조건을 적되 단정하지 않는다.
+  1. glyph fallback과 두부(tofu) 발생 여부
+  2. CJK·Latin 혼합 시 baseline·weight·구두점 정렬
+  3. 금칙·줄바꿈(`word-break`·`line-break`)·overflow·세로쓰기
+  4. ruby·주석·각주·원문/번역 병렬 표시의 충돌과 가독성
+  5. 필요하면 실제 연구 자료의 대표 문자열로 재현하되 원자료는 고치지 않는다
 
 **기계 검사**: `tools/check_cjk_text_contract.py`가 E1(open
 인코딩)·E2(read_text/write_text 인코딩)·R1(CJK 패턴의 stdlib re 매칭)을 AST로 검사한다.
