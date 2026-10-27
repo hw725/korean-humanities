@@ -3,12 +3,14 @@
 
     python check_structure.py tree <tree.json> --text <text.md>
     python check_structure.py page <note.md> --text <text.md> [--tree <tree.json>]
+    python check_structure.py stamp <tree.json> --text <text.md>   # 트리에 추출본 쪽별 해시를 찍는다(파일을 고쳐 씀)
 
 오류가 있으면 한 줄씩 찍고 종료 코드 1, 없으면 「오류 0」과 종료 코드 0. 표준 라이브러리 밖으로는
 `regex` 하나를 쓴다(CJK 문자클래스 — CJK 계약 R1, ../requirements.txt).
 노트 형식의 정본은 ../references/page-format.md — REQUIRED_KEYS·SECTIONS는 그 문서와 맞춘다.
 """
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -72,6 +74,101 @@ def text_pages(text):
     return pages
 
 
+TITLE_NOISE = regex.compile(r"[\s\p{P}\p{S}_]+")
+TITLE_PROBE = 14  # 제목 앞 14글자로 대조 — vault-pipeline tree-check.mjs 와 같은 기준
+
+
+def norm_title(s):
+    """제목 대조용: NFKC·소문자, 공백·문장부호·기호를 지운다(Ⅱ→ii, 전각→반각)."""
+    return TITLE_NOISE.sub("", unicodedata.normalize("NFKC", str(s)).lower())
+
+
+def title_errors(tag, n, npages):
+    """제목이 시작 쪽(±1)에 있는가(2026-10-28 learn-from-materials 체리픽 ① — 제목 지면 증거).
+
+    다른 쪽에만 있으면 쪽 오배치라 늘 오류다(vault 158편 실측 17노드). 지면에 없으면 「표제·초록」「주 묶음」처럼
+    지면 제목 없는 구간을 설명으로 붙인 노드이므로(같은 실측 306노드) `"synthetic": "사유"`가 있을 때만 통과한다.
+    """
+    syn = n.get("synthetic")
+    if syn is not None:
+        return [] if str(syn).strip() else [f"{tag}: synthetic 사유가 비었음"]
+    key = norm_title(n.get("title", ""))[:TITLE_PROBE]
+    s = n.get("start_index")
+    if not key or not npages:
+        return []
+    if any(key in npages.get(p, "") for p in (s - 1, s, s + 1)):
+        return []
+    elsewhere = [p for p, t in sorted(npages.items()) if key in t]
+    if elsewhere:
+        return [f"{tag}: 제목이 시작 쪽 {s}(±1)이 아니라 p.{elsewhere[0]}에 있음 — 쪽 오배치"]
+    return [f"{tag}: 제목이 지면에 없음 — 지면 제목 그대로 쓰거나, 제목 없는 구간이면 \"synthetic\": \"사유\""]
+
+
+def page_set(spec):
+    """uncovered 키 「3」「15-24」 → 쪽 집합. 못 읽으면 빈 집합."""
+    m = re.fullmatch(r"\s*(\d+)\s*(?:[-～~]\s*(\d+))?\s*", str(spec))
+    if not m:
+        return set()
+    a = int(m.group(1))
+    return set(range(a, int(m.group(2) or a) + 1))
+
+
+def coverage_errors(data, nodes, last):
+    """모든 노드의 쪽 범위를 합쳐 1～마지막 쪽에 빈 쪽이 있는가(체리픽 ② — 쪽 커버리지 감사).
+
+    상위 노드 범위가 하위를 덮지 않는 관례가 있어 최상위만이 아니라 전 노드를 합친다. 빈 쪽은 최상위
+    `"uncovered": {"쪽 또는 범위": "사유"}`에 사유가 있으면 통과한다(158편 중 18편 — 앞표지·끝 참고문헌 쪽).
+    """
+    if not last:
+        return []
+    covered = set()
+    for n, _, _ in nodes:
+        s, e = n.get("start_index"), n.get("end_index")
+        if isinstance(s, int) and isinstance(e, int) and s <= e:
+            covered |= set(range(s, e + 1))
+    declared = set()
+    unc = data.get("uncovered") if isinstance(data.get("uncovered"), dict) else {}
+    for k, why in unc.items():
+        if str(why).strip():
+            declared |= page_set(k)
+    gaps = sorted(set(range(1, last + 1)) - covered - declared)
+    if not gaps:
+        return []
+    return [f"트리가 덮지 않는 쪽 {gaps[:12]}{'…' if len(gaps) > 12 else ''} — 노드를 더하거나 "
+            f"최상위 \"uncovered\": {{\"쪽\": \"사유\"}}에 적는다"]
+
+
+def page_hashes(text):
+    """쪽별 본문 해시(sha256 앞 12자리). 공백 차이는 무시한다 — 줄바꿈만 바뀐 재추출로 재대조를 부르지 않게."""
+    return {str(k): hashlib.sha256("".join(v.split()).encode("utf-8")).hexdigest()[:12]
+            for k, v in sorted(text_pages(text).items())}
+
+
+def stamp_tree(data, text):
+    """트리에 추출본 쪽별 해시를 찍는다(2026-10-28 learn-from-materials 체리픽 — 증분 갱신의 의존표).
+
+    노드의 쪽 범위가 곧 「이 노드는 이 쪽들에 기대고 있다」는 의존표다. 추출본을 다시 만들면 바뀐 쪽에 걸린 노드만
+    다시 읽고 대조하면 되고, 나머지 노드·노트 문장은 그대로 둔다. 대조를 마치면 다시 찍는다.
+    """
+    data["page_sha"] = page_hashes(text)
+    return data
+
+
+def stamp_errors(data, nodes, text):
+    """찍어 둔 쪽 해시와 지금 추출본이 다르면 바뀐·더해진·사라진 쪽과 그 쪽에 걸린 노드를 짚는다."""
+    old = data.get("page_sha")
+    if not isinstance(old, dict):
+        return []
+    new = page_hashes(text)
+    changed = sorted(int(k) for k in set(old) | set(new) if old.get(k) != new.get(k) and str(k).isdigit())
+    if not changed:
+        return []
+    hit = [str(n.get("title", ""))[:20] for n, _, _ in nodes
+           if isinstance(n.get("start_index"), int) and isinstance(n.get("end_index"), int)
+           and any(n["start_index"] <= p <= n["end_index"] for p in changed)]
+    return [f"추출본 p.{changed[:12]} 바뀜(찍은 뒤) — 걸린 노드 {hit[:8]}만 다시 읽고 대조한 뒤 stamp 로 다시 찍는다"]
+
+
 def flatten(nodes, depth=0, parent=None):
     for n in nodes:
         yield n, depth, parent
@@ -87,7 +184,9 @@ def check_tree(tree_path, text):
     struct = data.get("structure") if isinstance(data, dict) else None
     if not isinstance(struct, list) or not struct:
         return ["트리에 structure 목록이 없거나 비었음"], []
-    last = max(text_pages(text) or {0: ""})
+    tpages = text_pages(text)
+    last = max(tpages or {0: ""})
+    npages = {k: norm_title(v) for k, v in tpages.items()}
     nodes = list(flatten(struct))
     for i, (n, _, parent) in enumerate(nodes):
         tag = f"노드 {i} 「{str(n.get('title', ''))[:30]}」"
@@ -109,6 +208,9 @@ def check_tree(tree_path, text):
         # 트리 관례가 있다(2026-10-22 실측: 기존 트리 145개 중 다수). 시작이 상위보다 앞서는 것만 오류로 본다.
         if parent is not None and isinstance(parent.get("start_index"), int) and s < parent["start_index"]:
             errs.append(f"{tag}: 시작 쪽 {s}이 상위 노드 시작 {parent['start_index']}보다 앞")
+        errs += title_errors(tag, n, npages)
+    errs += coverage_errors(data, nodes, last)
+    errs += stamp_errors(data, nodes, text)
     for group in [struct] + [n.get("nodes") or [] for n, _, _ in nodes]:
         starts = [x.get("start_index") for x in group if isinstance(x.get("start_index"), int)]
         if any(b < a for a, b in zip(starts, starts[1:])):
@@ -197,6 +299,14 @@ def check_page(page_path, text, tree_path=None):
             if core not in near:
                 errs.append(f"인용이 적힌 쪽 p.{n}(～다음 쪽)에 없음: {q[:40]}")
 
+    # 근거 층(2026-10-28 learn-from-materials 체리픽, answer-protocol): 노트 문장은 기본이 원문 근거다. 원문 밖에서 확인한
+    # 사실은 [외부 확인: 출처]로 출처를 대고, 원문에 없는 모델 보충은 노트에 쓰지 않는다(대화에서만 말한다).
+    for m in re.finditer(r"\[외부 확인([^\]]*)\]", body):
+        if not re.match(r"\s*:\s*\S", m.group(1)):
+            errs.append(f"[외부 확인]에 출처가 없음 — [외부 확인: 출처] 형식: {m.group(0)[:40]}")
+    if "[모델 보충" in body:
+        errs.append("노트에 [모델 보충]이 있음 — 원문에 없는 보충은 노트에 쓰지 않는다")
+
     plain = strip_code(body)
     for i, line in enumerate(plain.splitlines(), 1):
         if line.lstrip().startswith(">"):
@@ -230,10 +340,18 @@ def main(argv=None):
     p.add_argument("page")
     p.add_argument("--text", required=True)
     p.add_argument("--tree")
+    s = sub.add_parser("stamp", help="트리에 추출본 쪽별 해시를 찍는다")
+    s.add_argument("tree")
+    s.add_argument("--text", required=True)
     a = ap.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     text = read(a.text)
+    if a.cmd == "stamp":
+        data = json.loads(read(a.tree))
+        Path(a.tree).write_text(json.dumps(stamp_tree(data, text), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"쪽 {len(data['page_sha'])}개 해시를 찍음: {a.tree}")
+        return 0
     if a.cmd == "tree":
         errs = check_tree(a.tree, text)[0]
     else:
