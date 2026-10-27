@@ -142,6 +142,20 @@ class TreeTest(Base):
         t = {"structure": [node("0000", "Ⅱ", 2, 2, [node("0001", "1", 2, 3), node("0002", "2", 3, 3)])]}
         self.assertEqual(self.errs(t), [])
 
+    def test_summary_must_be_korean(self):
+        # 2026-10-27: 일본어·중국어 논문 5편의 요약이 원문 언어로 남아 RefManager 에 그대로 보였다.
+        # 제목은 원문 그대로(지면 대조 열쇠), 요약은 한국어. 한자·원어 인용이 섞인 한국어 문장은 통과.
+        for bad in ("金允植の生涯を四期に分けて略述する。", "文章介绍朝鲜领选使金允植的生平。",
+                    "合本の装丁を記述し、序跋の順序を述べ 한다."):
+            t = json.loads(json.dumps(GOOD_TREE))
+            t["structure"][0]["summary"] = bad
+            self.assertTrue(any("요약" in e and "한국어" in e for e in self.errs(t)), bad)
+        for ok in ("「東槎謾吟序」를 인용해 1908년의 여정을 재구성한다.", "영문 초록. 영문 제목 “Exchanging Poems”, Key words.",
+                   "[1]～[196].", ""):
+            t = json.loads(json.dumps(GOOD_TREE))
+            t["structure"][0]["summary"] = ok
+            self.assertEqual(self.errs(t), [], ok)
+
     def test_unreadable_and_empty(self):
         self.assertTrue(cs.check_tree(self.write("t.json", "{깨짐"), TEXT)[0])
         self.assertTrue(self.errs({"structure": []}))

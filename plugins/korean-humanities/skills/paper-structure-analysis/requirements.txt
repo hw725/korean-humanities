@@ -1,0 +1,5 @@
+# paper-structure-analysis 실행 의존성
+# 설치: py -m pip install -r requirements.txt   (mac/Linux: python3 -m pip ...)
+
+# 필수 — check_structure.py 가 요약 언어 판정에 \p{Hangul}·\p{Han}·가나 유니코드 속성을 쓴다(CJK 계약 R1).
+regex>=2023.0.0

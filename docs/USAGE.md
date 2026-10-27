@@ -12,7 +12,7 @@
 | `academic-research-workflow` | 연구사 리뷰 · 사료비평/이본 교감 · 논증 설계·초고 · 인문학 루브릭 심사 · 인용/원문 충실성 감사 · 투고 직전 원고-데이터 전수 대조 | 사료·참고문헌·수치를 지어내지 않고 미확인은 `unverified`로 남김 · 기계 국역(ITKC aitr 등)은 원문 대조 전 인용 금지 · 표점/독법이 갈리면 경쟁 독법을 함께 제시 · 해석 평가는 개연성·정합성 기준, 단 연대·인용 같은 사실 주장은 검증 대상 |
 | `hanmun-research-assistant` | 연구 비서 구축·운영 라우터 — 문집·원문 source-grounded Q&A, 사료 디지털화 워크플로, 새 학술 AI 도구 심사. 슈트 공통 CJK 텍스트 계약(UTF-8·유니코드 정규식·NFC·폰트 정책) 소유 | OCR·번역·검색 결과를 검증 없이 사실로 승격하지 않음 · 증거 접근 3계층(raw/verified/gold) 격리 · 본문이 언급하는 동반 스킬은 권장 조합일 뿐, 없어도 단독 동작 |
 | `academic-english-editing` | 한국어 학술 원고 → 영어 — 한국어가 생략한 논리 연결 복원, 문장 길이 밴드, 학술 hedging 보정, CJK 고유명사·간지 연대 표기 고정 | 절 단위 직역 금지 · 과잉주장 점검 · 로마자 표기(MR/RR)는 사용자 설정을 따름 |
-| `paper-structure-analysis` | 논문 한 편의 구조분석 노트 — 본문 전문을 읽고 장절 트리(JSON, PDF 쪽)를 직접 만든 뒤 논증 지도·흐름도·근거 구성·결론의 빈틈·원문 인용을 정리. 여러 편은 한 편당 에이전트 하나 | 본문 전수 읽기(표본 금지) · 원문 인용은 텍스트에 글자 그대로 있고 적힌 쪽에 있는 것만 · 외부 지식으로 논문을 판정하지 않음 · 동봉 검사기 `scripts/check_structure.py`(표준 라이브러리)로 트리·노트를 검사한 뒤 끝냄 |
+| `paper-structure-analysis` | 논문 한 편의 구조분석 노트 — 본문 전문을 읽고 장절 트리(JSON, PDF 쪽)를 직접 만든 뒤 논증 지도·흐름도·근거 구성·결론의 빈틈·원문 인용을 정리. 여러 편은 한 편당 에이전트 하나 | 본문 전수 읽기(표본 금지) · 원문 인용은 텍스트에 글자 그대로 있고 적힌 쪽에 있는 것만 · 외부 지식으로 논문을 판정하지 않음 · 동봉 검사기 `scripts/check_structure.py`(`pip install regex`)로 트리·노트를 검사한 뒤 끝냄 · 트리 요약은 논문 언어와 관계없이 한국어 |
 
 동봉 `tools/`: `setup-terminal-utf8.ps1`(Windows 한글 깨짐 뿌리 3곳 영구 차단 — 강력 권장,
 idempotent) · `check_cjk_text_contract.py`(자기 스크립트의 인코딩·정규식 계약 검사, AST 기반).
@@ -21,7 +21,8 @@ idempotent) · `check_cjk_text_contract.py`(자기 스크립트의 인코딩·�
 `hanmun-research-assistant/scripts/cjk_title_match.py`(0.9.0 신설)는 색인 DB 제목과 내
 제목이 같은 논문인지 판정합니다 — 서명 부호 `《》「」`·꼬리 `。`·한자 사이 공백만 잡음으로
 걷어내고 NFC 한 번만 정규화하며, 양쪽 모두 CJK일 때만 판정하고 한쪽만 CJK면 「다르다」가
-아니라 「판정 불가」를 냅니다. 이 파일만 `pip install regex`가 필요합니다(유니코드 프로퍼티
+아니라 「판정 불가」를 냅니다. 이 파일과 `paper-structure-analysis/scripts/check_structure.py`는
+`pip install regex`가 필요합니다(유니코드 프로퍼티
 `\p{Han}`·`\p{Hangul}` 매칭 — stdlib `re`로는 한자 확장 평면·옛한글 첫가끝을 놓칩니다).
 자체 회귀 검사는 `py -3 scripts/cjk_title_match.py --selftest`.
 

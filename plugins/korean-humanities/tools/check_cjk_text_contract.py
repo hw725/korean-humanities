@@ -30,6 +30,12 @@ import re
 import sys
 from pathlib import Path
 
+for _stream in (sys.stdout, sys.stderr):  # CJK 계약 E3 — 위반 설명의 `—`·한글을 cp949 콘솔에서도 낸다(2026-10-27 PR #29)
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, ValueError, OSError):
+        pass
+
 # CJK 판정 범위: 한자(+확장 B~), 한글 음절, 첫가끝 자모, 호환 자모, PUA(구결·옛한글 관행 영역)
 _CJK_RANGES = (
     (0x1100, 0x11FF),    # 첫가끝 자모

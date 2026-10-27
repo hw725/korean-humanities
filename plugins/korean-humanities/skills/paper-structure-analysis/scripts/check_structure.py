@@ -4,7 +4,8 @@
     python check_structure.py tree <tree.json> --text <text.md>
     python check_structure.py page <note.md> --text <text.md> [--tree <tree.json>]
 
-오류가 있으면 한 줄씩 찍고 종료 코드 1, 없으면 「오류 0」과 종료 코드 0. 표준 라이브러리만 쓴다.
+오류가 있으면 한 줄씩 찍고 종료 코드 1, 없으면 「오류 0」과 종료 코드 0. 표준 라이브러리 밖으로는
+`regex` 하나를 쓴다(CJK 문자클래스 — CJK 계약 R1, ../requirements.txt).
 노트 형식의 정본은 ../references/page-format.md — REQUIRED_KEYS·SECTIONS는 그 문서와 맞춘다.
 """
 import argparse
@@ -14,11 +15,26 @@ import sys
 import unicodedata
 from pathlib import Path
 
+import regex
+
 REQUIRED_KEYS = ("title", "description", "source_path", "structure_tree", "structure_generator", "sources", "created")
 SECTIONS = ("서지 정보", "한눈에 보는 논증", "논증 지도", "논증 흐름도", "근거의 구성",
             "결론의 지탱 구조와 빈틈", "학술 대화", "기존 위키와의 연결", "원문 인용", "검증 메타데이터")
 PAGE_MARK = re.compile(r"<!--\s*page\s+(\d+)\s*-->")
 QUOTE_PAGE = re.compile(r"\(PDF p\.(\d+)\)\s*$")
+HANGUL = regex.compile(r"\p{Hangul}")
+KANA = regex.compile(r"[\p{Hiragana}\p{Katakana}]")
+LETTER = regex.compile(r"[\p{Hangul}\p{Hiragana}\p{Katakana}\p{Han}A-Za-z]")
+
+
+def summary_not_korean(s):
+    """요약은 한국어로 쓴다(제목만 원문 그대로). 한글 없이 글자만 있거나 가나가 한글보다 많으면 한국어가 아니다.
+
+    2026-10-27: 같은 세션이 만든 일본어 논문 트리도 요약 언어가 갈렸다 — 지침이 언어를 정하지 않아서였다.
+    한자·원어 인용이 섞인 한국어 문장과 「[1]～[196].」처럼 글자가 없는 요약은 통과한다.
+    """
+    h = len(HANGUL.findall(s))
+    return bool(LETTER.search(s)) and (h == 0 or len(KANA.findall(s)) > h)
 
 
 def read(path):
@@ -77,6 +93,8 @@ def check_tree(tree_path, text):
         tag = f"노드 {i} 「{str(n.get('title', ''))[:30]}」"
         if not str(n.get("title", "")).strip():
             errs.append(f"{tag}: 제목이 비었음")
+        if summary_not_korean(str(n.get("summary") or "")):
+            errs.append(f"{tag}: 요약이 한국어가 아님 — 제목은 원문 그대로, 요약은 한국어로 쓴다")
         if n.get("node_id") != f"{i:04d}":
             errs.append(f"{tag}: node_id {n.get('node_id')!r} — 순회 순서상 {i:04d}이어야 함")
         s, e = n.get("start_index"), n.get("end_index")

@@ -4,7 +4,7 @@ description: "논문 PDF 한 편의 구조분석 노트를 만들 때 쓴다 —
 license: Apache-2.0
 metadata:
   author: custom
-  version: 0.1.0
+  version: 0.1.1
   category: academic-research
   suite: korean-humanities
   tier: portable
@@ -55,7 +55,8 @@ metadata:
 
 - `start_index`·`end_index`는 PDF 물리 쪽(`<!-- page N -->`)이다. 지면 쪽수가 아니다.
 - `node_id`는 전체 순회 순서대로 `0000`부터 빈틈없이 매긴다.
-- 제목은 인쇄된 번호까지 지면 그대로 쓴다(「Ⅰ.」「1.」). 풀어 쓰거나 번역하지 않는다.
+- 제목은 인쇄된 번호까지 지면 그대로 쓴다(「Ⅰ.」「1.」). 풀어 쓰거나 번역하지 않는다 — 검사기가 제목을 지면과 대조한다.
+- `summary`는 논문 언어와 관계없이 한국어로 쓴다. 인명·서명·용어는 원어를 그대로 둔다. 검사기는 한국어가 아닌 요약을 오류로 낸다(2026-10-27 — 일본어·중국어 요약이 RefManager에 그대로 보였다).
 - 국문·영문 초록, 참고문헌은 있으면 따로 노드로 둔다. 본문 절에 섞지 않는다.
 - 나누는 깊이는 저자의 장절 체계를 따른다. 저자가 번호를 매기지 않은 단위(인용 작품 하나하나 등)를 노드로 쪼개지 않는다.
 - 쓴 뒤 `scripts/check_structure.py tree`로 검사한다.
@@ -76,6 +77,8 @@ metadata:
 **표기**: 코드 블록·프런트매터 밖에서는 직선 따옴표를 쓰지 않는다 — `“ ” ‘ ’`. 서명 『』, 편명 「」〈〉. 범위 물결표는 전각 `～`(ASCII `~`는 취소선 사고). 한문 서명·인명은 원표기, 독음은 본문에 나온 것만. 분량은 논문의 뒷받침에 비례한다.
 
 ## 5. 끝내기 전 검사 (필수)
+
+검사기는 `regex` 모듈 하나를 쓴다 — 처음 한 번 `python -m pip install -r requirements.txt`.
 
 ```
 python scripts/check_structure.py tree <tree.json> --text <text.md>
