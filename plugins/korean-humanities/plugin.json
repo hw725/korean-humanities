@@ -1,6 +1,6 @@
 {
     "name":  "korean-humanities",
-    "version":  "0.6.0",
+    "version":  "0.6.1",
     "description":  "Korean humanities research methods for Claude Code - hanmun source criticism, hermeneutic argument planning, humanities peer review, academic English editing, and per-paper structure analysis notes. The research skills are prompt-only; the bundled CJK text helpers and the structure checker are optional, and two of them need pip install regex.",
     "author":  {
                    "name":  "hw725"
