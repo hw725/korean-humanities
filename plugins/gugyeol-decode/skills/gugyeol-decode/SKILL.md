@@ -5,7 +5,7 @@ license: MIT
 metadata:
   category: documents
   locale: ko-KR
-  version: 1.1.8
+  version: 1.1.9
   phase: v1
   suite: korean-humanities
   tier: portable
@@ -49,11 +49,6 @@ python scripts/decode.py <입력.pdf|.hwpx|.hwp> [--out <output.md>] [--mode val
 
 ## When to use
 
-- “이 논문 PDF에서 옛한글이 깨져 나와”
-- “(cid:6) (cid:38) 같은 게 잔뜩 있어”
-- “임규직/박문호/윤근수 등 19세기 학자 논문 PDF 복원해줘”
-- “口訣字가 PDF에 나오는데 텍스트 추출이 안 돼”
-- “한국 고전 OCR 결과에 PUA 부호점 나옴”
 - 한국 인문학 PDF를 wiki/논문/DB에 인용하려는데 옛한글이 손실된 경우
 
 ## When NOT to use
@@ -117,15 +112,15 @@ font 이름이 mojibake(`*ÇÑ¾ç½Å¸íÁ¶`)로 나와도 패턴은 보존�
 
 ## Workflow
 
-### 0. (1회 setup) 표준 매핑 캐시 구축 — **이 단계가 정확도의 핵심**
+### 0. (1회 setup) 표준 매핑 캐시 구축
 
 `python setup.py` 실행 시 **모두 자동 처리**된다. 아래는 내부적으로 어떤 자료를 받는지의 설명 (수동 fallback이 필요한 경우만 직접 사용).
 
 본 스킬은 다음 외부 자료에 의존한다 (자세한 출처·라이선스는 `ATTRIBUTION.md`):
 
-#### 0a. hypua (옛한글 PUA → IPF Unicode jamo) ⭐⭐⭐
+#### 0a. hypua (옛한글 PUA → IPF Unicode jamo)
 
-**가장 중요**. `kiwiyou/hypua` (Unlicense, public domain) 5660건 매핑 테이블. setup.py가 자동 다운로드. 수동 fallback:
+우선순위 1위. `kiwiyou/hypua` (Unlicense, public domain) 5660건 매핑 테이블. setup.py가 자동 다운로드. 수동 fallback:
 
 ```bash
 curl -L "https://raw.githubusercontent.com/kiwiyou/hypua/master/table" \

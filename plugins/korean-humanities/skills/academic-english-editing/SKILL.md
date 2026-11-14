@@ -4,7 +4,7 @@ description: "영문 초록·논문 영역·투고용 영문 윤문과 영문 �
 license: Apache-2.0
 metadata:
   author: custom
-  version: 1.3.2
+  version: 1.3.3
   category: academic-research
   upstream_reference: Yuan1z0825/nature-skills @ 6827ae57b62b201acd06b401619050411c0d82f6 (nature-polishing + nature-shared/core/discussion-argument-language.md 재서술, Apache-2.0)
   suite: korean-humanities
@@ -22,11 +22,7 @@ metadata:
 
 라이선스 원문은 `LICENSE.upstream`, 파일별 파생 관계는 각 `references/*.md` 머리말에 있다.
 
-2026-10-16(v1.3.2): upstream `6827ae57`으로 pin을 올렸다 — 벤더링 3종과 재서술 원본은 무변경(no-op). 그 사이 생긴 형제 스킬 5종(image2ppt·paper-xray·response·social-science·shared)은 `.upstream.json` never_adopt로 막고, nature-shared는 재서술 원본 하나만 남겨 바뀌면 다시 보도록 했다.
-
-2026-09-20(v1.2.0): upstream `9cecfef6`으로 pin을 올렸다 — 벤더링 3종은 upstream에서 무변경(no-op)이고, `.upstream.json` path_map 키를 upstream 실경로로 정정했다(신설 이후 접두 매치가 한 번도 성립하지 않았다). 신설 `nature-shared/core/discussion-argument-language.md`의 서법 사다리·한계 서술은 `style-guardrails.md` 「논증 강도 사다리」로 **재서술**했고, 게이트는 실험 설계 대신 전거·판본 근거로 치환했다.
-
-2026-09-28(v1.3.0): 이미 영어로 쓴 학술 원고의 AI티 제거가 비어 있었다. `stop-slop`은 학술 원고에서 hedging을 지운다. 이 공백을 [matsuikentaro1/humanizer_academic](https://github.com/matsuikentaro1/humanizer_academic)(MIT)의 패턴 가운데 인문학 원고에 맞는 것만 골라 `references/ai-tell-taxonomy.md`로 **재서술**해 메웠다. 의학 저자 1인의 문체 프로필과 hedge 쿠션 규칙은 들이지 않았다 — 목록과 이유는 그 파일 끝에 있다(`AUD-20260927-173649-2c1e4ecc`).
+이미 영어로 쓴 원고의 AI티 점검표(`references/ai-tell-taxonomy.md`)는 [matsuikentaro1/humanizer_academic](https://github.com/matsuikentaro1/humanizer_academic)(MIT)에서 인문학 원고에 맞는 패턴만 재서술했다 — 들이지 않은 것과 이유는 그 파일 끝에 있다.
 
 ## 경계
 

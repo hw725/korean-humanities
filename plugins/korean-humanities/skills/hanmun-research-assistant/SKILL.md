@@ -3,7 +3,7 @@ name: hanmun-research-assistant
 description: 한문학·전근대 한국 문헌 연구 비서의 라우터 — source-grounded Q&A, 사료 디지털화 라우팅, 문헌 지식관리(Obsidian), 학술 AI 도구 도입 심사, 슈트 공통 CJK 텍스트 계약(UTF-8·regex·NFC·폰트). Trigger: 한문학 연구 비서, 문집·한문 원문 질의, 한글 인코딩 깨짐·CJK 정규식. 논문 집필·심사는 academic-research-workflow, 구결·옛한글 복원은 gugyeol-decode.
 metadata:
   author: custom
-  version: 0.9.6
+  version: 0.9.7
   category: cjk-research
   suite: korean-humanities
   tier: portable
@@ -163,7 +163,7 @@ The default Claude Code harness is built for coding (Thariq, “A harness for ev
 - Large, repeated, or deterministic work (100+ witness collation, corpus embedding, batch punctuation or translation, citation audit): generate a task-specific harness with the `Workflow` tool.
   - State lives in the filesystem: a layered directory convention plus git, the vault, and JSONL logs as the single source of truth. Do not pull raw data into context.
   - Compute runs as code: heavy steps (CollateX alignment, Scrapling intake, aggregation) run in subprocesses, not in model context. Solve non-coding tasks with code too.
-  - Decompose with subagent fan-out: parallel per witness, document, or source. Before any expensive step, run one independent critique (`cross-validation`, `design-review`) to kill dead ends early (AutoScientists pattern).
+  - Decompose with subagent fan-out: parallel per witness, document, or source. Before any expensive step, run one independent critique (`cross-validation`) to kill dead ends early (AutoScientists pattern).
   - Persist across sessions: shard, checkpoint, and resume. Within a live session, iterate to the completion goal with `/goal` or `/loop`; both stop when the session or PC closes. Work that must survive a closed session goes to cloud `/schedule` (or an OS scheduled task), resuming from the checkpoint. A passing happy path is not verification — completion needs a deterministic check (test, checker, full-coverage verify), not a reassuring summary.
 - Log the harness choice as an `event` so the next run can reuse or improve it.
 

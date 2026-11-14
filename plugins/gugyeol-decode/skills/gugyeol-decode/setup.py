@@ -83,12 +83,19 @@ def check_pymupdf() -> bool:
         return False
 
 
+# 6.5.0 은 표 안 문단을 두 번 낸다(2026-10-28 실측: text_extract 가 정답의 정확히 2배, 6.10.0 은 정답과 같음).
+PYTHON_HWPX_MIN = (6, 10)
+PYTHON_HWPX_SPEC = "python-hwpx>=6.10"
+
+
 def check_python_hwpx() -> bool:
+    from importlib.metadata import PackageNotFoundError, version
     try:
-        import hwpx  # noqa
-        return True
-    except ImportError:
+        installed = version("python-hwpx")
+    except PackageNotFoundError:
         return False
+    parts = tuple(int(p) for p in installed.split(".")[:2] if p.isdigit())
+    return parts >= PYTHON_HWPX_MIN
 
 
 def check_status() -> dict[str, bool]:
@@ -142,11 +149,11 @@ def step_python_hwpx(auto: bool = True) -> bool:
         print(colored("  ✓ 이미 설치됨", "green"))
         return True
     if not auto:
-        print(colored("  ℹ 미설치 (HWPX 처리 시에만 필요): pip install python-hwpx",
+        print(colored(f"  ℹ 미설치이거나 6.10 미만 (HWPX 처리 시에만 필요): pip install \"{PYTHON_HWPX_SPEC}\"",
                       "cyan"))
         return False
-    print(colored("  → pip install python-hwpx 자동 실행 (HWPX 입력용)", "cyan"))
-    if _pip_install("python-hwpx") and check_python_hwpx():
+    print(colored(f"  → pip install \"{PYTHON_HWPX_SPEC}\" 자동 실행 (HWPX 입력용)", "cyan"))
+    if _pip_install(PYTHON_HWPX_SPEC) and check_python_hwpx():
         print(colored("  ✓ 설치 완료", "green"))
         return True
     print(colored("  ⚠ python-hwpx 설치 실패 — HWPX 입력 시 다시 시도", "yellow"))
